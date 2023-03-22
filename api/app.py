@@ -4,10 +4,13 @@ from functools import wraps
 from model import *
 from jwttoken import *
 from validation import *
-# ss
+from dmc import create_database
+
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 CORS(app)
+
+create_database()
 
 
 def authenticationUser():

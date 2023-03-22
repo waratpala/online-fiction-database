@@ -1,15 +1,12 @@
-import jwt
-import configparser
+from model import *
 
-parser = configparser.ConfigParser()
-parser.read("config.ini")
 
-secret = parser.get('JWT', 'secret')
-getAlgorithm = parser.get('JWT', 'algorithm')
-print(secret, getAlgorithm)
-payload_data = {
-    "id": 1,
-    "user": "s",
-}
-token = jwt.encode(payload=payload_data, key="secret")
-print(token)
+worldList = ["A", "B"]
+cat = ["hor", "mys", "fan", "sci", "act", "dra"]
+a = {}
+data, err = GetFeature(worldList)
+print(data, err)
+# for i in cat:
+#     a[i] = i
+#     print(i)
+# print(a)

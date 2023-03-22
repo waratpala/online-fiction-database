@@ -1,10 +1,14 @@
-FROM python:3.6
-EXPOSE 5000
-WORKDIR /app
+# syntax=docker/dockerfile:1
+# FROM python:3.7-alpine
+# WORKDIR /code
+# ENV FLASK_APP=app.py
+# ENV FLASK_RUN_HOST=0.0.0.0
+# RUN apk add --no-cache gcc musl-dev linux-headers
+# COPY requirements.txt requirements.txt
+# RUN pip install -r requirements.txt
+# EXPOSE 5000
+# COPY . .
+# CMD ["flask", "run"]
 
-COPY requirements.txt /app
-RUN python -m pip install --upgrade pip
-RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir -r requirements.txt
-
-COPY app.py /app
-CMD python app.py
+FROM mysql:latest
+COPY init.sql /docker-entrypoint-initdb.d/

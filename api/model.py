@@ -246,7 +246,7 @@ def NewUser(username, password):
         return None, err
 
 
-def NewChapter(fictionID, chapter, title, content, category):
+def NewChapter(fictionID, chapter, title, content, category, worldList):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
@@ -257,10 +257,35 @@ def NewChapter(fictionID, chapter, title, content, category):
         mycursor.execute(sql, val)
         mydb.commit()
 
+        sql = "INSERT INTO feature (word, total, fan) VALUES(%s, 1, %s) ON DUPLICATE KEY UPDATE %s=%s+1, total=total1"
+        val = (worldList, category, category, category)
+
+        mycursor.execute(sql, val)
+        mydb.commit()
+
     except mysql.connector.Error as err:
         return err
     except TypeError as err:
         return err
+
+
+def GetFeature(worldList):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True)
+        format_strings = ','.join(['%s'] * len(worldList))
+        data = {}
+        cat = ["hor", "mys", "fan", "sci", "act", "dra"]
+
+        for i in cat:
+            mycursor.execute("SELECT word, "+i+",total FROM feature WHERE word IN (%s)" % format_strings,
+                             tuple(worldList))
+            data[i] = mycursor.fetchall()
+        return data, None
+    except mysql.connector.Error as err:
+        return None, err
+    except TypeError as err:
+        return None, err
 
 
 def UpdateChapter(fictionID, chapter, title, content):
