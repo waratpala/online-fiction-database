@@ -1,0 +1,16 @@
+.controlitem{
+    background-color: #222831;
+    border-radius: 2px;
+    width: 1350px;
+    position: absolute;
+    top: 100px;
+    left: 50px;
+}
+.textnovel{
+    background-color: #00ADB5;
+    display: block;
+    color: white;
+    height: 50px; 
+    border-radius: 3px;
+    
+}

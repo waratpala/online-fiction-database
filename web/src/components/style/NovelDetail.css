@@ -1,0 +1,49 @@
+/* .CourseDetails{
+    border: 2px solid #B6B6B6;
+    background-color: #B6B6B6;
+    border-radius: 5px;
+    padding: 10px;
+    width: 90%;
+    height: auto;
+} */
+
+
+
+.controlitemdetail{
+    background-color: #222831;
+    position: absolute;
+    width: 1350px;
+    top: 100px;
+    left: 50px;
+}
+
+.texttitle{
+    background-color: #00ADB5;
+    display: block;
+    color: white;
+    height: 50px;
+    border-radius: 3px;
+}
+
+.textepisodedetail{
+    background-color: #00ADB5;
+    display: flex;
+    color: white;
+    height: 50px; 
+    border-radius: 3px;
+}
+
+.btnadd{
+    height: 40px;
+    color: aliceblue;
+    font-size: 35px;
+    margin-left: 1200px;
+}
+
+.listnamedetail{
+    color: white;
+}
+
+/* .modal1{
+    background-color: #222831;
+} */
