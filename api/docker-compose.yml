@@ -3,15 +3,10 @@ version: "2"
 services:
   db:
     image: mysql:latest
-    cap_add:
-      - SYS_NICE
     environment:
       - MYSQL_DATABASE=main
       - MYSQL_ROOT_PASSWORD=root
     ports:
       - '3306:3306'
     volumes:
-      - db:/project/db
-volumes:
-  db:
-    driver: local
+      - ./init:/docker-entrypoint-initdb.d
