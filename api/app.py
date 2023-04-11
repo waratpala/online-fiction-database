@@ -7,7 +7,6 @@ from validation import *
 from common import *
 from werkzeug.utils import secure_filename
 import os
-import io
 import uuid
 
 UPLOAD_FOLDER = 'upload'
