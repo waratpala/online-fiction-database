@@ -43,10 +43,8 @@ def GetFictionList(page, limit, filterDB, sort, search):
         return pagination, None
 
     except mysql.connector.Error as err:
-        print(err)
         return None, err
     except TypeError as err:
-        print(err)
         return None, err
 
 
@@ -86,10 +84,8 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
         return pagination, None
 
     except mysql.connector.Error as err:
-        print(err)
         return None, err
     except TypeError as err:
-        print(err)
         return None, err
 
 
@@ -113,10 +109,8 @@ def GetFiction(fictionID, sort):
         return info, None
 
     except mysql.connector.Error as err:
-        print(err)
         return None, err
     except TypeError as err:
-        print(err)
         return None, err
 
 
@@ -147,10 +141,8 @@ def GetChapter(page, limit, sort, fictionID):
         return pagination, None
 
     except mysql.connector.Error as err:
-        print(err)
         return None, err
     except TypeError as err:
-        print(err)
         return None, err
 
 
@@ -167,10 +159,8 @@ def GetContent(chapterID):
         return content, None
 
     except mysql.connector.Error as err:
-        print(err)
         return None, err
     except TypeError as err:
-        print(err)
         return None, err
 
 
@@ -186,10 +176,8 @@ def NewFiction(fictionName, writerID, filePath):
 
         return None
     except mysql.connector.Error as err:
-        print(err)
         return err
     except TypeError as err:
-        print(err)
         return err
 
 

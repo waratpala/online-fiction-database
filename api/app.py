@@ -115,11 +115,17 @@ def NewUserAPI():
 @app.route("/fiction ", methods=['GET'])
 def GetFictionListAPI():
 
-    page = int(request.args.get('page'))
-    limit = int(request.args.get('limit'))
+    page = request.args.get('page')
+    limit = request.args.get('limit')
     sort = request.args.get('sort')
     filterDB = request.args.get('filter')
     search = request.args.get('search')
+
+    try:
+        page = int(page)
+        limit = int(limit)
+    except TypeError as err:
+        return make_response(jsonify({"status": "TypeError"}), 400)
 
     if sort is None:
         sort = "fictionID DESC"
@@ -144,12 +150,17 @@ def GetFictionAPI(fiction):
 
 
 @app.route("/<fiction>", methods=['GET'])
-def GetChaptertAPI(fiction):
+def GetChapterAPI(fiction):
 
-    page = int(request.args.get('page'))
-    limit = int(request.args.get('limit'))
+    page = request.args.get('page')
+    limit = request.args.get('limit')
     sort = request.args.get('sort')
-    print("get in")
+    try:
+        page = int(page)
+        limit = int(limit)
+    except TypeError as err:
+        return make_response(jsonify({"status": "TypeError"}), 400)
+
     if sort is None:
         sort = "fictionID DESC"
 
@@ -176,11 +187,17 @@ def GetWriterFictionListAPI():
     bearer = request.headers.get('Authorization')
     user = jwtDecode(bearer .split()[1])
 
-    page = int(request.args.get('page'))
-    limit = int(request.args.get('limit'))
+    page = request.args.get('page')
+    limit = request.args.get('limit')
     sort = request.args.get('sort')
     filterDB = request.args.get('filter')
     search = request.args.get('search')
+
+    try:
+        page = int(page)
+        limit = int(limit)
+    except TypeError as err:
+        return make_response(jsonify({"status": "TypeError"}), 400)
 
     if sort is None:
         sort = "fictionID DESC"
@@ -193,13 +210,13 @@ def GetWriterFictionListAPI():
     return make_response(jsonify(result))
 
 
-@app.route("/image", methods=['GET'])
-def GetImageAPI():
-    fileName = request.args.get('fileName')
-    x, file_extension = os.path.splitext(fileName)
+@app.route("/image/<imageName>", methods=['GET'])
+def GetImageAPI(imageName):
+
+    x, file_extension = os.path.splitext(imageName)
     type = mimetypeCheck(file_extension)
     filePath = os.path.join(
-        UPLOAD_FOLDER, fileName)
+        UPLOAD_FOLDER, imageName)
     return send_file(filePath, mimetype=type)
 
 
@@ -225,7 +242,7 @@ def AddNewFictionAPI():
     file.save(filePath)
 
     err = NewFiction(
-        fictionName, user["sub"], "http://127.0.0.1:5000/image?fileName=" + file.filename)
+        fictionName, user["sub"], "http://127.0.0.1:5000/image/" + file.filename)
     if err != None:
         print(err)
         return make_response(jsonify(), 404)

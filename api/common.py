@@ -1,5 +1,4 @@
 def mimetypeCheck(fileName):
-    print(fileName)
     match str(fileName):
         case ".png'":
             return 'image/png'
