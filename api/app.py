@@ -6,8 +6,10 @@ from jwttoken import *
 from validation import *
 from common import *
 from werkzeug.utils import secure_filename
+from model import *
 import os
 import uuid
+
 
 UPLOAD_FOLDER = 'upload'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])

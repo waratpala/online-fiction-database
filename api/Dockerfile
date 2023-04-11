@@ -1,13 +1,12 @@
-# FROM python:3.11
+FROM python:3.11
 
-# EXPOSE 5000
+EXPOSE 5000
 
-# WORKDIR /api
+WORKDIR /api
 
-# COPY requirements.txt /api
-# RUN pip install -r requirements.txt
+COPY requirements.txt /api
+RUN pip install -r requirements.txt
 
-# COPY app.py /api
-# CMD python app.py
+COPY . .
 
-FROM mysql:latest
+CMD ["python3", "-m" , "flask", "run", "--host=0.0.0.0"]
