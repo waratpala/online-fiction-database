@@ -174,24 +174,23 @@ def GetContent(chapterID):
         return None, err
 
 
-def NewFiction(fictionName, writerID):
+def NewFiction(fictionName, writerID, filePath):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = ("INSERT INTO fiction (fictionName,writer) VALUES (%s,%s)")
-        val = (fictionName, writerID)
+        sql = ("INSERT INTO fiction (fictionName,writer,picture) VALUES (%s,%s,%s)")
+        val = (fictionName, writerID, filePath)
         mycursor.execute(sql, val)
         mydb.commit()
-        print(val)
-        print(mycursor.lastrowid)
 
+        return None
     except mysql.connector.Error as err:
         print(err)
-        return None, err
+        return err
     except TypeError as err:
         print(err)
-        return None, err
+        return err
 
 
 def VerifierUser(username, password):
@@ -320,21 +319,3 @@ def DeleteChapter(fictionID, chapter):
         return err
     except TypeError as err:
         return err
-
-
-def Category(category):
-    match str(category):
-        case "นิยายระทึกขวัญ":
-            return 2
-        case "นิยายสืบสวน":
-            return 3
-        case "นิยายแฟนตาซี":
-            return 4
-        case "นิยายวิทยาศาสตร์":
-            return 5
-        case "นิยายแอ๊คชั่น":
-            return 6
-        case "นิยายรักดราม่า":
-            return 7
-        case _:
-            return 1

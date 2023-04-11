@@ -1,16 +1,27 @@
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, make_response, send_from_directory, send_file
 from flask_cors import CORS
 from functools import wraps
 from model import *
 from jwttoken import *
 from validation import *
-from dmc import create_database
+from common import *
+from werkzeug.utils import secure_filename
+import os
+import io
+import uuid
+
+UPLOAD_FOLDER = 'upload'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 CORS(app)
 
-create_database()
+
+def allowed(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def authenticationUser():
@@ -182,8 +193,18 @@ def GetWriterFictionListAPI():
     return make_response(jsonify(result))
 
 
-@app.route("/writer", methods=['POST'])
-@authenticationUser()
+@app.route("/image", methods=['GET'])
+def GetImageAPI():
+    fileName = request.args.get('fileName')
+    x, file_extension = os.path.splitext(fileName)
+    type = mimetypeCheck(file_extension)
+    filePath = os.path.join(
+        UPLOAD_FOLDER, fileName)
+    return send_file(filePath, mimetype=type)
+
+
+@ app.route("/writer", methods=['POST'])
+@ authenticationUser()
 def AddNewFictionAPI():
     bearer = request.headers.get('Authorization')
     user = jwtDecode(bearer .split()[1])
@@ -191,17 +212,30 @@ def AddNewFictionAPI():
     fictionName = request.form['fiction_name']
     if fictionName is None:
         return make_response(jsonify({"status": "fiction_name is empty"}), 400)
+    filename = str(uuid.uuid4())
+    file = request.files['fiction_image']
 
-    err = NewFiction(fictionName, user["id"])
+    file_name, file_extension = os.path.splitext(file.filename)
+    if not allowed(file.filename):
+        return make_response(jsonify({"status": "File allowed type 'png', 'jpg', 'jpeg'"}), 400)
+
+    file.filename = filename+file_extension
+    filePath = os.path.join(UPLOAD_FOLDER,
+                            secure_filename(file.filename))
+    file.save(filePath)
+
+    err = NewFiction(
+        fictionName, user["sub"], "http://127.0.0.1:5000/image?fileName=" + file.filename)
     if err != None:
+        print(err)
         return make_response(jsonify(), 404)
 
     return make_response({"status": "OK"}, 201)
 
 
-@app.route("/writer/<fictionID>/<chapter>", methods=['POST'])
-@authenticationUser()
-@authenticationPermission()
+@ app.route("/writer/<fictionID>/<chapter>", methods=['POST'])
+@ authenticationUser()
+@ authenticationPermission()
 def AddNewChapterAPI(fictionID, chapter):
 
     title = request.form['title']
@@ -221,9 +255,9 @@ def AddNewChapterAPI(fictionID, chapter):
     return make_response({"status": "OK"}, 201)
 
 
-@app.route("/writer/<fictionID>/<chapter>", methods=['PUT'])
-@authenticationUser()
-@authenticationPermission()
+@ app.route("/writer/<fictionID>/<chapter>", methods=['PUT'])
+@ authenticationUser()
+@ authenticationPermission()
 def UpdateNewChapterAPI(fictionID, chapter):
 
     title = request.form['title']
@@ -236,9 +270,9 @@ def UpdateNewChapterAPI(fictionID, chapter):
     return make_response({"status": "OK"}, 201)
 
 
-@app.route("/writer/<fictionID>/<chapter>", methods=['DELETE'])
-@authenticationUser()
-@authenticationPermission()
+@ app.route("/writer/<fictionID>/<chapter>", methods=['DELETE'])
+@ authenticationUser()
+@ authenticationPermission()
 def DeteleNewChapterAPI(fictionID, chapter):
 
     err = DeleteChapter(fictionID, chapter)

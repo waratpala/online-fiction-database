@@ -9,9 +9,23 @@
 
 CREATE TABLE `category` (
   `categoryID` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL,
+  `name` varchar(100),
   PRIMARY KEY (`categoryID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `fiction` (
+  `fictionID` int NOT NULL AUTO_INCREMENT,
+  `fictionName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `categoryID` int DEFAULT NULL,
+  `picture` varchar(255) DEFAULT NULL,
+  `writer` int NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `delete_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`fictionID`),
+  KEY `categoryID` (`categoryID`),
+  CONSTRAINT `fiction_ibfk_1` FOREIGN KEY (`categoryID`) REFERENCES `category` (`categoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `chapter` (
   `chapterID` int NOT NULL AUTO_INCREMENT,
@@ -20,6 +34,9 @@ CREATE TABLE `chapter` (
   `categoryID` int DEFAULT NULL,
   `Title` varchar(1000) DEFAULT NULL,
   `Content` mediumtext,
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `delete_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`chapterID`),
   KEY `fictionID` (`fictionID`),
   KEY `categoryID` (`categoryID`),
@@ -39,16 +56,17 @@ CREATE TABLE `feature` (
   PRIMARY KEY (`word`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `fiction` (
-  `fictionID` int NOT NULL AUTO_INCREMENT,
-  `fictionName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `categoryID` int DEFAULT NULL,
-  `picture` varchar(255) DEFAULT NULL,
-  `writer` int NOT NULL,
-  PRIMARY KEY (`fictionID`),
-  KEY `categoryID` (`categoryID`),
-  CONSTRAINT `fiction_ibfk_1` FOREIGN KEY (`categoryID`) REFERENCES `category` (`categoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `fiction_number` (
+  `id` int(11) NOT NULL primary key,
+  `total` int(11) DEFAULT 0,
+  `hor` int(11) DEFAULT 0,
+  `mys` int(11) DEFAULT 0,
+  `fan` int(11) DEFAULT 0,
+  `sci` int(11) DEFAULT 0,
+  `act` int(11) DEFAULT 0,
+  `dra` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;;
+
 
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
