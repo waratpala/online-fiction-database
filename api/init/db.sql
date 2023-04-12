@@ -88,7 +88,8 @@ INSERT INTO `category` (`categoryID`, `name`) VALUES
 (6, 'นิยายบู๊ แอ๊คชั่น'),
 (7, 'นิยายรักดราม่า');
 
-
+INSERT INTO `user` (`user_name`, `password`) VALUES
+('x', 'x');
 
 
 

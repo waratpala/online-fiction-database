@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, send_from_directory, send_file
+from flask import Flask, jsonify, request, make_response, send_file
 from flask_cors import CORS
 from functools import wraps
 from model import *
@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from model import *
 import os
 import uuid
+from mysql_con import DbConnection
 
 
 UPLOAD_FOLDER = 'upload'
@@ -71,6 +72,19 @@ def authenticationPermission():
     return _authenticationPermission
 
 
+@app.route("/", methods=['GET'])
+def test():
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True)
+
+        mycursor.execute("SELECT * FROM user")
+        count = mycursor.fetchall()
+    except mysql.connector.Error as err:
+        return make_response(jsonify({"token": str(err)}), 400)
+    return make_response(jsonify({"token": count}), 200)
+
+
 @app.route("/login", methods=['GET'])
 def LoginAPI():
     username = request.form['username']
@@ -105,7 +119,7 @@ def NewUserAPI():
     if err != None:
         if err.errno == 1062:
             return make_response(jsonify({"status": "Duplicate Name"}), 404)
-        return make_response(jsonify(), 404)
+        return make_response(jsonify({"token": str(err)}), 404)
 
     token = jwtEncode(userID)
     res = make_response(jsonify({"token": token}), 201)
@@ -298,3 +312,7 @@ def DeteleNewChapterAPI(fictionID, chapter):
         return make_response(jsonify(), 404)
 
     return make_response({"status": "OK"}, 200)
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')

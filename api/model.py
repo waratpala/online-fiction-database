@@ -1,7 +1,7 @@
 import json
-import sys
 import math
 import mysql.connector
+from common import *
 from mysql.connector import errorcode
 from mysql_con import DbConnection
 
@@ -216,6 +216,7 @@ def VerifierPermission(fiction, writer):
 
 
 def NewUser(username, password):
+    print(username, password)
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor()

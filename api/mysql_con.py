@@ -11,6 +11,8 @@ class DbConnection(object):
 
     class Singleton:
         def __init__(self):
+            # self.connection = mysql.connector.connect(
+            #     host='mydb', user='root', password='root', port=3306, db='main')
             self.connection = mysql.connector.connect(
                 host=configParser.get('MYSQL', 'host'), user=configParser.get('MYSQL', 'user'), password=configParser.get('MYSQL', 'password'), db=configParser.get('MYSQL', 'db'))
 
