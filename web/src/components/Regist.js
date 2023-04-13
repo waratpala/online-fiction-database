@@ -28,7 +28,7 @@ function Registpage() {
                 console.log(response.data);
 
                 if (response.status == 201) {
-                    console.log(response.data.token);
+                    sessionStorage.setItem("token", response.data.token);
                 }
                 if (response.status == 400) {
                     if (response.data.status = "Duplicate Name") {

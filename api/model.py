@@ -26,7 +26,7 @@ def GetFictionList(page, limit, filterDB, sort, search):
             "data": []
         }
 
-        if count == 0:
+        if count['total'] == 0:
             pagination['max_page'] = 1
 
         if pagination['max_page'] < pagination['curent_page']:
@@ -36,17 +36,13 @@ def GetFictionList(page, limit, filterDB, sort, search):
             sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
             val = ("%" + search + "%", sort,
                    pagination['limit'], pagination['offset'])
-            mycursor.execute(sql, val)
-            pagination["val"] = val
-            pagination["data"] = mycursor.fetchall()
         else:
             sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
             val = ("%" + search + "%", filterDB, sort,
                    pagination['limit'], pagination['offset'])
 
-            mycursor.execute(sql, val)
-            pagination["val"] = val
-            pagination["data"] = mycursor.fetchall()
+        mycursor.execute(sql, val)
+        pagination["data"] = mycursor.fetchall()
         return pagination, None
 
     except mysql.connector.Error as err:
@@ -56,8 +52,7 @@ def GetFictionList(page, limit, filterDB, sort, search):
 
 
 def GetWriterFiction(page, limit, filterDB, sort, search, writer):
-    if search == None:
-        search = ""
+
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
@@ -72,29 +67,36 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
             "offset": limit*(page-1),
             "max_page": math.ceil(count['total']/limit),
             "sort": sort,
-            "data": []
+            "writer": writer,
+            "data": [],
+            "val": "",
+            "sql": ""
         }
 
-        if count == 0:
+        if count['total'] == 0:
             pagination['max_page'] = 1
 
         if pagination['max_page'] < pagination['curent_page']:
             return None, "max<curent"
 
         if (filterDB is None):
-            sql = "SELECT fictionID,fictionName,categoryID FROM fiction WHERE writer=%s AND fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
-            val = (writer, "%" + search + "%", sort,
-                   pagination['limit'], pagination['offset'])
+            # sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
+            # val = (writer, "%" + search + "%", sort,
+            #        pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s"
+            val = (writer,)
+            pagination["val"] = val
+            pagination["sql"] = sql
 
-            mycursor.execute(sql, val)
-            pagination["data"] = mycursor.fetchall()
         else:
-            sql = "SELECT fictionID,fictionName,categoryID FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
             val = (writer, "%" + search + "%", filterDB, sort,
                    pagination['limit'], pagination['offset'])
+            pagination["val"] = val
+            pagination["sql"] = sql
 
-            mycursor.execute(sql, val)
-            pagination["data"] = mycursor.fetchall()
+        mycursor.execute(sql, val)
+        pagination["data"] = mycursor.fetchall()
         return pagination, None
 
     except mysql.connector.Error as err:
@@ -103,23 +105,17 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
         return None, err
 
 
-def GetFiction(fictionID, sort):
+def GetFiction(fictionID):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "SELECT fictionID,fictionName,categoryID FROM fiction WHERE fictionID = %s ORDER BY %s"
-        val = (fictionID, sort)
+        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s"
+        val = (fictionID,)
 
         mycursor.execute(sql, val)
         info = mycursor.fetchone()
 
-        sql = "SELECT categoryID,COUNT(categoryID) as total FROM chapter WHERE fictionID=%s GROUP BY categoryID"
-        val = (fictionID,)
-
-        mycursor.execute(sql, val)
-        contentCat = mycursor.fetchone()
-        info["category"] = contentCat
         return info, None
 
     except mysql.connector.Error as err:
@@ -145,10 +141,10 @@ def GetChapter(page, limit, sort, fictionID):
             "offset": limit*(page-1),
             "max_page": math.ceil(count['total']/limit),
             "sort": sort,
-            "data": []
+            "data": [],
         }
 
-        if count == 0:
+        if count['total'] == 0:
             pagination['max_page'] = 1
 
         if pagination['max_page'] < pagination['curent_page']:
@@ -160,6 +156,7 @@ def GetChapter(page, limit, sort, fictionID):
 
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
+        pagination["val"] = val
         return pagination, None
 
     except mysql.connector.Error as err:

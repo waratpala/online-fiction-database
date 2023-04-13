@@ -3,6 +3,8 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import axios from 'axios';
+import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
@@ -10,63 +12,102 @@ import './style/NovelContent.css';
 
 function Novelcontent() {
 
-  return (
-    <>
-        <Header/>
-        <Container>
-            <div className='controlitemcontent m-3'>
-            <Form.Label className='textcontent' >นิยาย</Form.Label>
-                <Row >
-                    <Col sm={4}>
-                        <div className="card m-3">
-                            <div>
-                                <img src="https://th.bing.com/th/id/R.3fde1cc4966dd166bfb2de60ddd307cc?rik=D70I%2bQ3r0fO0Jw&pid=ImgRaw&r=0" alt="" style={{ width:'200px',height:'200px'}} />
-                            </div>
-                        </div>
-                    
-                    </Col>
-                    <Col sm={8}>
-                        <h2 className='m-2'>โฉมสะคราญ พ่ายรัก</h2>
-                        <div className='img-starCouse '>
-                                <h4 >โดย...</h4>
-                        </div> 
-                        <div className='CourseDetails m-3'>
-                        <img src="./images/d-1.png" style={{ width:'100%',height:'200px'}}/>
-                        </div>
-                        
-                    </Col>
-                </Row>
-            <Form.Group className='textepisode'>
-                <Form.Label  >สารบัญตอน</Form.Label>
-                <Button className='btnsort'>  ↿ ⇂ ตอนล่าสุด</Button>
+    const [chapter, setChapter] = useState("");
+    const [ficrionInfo, setFicrionInfo] = useState("");
+    const [page, setPage] = useState(1);
+    const [sort, setSort] = useState("DESC");
 
-            </Form.Group>
-            <Table  className='listname'>
-                <thead>
-                    <tr>
-                    <th>#</th>
-                    <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <td>1</td>
-                    <td>ตอนที่ 1</td>
-                    </tr>
-                    <tr>
-                    <td>2</td>
-                    <td>ตอนที่ 2</td>
-                    </tr>
-                    <tr>
-                    <td>3</td>
-                    <td>ตอนที่ 3</td>
-                    </tr>
-                </tbody>
-                </Table>
-            </div>
-        </Container>
-    </>
-  );
+    useEffect(() => {
+        if (!ficrionInfo) {
+            let fictionurl = "http://127.0.0.1:5000/info/1"
+            axios.get(fictionurl)
+                .then(response => {
+                    if (response.status == 200) {
+                        setFicrionInfo(response.data)
+                    }
+                    if (response.status == 400) {
+
+                    }
+                    if (response.status == 404) {
+
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+
+        let url = "http://127.0.0.1:5000/1?limit=10&sort=" + sort + "&page=" + String(page)
+        // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
+        axios.get(url, { headers: { Authorization: AuthStr } })
+            .then(response => {
+                if (response.status == 200) {
+                    setChapter(response.data)
+                }
+                if (response.status == 400) {
+
+                }
+                if (response.status == 404) {
+
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+    }, [sort])
+
+    const handleClick = event => {
+    };
+
+    return (
+        <>
+            <Header />
+            <Container>
+                <div className='controlitemcontent m-3'>
+                    <Form.Label className='textcontent' >นิยาย</Form.Label>
+                    <Row >
+                        <Col sm={4}>
+                            <div className="card m-3">
+                                <div>
+                                    <img src={ficrionInfo.picture} alt="" style={{ width: '200px', height: '200px' }} />
+                                </div>
+                            </div>
+
+                        </Col>
+                        <Col sm={8}>
+                            <h2 className='m-2'>{ficrionInfo.fictionName}</h2>
+                            <div className='img-starCouse '>
+                                <h4 >โดย {ficrionInfo.user_name}</h4>
+                            </div>
+                            <div className='CourseDetails m-3'>
+                                <img src="./images/d-1.png" style={{ width: '100%', height: '200px' }} />
+                            </div>
+
+                        </Col>
+                    </Row>
+                    <Form.Group className='textepisode'>
+                        <Form.Label  >สารบัญตอน</Form.Label>
+                        <Button onClick={handleClick} className='btnsort'>  ↿ ⇂ ตอนล่าสุด</Button>
+
+                    </Form.Group>
+
+
+                    <Table className='listname'>
+                        {chapter?.data?.map((item, index) => (
+                            <thead key={item.chapterID}>
+                                <tr>
+                                    <th>{item.chapter}</th>
+                                    <th>{item.Title}</th>
+                                </tr>
+                            </thead>
+                        ))}
+                    </Table>
+                </div>
+            </Container>
+        </>
+    );
 }
 
 export default Novelcontent;

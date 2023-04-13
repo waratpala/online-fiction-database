@@ -121,7 +121,7 @@ def NewUserAPI():
             return make_response(jsonify({"status": "Duplicate Name"}), 400)
         return make_response(jsonify({"token": str(err)}), 404)
 
-    token = jwtEncode(userID)
+    token = jwtEncode({"user": userID})
     res = make_response(jsonify({"token": token}), 201)
 
     return res
@@ -159,15 +159,12 @@ def GetFictionListAPI():
 
 @app.route("/info/<fiction>", methods=['GET'])
 def GetFictionAPI(fiction):
-    sort = request.args.get('sort')
 
-    sort = "chapterID " + sort
-
-    result, err = GetFiction(fiction, sort)
+    result, err = GetFiction(fiction)
     if err != None:
         return make_response(jsonify(), 404)
 
-    return make_response(jsonify(result))
+    return make_response(jsonify(result), 200)
 
 
 @app.route("/<fiction>", methods=['GET'])
@@ -182,13 +179,14 @@ def GetChapterAPI(fiction):
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
 
-    sort = "fictionID " + sort
+    sort = "chapter " + sort
 
     result, err = GetChapter(page, limit, sort, fiction)
     if err != None:
         if (type(err) == 'str'):
-            return make_response(jsonify({"status": err}), 400)
+            return make_response(jsonify({"status": str(err)}), 400)
         return make_response(jsonify(), 404)
+
     return make_response(jsonify(result))
 
 
@@ -222,6 +220,8 @@ def GetWriterFictionListAPI():
             filterDB = int(filterDB)
         if (filterDB == ""):
             filterDB = None
+        if search == None:
+            search = ""
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
 
@@ -231,8 +231,8 @@ def GetWriterFictionListAPI():
         page, limit, filterDB, sort, search, user['sub']['user'])
     if err != None:
         if (type(err) == 'str'):
-            return make_response(jsonify({"status": err}), 400)
-        return make_response(jsonify(), 404)
+            return make_response(jsonify({"status": str(err)}), 400)
+        return make_response(jsonify({"status": str(err)}), 404)
 
     return make_response(jsonify(result))
 
