@@ -17,7 +17,7 @@ CREATE TABLE `fiction` (
   `fictionID` int NOT NULL AUTO_INCREMENT,
   `fictionName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `categoryID` int DEFAULT NULL,
-  `picture` varchar(255) DEFAULT NULL,
+  `picture` varchar(255) NOT NULL DEFAULT 'http://127.0.0.1:5000/image/default.jpg',
   `writer` int NOT NULL,
   `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

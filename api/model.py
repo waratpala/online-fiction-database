@@ -26,19 +26,26 @@ def GetFictionList(page, limit, filterDB, sort, search):
             "data": []
         }
 
-        if filterDB == None:
-            sql = "SELECT fictionID,fictionName,categoryID FROM fiction WHERE fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
+        if count == 0:
+            pagination['max_page'] = 1
+
+        if pagination['max_page'] < pagination['curent_page']:
+            return None, "max<curent"
+
+        if (filterDB is None):
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
             val = ("%" + search + "%", sort,
                    pagination['limit'], pagination['offset'])
-
             mycursor.execute(sql, val)
+            pagination["val"] = val
             pagination["data"] = mycursor.fetchall()
         else:
-            sql = "SELECT fictionID,fictionName,categoryID FROM fiction WHERE fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
-            val = ("%" + search + "%", Category(filterDB), sort,
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
+            val = ("%" + search + "%", filterDB, sort,
                    pagination['limit'], pagination['offset'])
 
             mycursor.execute(sql, val)
+            pagination["val"] = val
             pagination["data"] = mycursor.fetchall()
         return pagination, None
 
@@ -67,7 +74,14 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
             "sort": sort,
             "data": []
         }
-        if filterDB == None:
+
+        if count == 0:
+            pagination['max_page'] = 1
+
+        if pagination['max_page'] < pagination['curent_page']:
+            return None, "max<curent"
+
+        if (filterDB is None):
             sql = "SELECT fictionID,fictionName,categoryID FROM fiction WHERE writer=%s AND fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
             val = (writer, "%" + search + "%", sort,
                    pagination['limit'], pagination['offset'])
@@ -76,7 +90,7 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
             pagination["data"] = mycursor.fetchall()
         else:
             sql = "SELECT fictionID,fictionName,categoryID FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
-            val = (writer, "%" + search + "%", Category(filterDB), sort,
+            val = (writer, "%" + search + "%", filterDB, sort,
                    pagination['limit'], pagination['offset'])
 
             mycursor.execute(sql, val)
@@ -123,7 +137,8 @@ def GetChapter(page, limit, sort, fictionID):
         val = (fictionID,)
         mycursor.execute(sql, val)
         count = mycursor.fetchone()
-
+        if count == 0:
+            count = 1
         pagination = {
             "curent_page": page,
             "limit": limit,
@@ -132,6 +147,13 @@ def GetChapter(page, limit, sort, fictionID):
             "sort": sort,
             "data": []
         }
+
+        if count == 0:
+            pagination['max_page'] = 1
+
+        if pagination['max_page'] < pagination['curent_page']:
+            return None, "max<curent"
+
         sql = "SELECT chapterID,chapter,Title FROM chapter WHERE fictionID = %s ORDER BY %s LIMIT %s OFFSET %s"
         val = (fictionID, sort,
                pagination['limit'], pagination['offset'])
@@ -164,13 +186,18 @@ def GetContent(chapterID):
         return None, err
 
 
-def NewFiction(fictionName, writerID, filePath):
+def NewFiction(fictionName, writerID, url):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = ("INSERT INTO fiction (fictionName,writer,picture) VALUES (%s,%s,%s)")
-        val = (fictionName, writerID, filePath)
+        if (url):
+            sql = ("INSERT INTO fiction (fictionName,writer,picture) VALUES (%s,%s,%s)")
+            val = (fictionName, writerID, url)
+        else:
+            sql = ("INSERT INTO fiction (fictionName,writer) VALUES (%s,%s)")
+            val = (fictionName, writerID)
+
         mycursor.execute(sql, val)
         mydb.commit()
 
@@ -216,7 +243,6 @@ def VerifierPermission(fiction, writer):
 
 
 def NewUser(username, password):
-    print(username, password)
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor()

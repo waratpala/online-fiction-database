@@ -118,7 +118,7 @@ def NewUserAPI():
     userID, err = NewUser(username, password)
     if err != None:
         if err.errno == 1062:
-            return make_response(jsonify({"status": "Duplicate Name"}), 404)
+            return make_response(jsonify({"status": "Duplicate Name"}), 400)
         return make_response(jsonify({"token": str(err)}), 404)
 
     token = jwtEncode(userID)
@@ -127,7 +127,7 @@ def NewUserAPI():
     return res
 
 
-@app.route("/fiction ", methods=['GET'])
+@app.route("/fiction", methods=['GET'])
 def GetFictionListAPI():
 
     page = request.args.get('page')
@@ -139,24 +139,30 @@ def GetFictionListAPI():
     try:
         page = int(page)
         limit = int(limit)
+        if (filterDB):
+            filterDB = int(filterDB)
+        if (filterDB == ""):
+            filterDB = None
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
 
-    if sort is None:
-        sort = "fictionID DESC"
+    sort = "fictionID " + sort
 
     result, err = GetFictionList(page, limit, filterDB, sort, search)
     if err != None:
-        return make_response(jsonify(), 404)
+        if (type(err) == 'str'):
+            return make_response(jsonify({"status": err}), 400)
+        return make_response(jsonify({"status": str(err)}), 404)
 
-    return make_response(jsonify(result))
+    return make_response(jsonify(result), 200)
 
 
 @app.route("/info/<fiction>", methods=['GET'])
 def GetFictionAPI(fiction):
     sort = request.args.get('sort')
-    if sort is None:
-        sort = "fictionID DESC"
+
+    sort = "chapterID " + sort
+
     result, err = GetFiction(fiction, sort)
     if err != None:
         return make_response(jsonify(), 404)
@@ -176,11 +182,12 @@ def GetChapterAPI(fiction):
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
 
-    if sort is None:
-        sort = "fictionID DESC"
+    sort = "fictionID " + sort
 
     result, err = GetChapter(page, limit, sort, fiction)
     if err != None:
+        if (type(err) == 'str'):
+            return make_response(jsonify({"status": err}), 400)
         return make_response(jsonify(), 404)
     return make_response(jsonify(result))
 
@@ -211,15 +218,20 @@ def GetWriterFictionListAPI():
     try:
         page = int(page)
         limit = int(limit)
+        if (filterDB):
+            filterDB = int(filterDB)
+        if (filterDB == ""):
+            filterDB = None
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
 
-    if sort is None:
-        sort = "fictionID DESC"
+    sort = "fictionID " + sort
 
     result, err = GetWriterFiction(
         page, limit, filterDB, sort, search, user['sub']['user'])
     if err != None:
+        if (type(err) == 'str'):
+            return make_response(jsonify({"status": err}), 400)
         return make_response(jsonify(), 404)
 
     return make_response(jsonify(result))
@@ -246,20 +258,22 @@ def AddNewFictionAPI():
         return make_response(jsonify({"status": "fiction_name is empty"}), 400)
     filename = str(uuid.uuid4())
     file = request.files['fiction_image']
+    url = None
+    if (file):
+        file_name, file_extension = os.path.splitext(file.filename)
+        if not allowed(file.filename):
+            return make_response(jsonify({"status": "File allowed type 'png', 'jpg', 'jpeg'"}), 400)
 
-    file_name, file_extension = os.path.splitext(file.filename)
-    if not allowed(file.filename):
-        return make_response(jsonify({"status": "File allowed type 'png', 'jpg', 'jpeg'"}), 400)
-
-    file.filename = filename+file_extension
-    filePath = os.path.join(UPLOAD_FOLDER,
-                            secure_filename(file.filename))
-    file.save(filePath)
+        file.filename = filename+file_extension
+        filePath = os.path.join(UPLOAD_FOLDER,
+                                secure_filename(file.filename))
+        file.save(filePath)
+        url = "http://127.0.0.1:5000/image/" + file.filename
 
     err = NewFiction(
-        fictionName, user["sub"], "http://127.0.0.1:5000/image/" + file.filename)
+        fictionName, user["sub"]['user'], url)
+
     if err != None:
-        print(err)
         return make_response(jsonify(), 404)
 
     return make_response({"status": "OK"}, 201)
