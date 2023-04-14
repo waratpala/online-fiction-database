@@ -278,10 +278,10 @@ def AddNewFictionAPI():
     return make_response({"status": "OK"}, 201)
 
 
-@ app.route("/writer/<fictionID>/<chapter>", methods=['POST'])
+@ app.route("/writer/<fictionID>", methods=['POST'])
 @ authenticationUser()
 @ authenticationPermission()
-def AddNewChapterAPI(fictionID, chapter):
+def AddNewChapterAPI(fictionID):
 
     title = request.form['title']
     content = request.form['content']
@@ -292,8 +292,8 @@ def AddNewChapterAPI(fictionID, chapter):
     if len(content) < 3000:
         return make_response(jsonify({"status": "content less than 3,000 characters."}), 400)
 
-    category = 1
-    err = NewChapter(fictionID, chapter, title, content, category)
+    category = 2
+    err = NewChapter(fictionID, title, content, category)
     if err != None:
         return make_response(jsonify(), 404)
 
@@ -303,7 +303,7 @@ def AddNewChapterAPI(fictionID, chapter):
 @ app.route("/writer/<fictionID>/<chapterID>", methods=['PUT'])
 @ authenticationUser()
 @ authenticationPermission()
-def UpdateNewChapterAPI(fictionID, chapterID):
+def UpdateChapterAPI(fictionID, chapterID):
 
     title = request.form['title']
     content = request.form['content']

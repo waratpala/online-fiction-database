@@ -302,19 +302,18 @@ def NewUser(username, password):
         return None, err
 
 
-def NewChapter(fictionID, chapter, title, content, category, worldList):
+def NewChapter(fictionID, title, content, category):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "INSERT INTO chapter (fictionID,chapter,categoryID,title,content) VALUES (%s,%s,%s,%s,%s)"
-        val = (fictionID, chapter, category, title, content)
-
+        sql = "SELECT MAX(chapter)+1 curerent FROM chapter WHERE fictionID=%s"
+        val = (fictionID)
         mycursor.execute(sql, val)
-        mydb.commit()
+        chapter = mycursor.fetchone()
 
-        sql = "INSERT INTO feature (word, total, fan) VALUES(%s, 1, %s) ON DUPLICATE KEY UPDATE %s=%s+1, total=total1"
-        val = (worldList, category, category, category)
+        sql = "INSERT INTO chapter (fictionID,chapter,categoryID,title,content) VALUES (%s,%s,%s,%s,%s)"
+        val = (fictionID, chapter['curerent'], category, title, content)
 
         mycursor.execute(sql, val)
         mydb.commit()
