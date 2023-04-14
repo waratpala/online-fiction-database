@@ -3,7 +3,8 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import axios from 'axios';
-import { useState, useEffect, formData } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
 import { Link } from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,6 +17,8 @@ import './style/Edit.css'
 
 function Editnovel() {
   let token = sessionStorage.getItem("token");
+  const { chapterid } = useParams();
+  const { fictionid } = useParams();
   const [contentInfo, setFictionInfo] = useState("");
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
@@ -23,7 +26,7 @@ function Editnovel() {
 
   useEffect(() => {
 
-    let url = "http://127.0.0.1:5000/content/" + "1"
+    let url = "http://127.0.0.1:5000/content/" + chapterid
     // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
     const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
     axios.get(url, { headers: { Authorization: AuthStr } })
@@ -54,7 +57,7 @@ function Editnovel() {
     const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
 
 
-    axios.put("http://127.0.0.1:5000/writer/1/1", formData, { headers: { Authorization: AuthStr } })
+    axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + chapterid, formData, { headers: { Authorization: AuthStr } })
       .then(response => {
         if (response.status == 201) {
           sessionStorage.setItem("token", response.data.token);

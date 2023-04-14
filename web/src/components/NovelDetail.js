@@ -1,5 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
@@ -16,6 +17,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsPencilSquare } from "react-icons/bs";
 
 function Noveldetail() {
+    const { fictionid } = useParams();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -27,7 +29,7 @@ function Noveldetail() {
 
     useEffect(() => {
         if (!ficrionInfo) {
-            let fictionurl = "http://127.0.0.1:5000/info/1"
+            let fictionurl = "http://127.0.0.1:5000/info/" + fictionid
             axios.get(fictionurl)
                 .then(response => {
                     if (response.status == 200) {
@@ -45,7 +47,7 @@ function Noveldetail() {
                 });
         }
 
-        let url = "http://127.0.0.1:5000/1?limit=10&sort=" + sort + "&page=" + String(page)
+        let url = "http://127.0.0.1:5000/" + fictionid + "?limit=10&sort=" + sort + "&page=" + String(page)
         // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
         const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
         axios.get(url, { headers: { Authorization: AuthStr } })
@@ -132,8 +134,7 @@ function Noveldetail() {
                                     <td>{category(item.category)}</td>
                                     <td>
                                         <div className='button1'>
-                                            {/* <i style={{color:'white'}} as={Link} to="/naveledit"><BsPencilSquare/></i> */}
-                                            <Button variant="secondary" as={Link} to="/naveledit">
+                                            <Button variant="secondary" as={Link} to={"/naveledit" + fictionid + "/" + item.chapterID}>
                                                 แก้ไข
                                             </Button>
                                             <Button variant="danger" onClick={handleShow}>
@@ -162,7 +163,6 @@ function Noveldetail() {
                                 <td>ตอนที่ 1</td>
                                 <td>
                                     <div className='button1'>
-                                        {/* <i style={{color:'white'}} as={Link} to="/naveledit"><BsPencilSquare/></i> */}
                                         <Button variant="secondary" as={Link} to="/naveledit">
                                             แก้ไข
                                         </Button>

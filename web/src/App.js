@@ -19,9 +19,9 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/Register" element={<Registpage />} />
           <Route path="/createnovel" element={<ManageNovel />} />
-          <Route path="/naveldetail/:fictionid" element={<Noveldetail />} />
+          <Route path="/noveldetail/:fictionid" element={<Noveldetail />} />
           <Route path="/novelcontent/:fictionid" element={<Novelcontent />} />
-          <Route path="/naveledit" element={<Editnovel />} />
+          <Route path="/noveledit/:fictionid/:chapterid" element={<Editnovel />} />
         </Routes>
       </BrowserRouter>
     </>

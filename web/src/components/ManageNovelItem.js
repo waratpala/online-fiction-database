@@ -12,7 +12,7 @@ function ManageNovelitem(props) {
             <Row className='itemcontrol m-3'>
                 {props.novelList?.data?.map((item, index) => (
                     <Col key={item.fictionID} sm={2} className='m-2'>
-                        <Card as={Link} to={`/naveldetail/${item.fictionID}`}>
+                        <Card as={Link} to={`/noveldetail/${item.fictionID}`}>
                             <Card.Img variant="top" src={item.picture} />
                             <Card.Body>
                                 <Card.Text>
