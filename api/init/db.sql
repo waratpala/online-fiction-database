@@ -91,7 +91,12 @@ INSERT INTO `category` (`categoryID`, `name`) VALUES
 INSERT INTO `user` (`user_name`, `password`) VALUES
 ('x', 'x');
 
+INSERT INTO `fiction` (`fictionName`, `picture`,`writer`) VALUES
+('test-fiction-name', 'http://127.0.0.1:5000/image/test11.jpg', 1);
 
+INSERT INTO `chapter` (`fictionID`, `chapter`,`categoryID`,`title`,`content`) VALUES
+(1, 1, 2,'new','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
+(1, 2, 2,'new','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
 
 
 

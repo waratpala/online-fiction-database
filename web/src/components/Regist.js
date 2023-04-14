@@ -24,8 +24,6 @@ function Registpage() {
 
         axios.post("http://127.0.0.1:5000/login", formData, config)
             .then(response => {
-                console.log(response.status);
-                console.log(response.data);
 
                 if (response.status == 201) {
                     sessionStorage.setItem("token", response.data.token);
@@ -50,11 +48,11 @@ function Registpage() {
             <Form className="Regist" onSubmit={handleSubmit}>
                 <p className="title">สร้างบัญชีผู้ใช้งาน</p>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Control type="email" name='emailInput' value={email.emailInput} placeholder="Enter email" onChange={e => setEmail(e.target.value)} />
+                    <Form.Control type="email" value={email.emailInput} placeholder="Enter email" onChange={e => setEmail(e.target.value)} />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Control type="password" name='passwordInput' value={password.passwordInput} placeholder="Password" onChange={e => setPassword(e.target.value)} />
+                    <Form.Control type="password" value={password.passwordInput} placeholder="Password" onChange={e => setPassword(e.target.value)} />
                 </Form.Group>
                 <Button type="submit" className='btnsubmit' >
                     สร้างบัญชี

@@ -59,9 +59,10 @@ def authenticationPermission():
             user = jwtDecode(bearer .split()[1])
             fictionID = request.view_args['fictionID']
 
-            permission, err = VerifierPermission(fictionID, user)
+            permission, err = VerifierPermission(
+                fictionID, user['sub']['user'])
             if err != None:
-                return make_response(jsonify(), 404)
+                return make_response(jsonify(str(err)), 404)
             if permission is None:
                 return make_response(jsonify({"status": "You dont have permission in this fiction."}), 403)
 
@@ -72,17 +73,15 @@ def authenticationPermission():
     return _authenticationPermission
 
 
-@app.route("/", methods=['GET'])
-def test():
-    try:
-        mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
-
-        mycursor.execute("SELECT * FROM user")
-        count = mycursor.fetchall()
-    except mysql.connector.Error as err:
-        return make_response(jsonify({"token": str(err)}), 400)
-    return make_response(jsonify({"token": count}), 200)
+@app.route("/user", methods=['GET'])
+@authenticationUser()
+def getUser():
+    bearer = request.headers.get('Authorization')
+    id = jwtDecode(bearer .split()[1])
+    user, err = GetUser(id['sub']['user'])
+    if err != None:
+        return make_response(jsonify(), 404)
+    return make_response(jsonify(user), 200)
 
 
 @app.route("/login", methods=['GET'])
@@ -128,7 +127,7 @@ def NewUserAPI():
 
 
 @app.route("/fiction", methods=['GET'])
-def GetFictionListAPI():
+def GetFictionNameAPI():
 
     page = request.args.get('page')
     limit = request.args.get('limit')
@@ -301,15 +300,15 @@ def AddNewChapterAPI(fictionID, chapter):
     return make_response({"status": "OK"}, 201)
 
 
-@ app.route("/writer/<fictionID>/<chapter>", methods=['PUT'])
+@ app.route("/writer/<fictionID>/<chapterID>", methods=['PUT'])
 @ authenticationUser()
 @ authenticationPermission()
-def UpdateNewChapterAPI(fictionID, chapter):
+def UpdateNewChapterAPI(fictionID, chapterID):
 
     title = request.form['title']
     content = request.form['content']
 
-    err = UpdateChapter(fictionID, chapter, title, content)
+    err = UpdateChapter(chapterID, title, content)
     if err != None:
         return make_response(jsonify(), 404)
 

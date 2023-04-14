@@ -6,6 +6,25 @@ from mysql.connector import errorcode
 from mysql_con import DbConnection
 
 
+def GetFictionName(fictionID):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True)
+
+        sql = "SELECT fictionName,writer FROM fiction WHERE fictionID=%s"
+        val = (fictionID,)
+
+        mycursor.execute(sql, val)
+        fictionName = mycursor.fetchone()
+
+        return fictionName, None
+
+    except mysql.connector.Error as err:
+        return None, err
+    except TypeError as err:
+        return None, err
+
+
 def GetFictionList(page, limit, filterDB, sort, search):
     if search == None:
         search = ""
@@ -150,13 +169,13 @@ def GetChapter(page, limit, sort, fictionID):
         if pagination['max_page'] < pagination['curent_page']:
             return None, "max<curent"
 
-        sql = "SELECT chapterID,chapter,Title FROM chapter WHERE fictionID = %s ORDER BY %s LIMIT %s OFFSET %s"
+        sql = "SELECT chapterID,chapter,title,categoryID category FROM chapter WHERE fictionID = %s ORDER BY %s LIMIT %s OFFSET %s"
         val = (fictionID, sort,
                pagination['limit'], pagination['offset'])
 
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
-        pagination["val"] = val
+
         return pagination, None
 
     except mysql.connector.Error as err:
@@ -170,11 +189,20 @@ def GetContent(chapterID):
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "SELECT chapterID,chapter,Title,Content FROM chapter WHERE chapterID = %s"
+        sql = "SELECT chapterID,chapter,title,content,fictionID FROM chapter WHERE chapterID = %s"
         val = (chapterID,)
 
         mycursor.execute(sql, val)
         content = mycursor.fetchone()
+
+        sql = "SELECT fictionName,writer FROM fiction WHERE fictionID=%s"
+        val = (content['fictionID'],)
+
+        mycursor.execute(sql, val)
+        fiction = mycursor.fetchone()
+        content['fiction_name'] = fiction['fictionName']
+        content['writer'] = fiction['writer']
+
         return content, None
 
     except mysql.connector.Error as err:
@@ -222,13 +250,30 @@ def VerifierUser(username, password):
         return None, err
 
 
-def VerifierPermission(fiction, writer):
+def GetUser(id):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "SELECT * user FROM user WHERE fiction=%s AND writer=%s"
-        val = (fiction, writer)
+        sql = "SELECT id, user_name FROM user WHERE id=%s"
+        val = (id,)
+
+        mycursor.execute(sql, val)
+        user = mycursor.fetchone()
+        return user, None
+    except mysql.connector.Error as err:
+        return None, err
+    except TypeError as err:
+        return None, err
+
+
+def VerifierPermission(fictionID, writer):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True)
+
+        sql = "SELECT * FROM fiction WHERE fictionID=%s AND writer=%s"
+        val = (fictionID, writer)
 
         mycursor.execute(sql, val)
         user = mycursor.fetchone()
@@ -262,7 +307,7 @@ def NewChapter(fictionID, chapter, title, content, category, worldList):
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "INSERT INTO chapter (fictionID,chapter,categoryID,Title,Content) VALUES (%s,%s,%s,%s,%s)"
+        sql = "INSERT INTO chapter (fictionID,chapter,categoryID,title,content) VALUES (%s,%s,%s,%s,%s)"
         val = (fictionID, chapter, category, title, content)
 
         mycursor.execute(sql, val)
@@ -299,13 +344,13 @@ def GetFeature(worldList):
         return None, err
 
 
-def UpdateChapter(fictionID, chapter, title, content):
+def UpdateChapter(chapterID, title, content):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "UPDATE chapter SET Title = %s, Content = %s WHERE fictionID = %s AND chapter = %s"
-        val = (title, content, fictionID, chapter)
+        sql = "UPDATE chapter SET title = %s, content = %s WHERE chapterID = %s"
+        val = (title, content, chapterID)
 
         mycursor.execute(sql, val)
         mydb.commit()

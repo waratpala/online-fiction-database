@@ -4,7 +4,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axios from 'axios';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
@@ -98,8 +99,8 @@ function Novelcontent() {
                         {chapter?.data?.map((item, index) => (
                             <thead key={item.chapterID}>
                                 <tr>
-                                    <th>{item.chapter}</th>
-                                    <th>{item.Title}</th>
+                                    <th>#{item.chapter}</th>
+                                    <th>{item.title}</th>
                                 </tr>
                             </thead>
                         ))}
