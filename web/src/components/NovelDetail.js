@@ -134,7 +134,7 @@ function Noveldetail() {
                                     <td>{category(item.category)}</td>
                                     <td>
                                         <div className='button1'>
-                                            <Button variant="secondary" as={Link} to={"/naveledit" + fictionid + "/" + item.chapterID}>
+                                            <Button variant="secondary" as={Link} to={"/noveledit/" + fictionid + "/" + item.chapterID}>
                                                 แก้ไข
                                             </Button>
                                             <Button variant="danger" onClick={handleShow}>
@@ -163,7 +163,7 @@ function Noveldetail() {
                                 <td>ตอนที่ 1</td>
                                 <td>
                                     <div className='button1'>
-                                        <Button variant="secondary" as={Link} to="/naveledit">
+                                        <Button variant="secondary" as={Link} to="/noveledit">
                                             แก้ไข
                                         </Button>
                                         <Button variant="danger" onClick={handleShow}>

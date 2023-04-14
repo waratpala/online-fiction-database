@@ -86,7 +86,7 @@ function Editnovel() {
             <Form.Control type="text" name="inputTitle" defaultValue={contentInfo.title} onChange={e => setTitle(e.target.value)} />
             <Form.Control className='editcontent m-5' type="text" name="inputContent" defaultValue={contentInfo.content} onChange={e => setContent(e.target.value)} />
             <Button type='submit' variant="info">บันทึก</Button>
-            <Button variant="danger" as={Link} to={`/naveldetail/${contentInfo.fictionID}`}>ยกเลิก</Button>
+            <Button variant="danger" as={Link} to={`/noveldetail/${contentInfo.fictionID}`}>ยกเลิก</Button>
           </div>
         </Form>
       </Container>
