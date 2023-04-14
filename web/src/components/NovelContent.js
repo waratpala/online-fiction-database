@@ -96,13 +96,19 @@ function Novelcontent() {
 
 
                     <Table className='listname'>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>ชื่อตอน</th>
+                                <th>ลักษณะตอน</th>
+                                <th style={{ width: '130px' }}></th>
+                            </tr>
+                        </thead>
                         {chapter?.data?.map((item, index) => (
-                            <thead key={item.chapterID}>
-                                <tr>
-                                    <th>#{item.chapter}</th>
-                                    <th>{item.title}</th>
-                                </tr>
-                            </thead>
+                            <tr key={item.chapterID}>
+                                <td>#{item.chapter}</td>
+                                <td>{item.title}</td>
+                            </tr>
                         ))}
                     </Table>
                 </div>
