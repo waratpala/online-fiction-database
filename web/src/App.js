@@ -9,6 +9,7 @@ import ManageNovel from './components/ManageNovel';
 import Novelcontent from './components/NovelContent';
 import Noveldetail from './components/NovelDetail';
 import Editnovel from './components/Edit';
+import ReadNovel from './components/Read';
 import Homepage from './components/Home';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/noveldetail/:fictionid" element={<Noveldetail />} />
           <Route path="/novelcontent/:fictionid" element={<Novelcontent />} />
           <Route path="/noveledit/:fictionid/:chapterid" element={<Editnovel />} />
+          <Route path="/novelread/:fictionid/:chapterid" element={<ReadNovel />} />
         </Routes>
       </BrowserRouter>
     </>

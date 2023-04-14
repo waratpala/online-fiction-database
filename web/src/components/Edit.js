@@ -81,7 +81,9 @@ function Editnovel() {
       <Container>
         <Form className="Regist" onSubmit={handleSubmit}>
           <div className='controlitem m-3' style={{ backgroundColor: '#393E46' }}>
-            <Form.Label className='texttitleedit' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white', width: '100%', height: '50px' }}>{contentInfo.fiction_name}</Form.Label>
+            <Form.Label className='texttitleedit' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white', width: '100%', height: '50px' }}>
+              {contentInfo.fiction_name}
+            </Form.Label>
             <Form.Control type="text" name="inputChapter" defaultValue={contentInfo.chapter} onChange={e => setChapter(e.target.value)} />
             <Form.Control type="text" name="inputTitle" defaultValue={contentInfo.title} onChange={e => setTitle(e.target.value)} />
             <Form.Control className='editcontent m-5' type="text" name="inputContent" defaultValue={contentInfo.content} onChange={e => setContent(e.target.value)} />
