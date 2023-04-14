@@ -314,7 +314,16 @@ def NewChapter(fictionID, title, content, category):
 
         sql = "INSERT INTO chapter (fictionID,chapter,categoryID,title,content) VALUES (%s,%s,%s,%s,%s)"
         val = (fictionID, chapter['curerent'], category, title, content)
+        mycursor.execute(sql, val)
+        mydb.commit()
 
+        sql = "SELECT categoryID FROM (SELECT categoryID,COUNT(categoryID) catcount FROM chapter WHERE fictionID=%s GROUP BY categoryID) cat ORDER BY catcount DESC LIMIT 1"
+        val = (category, fictionID)
+        mycursor.execute(sql, val)
+        fictionCategory = mycursor.fetchone()
+
+        sql = "UPDATE fiction SET categoryID = %s WHERE fictionID = %s"
+        val = (fictionCategory['categoryID'], fictionID)
         mycursor.execute(sql, val)
         mydb.commit()
 
