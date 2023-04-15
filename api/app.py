@@ -157,14 +157,57 @@ def GetFictionNameAPI():
     return make_response(jsonify(result), 200)
 
 
-@app.route("/info/<fiction>", methods=['GET'])
-def GetFictionAPI(fiction):
+@ app.route("/fiction/name/<fictionID>", methods=['PUT'])
+@ authenticationUser()
+@ authenticationPermission()
+def UpdateFictionNameAPI(fictionID):
 
-    result, err = GetFiction(fiction)
+    title = request.form['title']
+    if title is None or title == "":
+        return make_response(jsonify({'status': 'title is null'}), 400)
+
+    err = UpdateFictionName(fictionID, title)
     if err != None:
         return make_response(jsonify(str(err)), 500)
 
-    return make_response(jsonify(result), 200)
+    return make_response({"status": "OK"}, 201)
+
+
+@ app.route("/fiction/image/<fictionID>", methods=['PUT'])
+@ authenticationUser()
+@ authenticationPermission()
+def UpdateFictionImageAPI(fictionID):
+
+    file = request.files['fiction_image']
+
+    Image, err = GetImageName(fictionID)
+    if err != None:
+        return make_response(jsonify(str(err)), 500)
+
+    filename = str(uuid.uuid4())
+    file = request.files['fiction_image']
+    if (file):
+        file_name, file_extension = os.path.splitext(file.filename)
+        if not allowed(file.filename):
+            return make_response(jsonify({"status": "File allowed type 'png', 'jpg', 'jpeg'"}), 400)
+
+        file.filename = filename+file_extension
+        filePath = os.path.join(UPLOAD_FOLDER,
+                                secure_filename(file.filename))
+        file.save(filePath)
+        url = 'http://127.0.0.1:5000/image/' + file.filename
+    else:
+        url = 'http://127.0.0.1:5000/image/default.jpg'
+
+    err = UpdateImagePath(fictionID, url)
+    if err != None:
+        return make_response(jsonify(str(err)), 500)
+
+    if (Image != "default.jpg"):
+        os.remove(os.path.join(UPLOAD_FOLDER,
+                               secure_filename(Image)))
+
+    return make_response({"status": "ok"}, 201)
 
 
 @app.route("/<fiction>", methods=['GET'])
@@ -235,7 +278,9 @@ def GetImageAPI(imageName):
     type = mimetypeCheck(file_extension)
     filePath = os.path.join(
         UPLOAD_FOLDER, imageName)
-    return send_file(filePath, mimetype=type)
+    if (os.path.isfile(filePath)):
+        return send_file(filePath, mimetype=type)
+    return make_response(jsonify(), 404)
 
 
 @ app.route("/writer", methods=['POST'])

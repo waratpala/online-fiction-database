@@ -1,5 +1,6 @@
 import json
 import math
+import os
 import mysql.connector
 from common import *
 from mysql.connector import errorcode
@@ -51,6 +52,64 @@ def GetFictionList(page, limit, filterDB, sort, search):
         return None, err
 
 
+def UpdateFictionName(fictionID, title):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
+
+        sql = "UPDATE fiction SET fictionName=%s WHERE fictionID=%s"
+        val = (title, fictionID)
+
+        mycursor.execute(sql, val)
+        mydb.commit()
+
+        return None
+
+    except mysql.connector.Error as err:
+        return err
+    except TypeError as err:
+        return err
+
+
+def GetImageName(fictionID):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
+
+        sql = "SELECT picture FROM fiction WHERE fictionID = %s"
+        val = (fictionID,)
+
+        mycursor.execute(sql, val)
+        image = mycursor.fetchone()
+        imageName = os.path.split(image['picture'])[1]
+
+        return imageName, None
+
+    except mysql.connector.Error as err:
+        return None, err
+    except TypeError as err:
+        return None, err
+
+
+def UpdateImagePath(fictionID, imageURL):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
+
+        sql = "UPDATE fiction SET picture=%s WHERE fictionID=%s"
+        val = (imageURL, fictionID)
+
+        mycursor.execute(sql, val)
+        mydb.commit()
+
+        return None
+
+    except mysql.connector.Error as err:
+        return err
+    except TypeError as err:
+        return err
+
+
 def GetWriterFiction(page, limit, filterDB, sort, search, writer):
 
     try:
@@ -92,25 +151,6 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
         return pagination, None
-
-    except mysql.connector.Error as err:
-        return None, err
-    except TypeError as err:
-        return None, err
-
-
-def GetFiction(fictionID):
-    try:
-        mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True, buffered=True)
-
-        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s"
-        val = (fictionID,)
-
-        mycursor.execute(sql, val)
-        info = mycursor.fetchone()
-
-        return info, None
 
     except mysql.connector.Error as err:
         return None, err
