@@ -3,3 +3,5 @@ flask_cors
 mysql-connector-python
 PyJWT
 configparser
+pandas
+pythainlp

@@ -6,25 +6,6 @@ from mysql.connector import errorcode
 from mysql_con import DbConnection
 
 
-def GetFictionName(fictionID):
-    try:
-        mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
-
-        sql = "SELECT fictionName,writer FROM fiction WHERE fictionID=%s"
-        val = (fictionID,)
-
-        mycursor.execute(sql, val)
-        fictionName = mycursor.fetchone()
-
-        return fictionName, None
-
-    except mysql.connector.Error as err:
-        return None, err
-    except TypeError as err:
-        return None, err
-
-
 def GetFictionList(page, limit, filterDB, sort, search):
     if search == None:
         search = ""
@@ -33,7 +14,7 @@ def GetFictionList(page, limit, filterDB, sort, search):
         mycursor = mydb.cursor(dictionary=True)
 
         mycursor.execute(
-            "SELECT COUNT(fictionID) as total FROM fiction")
+            "SELECT COUNT(fictionID) as total FROM fiction AND delete_at IS NULL")
         count = mycursor.fetchone()
 
         pagination = {
@@ -52,11 +33,11 @@ def GetFictionList(page, limit, filterDB, sort, search):
             return None, "max<curent"
 
         if (filterDB is None):
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
             val = ("%" + search + "%", sort,
                    pagination['limit'], pagination['offset'])
         else:
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
             val = ("%" + search + "%", filterDB, sort,
                    pagination['limit'], pagination['offset'])
 
@@ -77,7 +58,7 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
         mycursor = mydb.cursor(dictionary=True)
 
         mycursor.execute(
-            "SELECT COUNT(fictionID) as total FROM fiction WHERE writer=%s", (writer,))
+            "SELECT COUNT(fictionID) as total FROM fiction WHERE writer=%s AND delete_at IS NULL", (writer,))
         count = mycursor.fetchone()
 
         pagination = {
@@ -99,20 +80,16 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
             return None, "max<curent"
 
         if (filterDB is None):
-            # sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s ORDER BY %s LIMIT %s OFFSET %s"
-            # val = (writer, "%" + search + "%", sort,
-            #        pagination['limit'], pagination['offset'])
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s"
-            val = (writer,)
-            pagination["val"] = val
-            pagination["sql"] = sql
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
+            val = (writer, "%" + search + "%", sort,
+                   pagination['limit'], pagination['offset'])
+            # sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND delete_at IS NULL"
+            # val = (writer,)
 
         else:
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s ORDER BY %s LIMIT %s OFFSET %s"
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
             val = (writer, "%" + search + "%", filterDB, sort,
                    pagination['limit'], pagination['offset'])
-            pagination["val"] = val
-            pagination["sql"] = sql
 
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
@@ -129,7 +106,7 @@ def GetFiction(fictionID):
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s"
+        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s AND delete_at IS NULL"
         val = (fictionID,)
 
         mycursor.execute(sql, val)
@@ -148,7 +125,7 @@ def GetChapter(page, limit, sort, fictionID):
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "SELECT COUNT(chapter) as total FROM chapter WHERE fictionID = %s"
+        sql = "SELECT COUNT(chapter) as total FROM chapter WHERE fictionID = %s AND delete_at IS NULL"
         val = (fictionID,)
         mycursor.execute(sql, val)
         count = mycursor.fetchone()
@@ -169,7 +146,7 @@ def GetChapter(page, limit, sort, fictionID):
         if pagination['max_page'] < pagination['curent_page']:
             return None, "max<curent"
 
-        sql = "SELECT chapterID,chapter,title,categoryID category FROM chapter WHERE fictionID = %s ORDER BY %s LIMIT %s OFFSET %s"
+        sql = "SELECT chapterID,chapter,title,categoryID category FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
         val = (fictionID, sort,
                pagination['limit'], pagination['offset'])
 
@@ -189,7 +166,7 @@ def GetContent(chapterID):
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "SELECT chapterID,chapter,title,content,fictionID FROM chapter WHERE chapterID = %s"
+        sql = "SELECT chapterID,chapter,title,content,fictionID FROM chapter WHERE chapterID = %s AND delete_at IS NULL"
         val = (chapterID,)
 
         mycursor.execute(sql, val)
@@ -308,7 +285,7 @@ def NewChapter(fictionID, title, content, category):
         mycursor = mydb.cursor(dictionary=True)
 
         sql = "SELECT MAX(chapter)+1 curerent FROM chapter WHERE fictionID=%s"
-        val = (fictionID)
+        val = (fictionID,)
         mycursor.execute(sql, val)
         chapter = mycursor.fetchone()
 
@@ -318,7 +295,7 @@ def NewChapter(fictionID, title, content, category):
         mydb.commit()
 
         sql = "SELECT categoryID FROM (SELECT categoryID,COUNT(categoryID) catcount FROM chapter WHERE fictionID=%s GROUP BY categoryID) cat ORDER BY catcount DESC LIMIT 1"
-        val = (category, fictionID)
+        val = (fictionID,)
         mycursor.execute(sql, val)
         fictionCategory = mycursor.fetchone()
 
@@ -326,6 +303,8 @@ def NewChapter(fictionID, title, content, category):
         val = (fictionCategory['categoryID'], fictionID)
         mycursor.execute(sql, val)
         mydb.commit()
+
+        return None
 
     except mysql.connector.Error as err:
         return err
@@ -369,13 +348,30 @@ def UpdateChapter(chapterID, title, content):
         return err
 
 
-def DeleteChapter(fictionID, chapter):
+def DeleteChapter(chapterID):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True)
 
-        sql = "DELETE FROM chapter WHERE fictionID = %s AND chapter = %s"
-        val = (fictionID, chapter)
+        sql = "UPDATE chapter SET delete_at = CURRENT_TIMESTAMP WHERE chapterID = %s"
+        val = (chapterID,)
+
+        mycursor.execute(sql, val)
+        mydb.commit()
+
+    except mysql.connector.Error as err:
+        return err
+    except TypeError as err:
+        return err
+
+
+def DeleteFiction(fictionID):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True)
+
+        sql = "UPDATE fiction SET delete_at = CURRENT_TIMESTAMP WHERE fictionID = %s"
+        val = (fictionID,)
 
         mycursor.execute(sql, val)
         mydb.commit()

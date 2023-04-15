@@ -4,6 +4,7 @@ from functools import wraps
 from model import *
 from jwttoken import *
 from validation import *
+from classficationModel import *
 from common import *
 from werkzeug.utils import secure_filename
 from model import *
@@ -285,17 +286,19 @@ def AddNewChapterAPI(fictionID):
 
     title = request.form['title']
     content = request.form['content']
-    if title is None:
+    if title is None or title == "":
         return make_response(jsonify({"status": "title is empty."}), 400)
-    if content is None:
+    if content is None or content == "":
         return make_response(jsonify({"status": "content is empty."}), 400)
-    if len(content) < 3000:
+    if len(content.replace(" ", "")) < 3000:
         return make_response(jsonify({"status": "content less than 3,000 characters."}), 400)
+
+    # category = Model.predictData(content)
 
     category = 2
     err = NewChapter(fictionID, title, content, category)
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 404)
 
     return make_response({"status": "OK"}, 201)
 
@@ -315,12 +318,24 @@ def UpdateChapterAPI(fictionID, chapterID):
     return make_response({"status": "OK"}, 201)
 
 
-@ app.route("/writer/<fictionID>/<chapter>", methods=['DELETE'])
+@ app.route("/writer/<fictionID>/<chapterID>", methods=['DELETE'])
 @ authenticationUser()
 @ authenticationPermission()
-def DeteleNewChapterAPI(fictionID, chapter):
+def DeteleChapterAPI(fictionID, chapterID):
 
-    err = DeleteChapter(fictionID, chapter)
+    err = DeleteChapter(chapterID)
+    if err != None:
+        return make_response(jsonify(), 404)
+
+    return make_response({"status": "OK"}, 200)
+
+
+@ app.route("/writer/<fictionID>", methods=['DELETE'])
+@ authenticationUser()
+@ authenticationPermission()
+def DeteleFictionAPI(fictionID):
+
+    err = DeleteFiction(fictionID)
     if err != None:
         return make_response(jsonify(), 404)
 
