@@ -2,6 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
+import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Row from 'react-bootstrap/Row';
@@ -16,7 +17,7 @@ import './style/Edit.css'
 function ReadNovel() {
   let token = sessionStorage.getItem("token");
   const { chapterid } = useParams();
-  const [content, setContent] = useState("");
+  const [contentInfo, setContentInfo] = useState("");
 
   useEffect(() => {
 
@@ -26,7 +27,7 @@ function ReadNovel() {
     axios.get(url, { headers: { Authorization: AuthStr } })
       .then(response => {
         if (response.status == 200) {
-          setContent(response.data)
+          setContentInfo(response.data)
         }
         if (response.status == 400) {
 
@@ -48,8 +49,8 @@ function ReadNovel() {
             {contentInfo.fiction_name}
           </Form.Label>
           <div className='editcontent m-5'>
-            <div>#{contentInfo.chapter} {content.title}</div>
-            <div>{content.Content}</div>
+            <div>#{contentInfo.chapter} {contentInfo.title}</div>
+            <div>{contentInfo.Content}</div>
           </div>
         </div>
 

@@ -1,6 +1,5 @@
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
@@ -10,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
@@ -22,38 +21,20 @@ function Noveldetail() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const [chapter, setChapter] = useState("");
     const [ficrionInfo, setFicrionInfo] = useState("");
     const [page, setPage] = useState(1);
     const [sort, setSort] = useState("DESC");
+    const [endpoint, setEndpoint] = useState(null);
+
 
     useEffect(() => {
-        if (!ficrionInfo) {
-            let fictionurl = "http://127.0.0.1:5000/info/" + fictionid
-            axios.get(fictionurl)
-                .then(response => {
-                    if (response.status == 200) {
-                        setFicrionInfo(response.data)
-                    }
-                    if (response.status == 400) {
-
-                    }
-                    if (response.status == 404) {
-
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }
-
-        let url = "http://127.0.0.1:5000/" + fictionid + "?limit=10&sort=" + sort + "&page=" + String(page)
+        let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
         // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
         const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
                 if (response.status == 200) {
-                    setChapter(response.data)
+                    setFicrionInfo(response.data)
                 }
                 if (response.status == 400) {
 
@@ -68,6 +49,20 @@ function Noveldetail() {
 
     }, [sort])
 
+    function deleteChaptet() {
+        console.log(4554)
+        // setShow(false)
+        // const url = 'http://127.0.0.1:5000/writer/' + fictionid + '/' + categoryID
+        // // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        // const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
+        // axios.delete(url, { headers: { Authorization: AuthStr } })
+        //     .then(function (response) {
+        //         console.log(response.data)
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     });
+    }
 
     function category(categoryID) {
         switch (categoryID) {
@@ -87,7 +82,6 @@ function Noveldetail() {
                 return 'ไม่พบข้อมูล';;
         }
     }
-
 
     return (
         <>
@@ -126,7 +120,7 @@ function Noveldetail() {
                             </tr>
                         </thead>
                         <tbody>
-                            {chapter?.data?.map((item, index) => (
+                            {ficrionInfo?.chapterlist?.map((item, index) => (
 
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
@@ -147,7 +141,8 @@ function Noveldetail() {
                                                     <Button variant="secondary" onClick={handleClose}>
                                                         ยกเลิก
                                                     </Button>
-                                                    <Button variant="danger" onClick={handleClose}>
+                                                    <Button type='submit' variant="danger" onClick={() => { console.log('test') }}>
+                                                        {/* <Button variant="danger"> */}
                                                         ตกลง
                                                     </Button>
                                                 </Modal.Footer>

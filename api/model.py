@@ -11,10 +11,10 @@ def GetFictionList(page, limit, filterDB, sort, search):
         search = ""
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         mycursor.execute(
-            "SELECT COUNT(fictionID) as total FROM fiction AND delete_at IS NULL")
+            "SELECT COUNT(fictionID) as total FROM fiction WHERE delete_at IS NULL")
         count = mycursor.fetchone()
 
         pagination = {
@@ -55,7 +55,7 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
 
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         mycursor.execute(
             "SELECT COUNT(fictionID) as total FROM fiction WHERE writer=%s AND delete_at IS NULL", (writer,))
@@ -83,8 +83,6 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
             sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
             val = (writer, "%" + search + "%", sort,
                    pagination['limit'], pagination['offset'])
-            # sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND delete_at IS NULL"
-            # val = (writer,)
 
         else:
             sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
@@ -104,9 +102,9 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
 def GetFiction(fictionID):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
-        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s AND delete_at IS NULL"
+        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s"
         val = (fictionID,)
 
         mycursor.execute(sql, val)
@@ -120,40 +118,24 @@ def GetFiction(fictionID):
         return None, err
 
 
-def GetChapter(page, limit, sort, fictionID):
+def GetChapter(sort, fictionID):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
-        sql = "SELECT COUNT(chapter) as total FROM chapter WHERE fictionID = %s AND delete_at IS NULL"
+        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s"
         val = (fictionID,)
-        mycursor.execute(sql, val)
-        count = mycursor.fetchone()
-        if count == 0:
-            count = 1
-        pagination = {
-            "curent_page": page,
-            "limit": limit,
-            "offset": limit*(page-1),
-            "max_page": math.ceil(count['total']/limit),
-            "sort": sort,
-            "data": [],
-        }
-
-        if count['total'] == 0:
-            pagination['max_page'] = 1
-
-        if pagination['max_page'] < pagination['curent_page']:
-            return None, "max<curent"
-
-        sql = "SELECT chapterID,chapter,title,categoryID category FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
-        val = (fictionID, sort,
-               pagination['limit'], pagination['offset'])
 
         mycursor.execute(sql, val)
-        pagination["data"] = mycursor.fetchall()
+        fictionContent = mycursor.fetchone()
 
-        return pagination, None
+        sql = "SELECT chapterID,chapter,title,categoryID category FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY %s"
+        val = (fictionID, sort)
+
+        mycursor.execute(sql, val)
+        fictionContent['chapterlist'] = mycursor.fetchall()
+
+        return fictionContent, None
 
     except mysql.connector.Error as err:
         return None, err
@@ -164,9 +146,9 @@ def GetChapter(page, limit, sort, fictionID):
 def GetContent(chapterID):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
-        sql = "SELECT chapterID,chapter,title,content,fictionID FROM chapter WHERE chapterID = %s AND delete_at IS NULL"
+        sql = "SELECT chapterID,chapter,title,content,fictionID FROM chapter WHERE chapterID = %s"
         val = (chapterID,)
 
         mycursor.execute(sql, val)
@@ -191,7 +173,7 @@ def GetContent(chapterID):
 def NewFiction(fictionName, writerID, url):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         if (url):
             sql = ("INSERT INTO fiction (fictionName,writer,picture) VALUES (%s,%s,%s)")
@@ -213,7 +195,7 @@ def NewFiction(fictionName, writerID, url):
 def VerifierUser(username, password):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         sql = "SELECT id user FROM user WHERE user_name=%s AND password=%s"
         val = (username, password)
@@ -230,7 +212,7 @@ def VerifierUser(username, password):
 def GetUser(id):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         sql = "SELECT id, user_name FROM user WHERE id=%s"
         val = (id,)
@@ -247,7 +229,7 @@ def GetUser(id):
 def VerifierPermission(fictionID, writer):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         sql = "SELECT * FROM fiction WHERE fictionID=%s AND writer=%s"
         val = (fictionID, writer)
@@ -282,7 +264,7 @@ def NewUser(username, password):
 def NewChapter(fictionID, title, content, category):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         sql = "SELECT MAX(chapter)+1 curerent FROM chapter WHERE fictionID=%s"
         val = (fictionID,)
@@ -315,7 +297,7 @@ def NewChapter(fictionID, title, content, category):
 def GetFeature(worldList):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
         format_strings = ','.join(['%s'] * len(worldList))
         data = {}
         cat = ["hor", "mys", "fan", "sci", "act", "dra"]
@@ -334,7 +316,7 @@ def GetFeature(worldList):
 def UpdateChapter(chapterID, title, content):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         sql = "UPDATE chapter SET title = %s, content = %s WHERE chapterID = %s"
         val = (title, content, chapterID)
@@ -351,7 +333,7 @@ def UpdateChapter(chapterID, title, content):
 def DeleteChapter(chapterID):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         sql = "UPDATE chapter SET delete_at = CURRENT_TIMESTAMP WHERE chapterID = %s"
         val = (chapterID,)
@@ -368,7 +350,7 @@ def DeleteChapter(chapterID):
 def DeleteFiction(fictionID):
     try:
         mydb = DbConnection().connection
-        mycursor = mydb.cursor(dictionary=True)
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         sql = "UPDATE fiction SET delete_at = CURRENT_TIMESTAMP WHERE fictionID = %s"
         val = (fictionID,)

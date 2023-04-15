@@ -63,7 +63,7 @@ def authenticationPermission():
             permission, err = VerifierPermission(
                 fictionID, user['sub']['user'])
             if err != None:
-                return make_response(jsonify(str(err)), 404)
+                return make_response(jsonify(str(err)), 500)
             if permission is None:
                 return make_response(jsonify({"status": "You dont have permission in this fiction."}), 403)
 
@@ -81,7 +81,7 @@ def getUser():
     id = jwtDecode(bearer .split()[1])
     user, err = GetUser(id['sub']['user'])
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
     return make_response(jsonify(user), 200)
 
 
@@ -92,7 +92,7 @@ def LoginAPI():
 
     userID, err = VerifierUser(username, password)
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
     if userID is None:
         return make_response(jsonify({"status": "username ro password was wrong."}), 403)
 
@@ -119,7 +119,7 @@ def NewUserAPI():
     if err != None:
         if err.errno == 1062:
             return make_response(jsonify({"status": "Duplicate Name"}), 400)
-        return make_response(jsonify({"token": str(err)}), 404)
+        return make_response(jsonify({"token": str(err)}), 500)
 
     token = jwtEncode({"user": userID})
     res = make_response(jsonify({"token": token}), 201)
@@ -152,7 +152,7 @@ def GetFictionNameAPI():
     if err != None:
         if (type(err) == 'str'):
             return make_response(jsonify({"status": err}), 400)
-        return make_response(jsonify({"status": str(err)}), 404)
+        return make_response(jsonify({"status": str(err)}), 500)
 
     return make_response(jsonify(result), 200)
 
@@ -162,7 +162,7 @@ def GetFictionAPI(fiction):
 
     result, err = GetFiction(fiction)
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response(jsonify(result), 200)
 
@@ -170,22 +170,13 @@ def GetFictionAPI(fiction):
 @app.route("/<fiction>", methods=['GET'])
 def GetChapterAPI(fiction):
 
-    page = request.args.get('page')
-    limit = request.args.get('limit')
-    sort = request.args.get('sort')
-    try:
-        page = int(page)
-        limit = int(limit)
-    except TypeError as err:
-        return make_response(jsonify({"status": "TypeError"}), 400)
+    sort = "chapter " + request.args.get('sort')
 
-    sort = "chapter " + sort
-
-    result, err = GetChapter(page, limit, sort, fiction)
+    result, err = GetChapter(sort, fiction)
     if err != None:
         if (type(err) == 'str'):
             return make_response(jsonify({"status": str(err)}), 400)
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response(jsonify(result))
 
@@ -195,7 +186,7 @@ def GetContentAPI(chapterID):
 
     result, err = GetContent(chapterID)
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response(jsonify(result))
 
@@ -232,7 +223,7 @@ def GetWriterFictionListAPI():
     if err != None:
         if (type(err) == 'str'):
             return make_response(jsonify({"status": str(err)}), 400)
-        return make_response(jsonify({"status": str(err)}), 404)
+        return make_response(jsonify({"status": str(err)}), 500)
 
     return make_response(jsonify(result))
 
@@ -274,7 +265,7 @@ def AddNewFictionAPI():
         fictionName, user["sub"]['user'], url)
 
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response({"status": "OK"}, 201)
 
@@ -298,7 +289,7 @@ def AddNewChapterAPI(fictionID):
     category = 2
     err = NewChapter(fictionID, title, content, category)
     if err != None:
-        return make_response(jsonify(str(err)), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response({"status": "OK"}, 201)
 
@@ -313,7 +304,7 @@ def UpdateChapterAPI(fictionID, chapterID):
 
     err = UpdateChapter(chapterID, title, content)
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response({"status": "OK"}, 201)
 
@@ -325,7 +316,7 @@ def DeteleChapterAPI(fictionID, chapterID):
 
     err = DeleteChapter(chapterID)
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response({"status": "OK"}, 200)
 
@@ -337,7 +328,7 @@ def DeteleFictionAPI(fictionID):
 
     err = DeleteFiction(fictionID)
     if err != None:
-        return make_response(jsonify(), 404)
+        return make_response(jsonify(str(err)), 500)
 
     return make_response({"status": "OK"}, 200)
 

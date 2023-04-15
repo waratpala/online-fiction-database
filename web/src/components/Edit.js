@@ -58,17 +58,6 @@ function Editnovel() {
 
     axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + chapterid, formData, { headers: { Authorization: AuthStr } })
       .then(response => {
-        if (response.status == 201) {
-          sessionStorage.setItem("token", response.data.token);
-        }
-        if (response.status == 400) {
-          if (response.data.status = "Duplicate Name") {
-
-          }
-        }
-        if (response.status == 404) {
-
-        }
       })
       .catch(error => {
         console.log(error);
