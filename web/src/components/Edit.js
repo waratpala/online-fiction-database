@@ -45,6 +45,12 @@ function Editnovel() {
     const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
     axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + chapterid, formData, { headers: { Authorization: AuthStr } })
       .then(response => {
+        if (response.status == 401) {
+
+        }
+        if (response.status == 403) {
+
+        }
       })
       .catch(error => {
         console.log(error);

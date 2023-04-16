@@ -25,6 +25,12 @@ function ManageNovel() {
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
                 setNovelList(response.data)
+                if (response.status == 401) {
+
+                }
+                if (response.status == 403) {
+
+                }
             })
             .catch(error => {
                 console.log(error);

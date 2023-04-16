@@ -77,7 +77,9 @@ function Novelcontent() {
                             {ficrionInfo?.chapterlist?.map((item, index) => (
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
-                                    <td>{item.title}</td>
+                                    <td>
+                                        <Link to={"/noveledit/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

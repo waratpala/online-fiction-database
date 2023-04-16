@@ -57,7 +57,7 @@ CREATE TABLE `feature` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `fiction_number` (
-  `id` int(11) NOT NULL primary key,
+  `id` int(11) NOT NULL primary key AUTO_INCREMENT,
   `total` int(11) DEFAULT 0,
   `hor` int(11) DEFAULT 0,
   `mys` int(11) DEFAULT 0,
