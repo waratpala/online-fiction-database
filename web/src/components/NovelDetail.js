@@ -19,6 +19,7 @@ function Noveldetail() {
     const { fictionid } = useParams();
     const [del, setDel] = useState(false);
     const [edit, setEdit] = useState(false);
+    const [editName, setEditName] = useState(false);
 
     const deleteClose = () => setDel(false);
     const deleteShow = () => setDel(true);
@@ -26,8 +27,11 @@ function Noveldetail() {
     const editClose = () => setEdit(false);
     const editShow = () => setEdit(true);
 
+    const editNameToggle = () => setEditName(!editName);
+
     const [ficrionInfo, setFicrionInfo] = useState("");
-    const [page, setPage] = useState(1);
+    const [fictionName, setfictionName] = useState("");
+    const [newFictionName, setNewFictionName] = useState("");
     const [sort, setSort] = useState("DESC");
     const [endpoint, setEndpoint] = useState(null);
 
@@ -69,12 +73,12 @@ function Noveldetail() {
 
     useEffect(() => {
         let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
-        // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
-        const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
+        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
                 if (response.status == 200) {
                     setFicrionInfo(response.data)
+                    setfictionName(response.data.fictionName)
                 }
                 if (response.status == 400) {
 
@@ -122,13 +126,50 @@ function Noveldetail() {
                 return 'ไม่พบข้อมูล';;
         }
     }
+    function handleWditName() {
+
+        let data = new FormData();
+        data.append('title', newFictionName);
+
+        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        const url = 'http://127.0.0.1:5000/fiction/name/' + fictionid
+
+        axios.put(url, data, { headers: { Authorization: AuthStr } })
+            .then(function (response) {
+                setfictionName(newFictionName)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     return (
         <>
             <Header />
             <Container>
                 <div className='controlitemdetail m-3'>
-                    <Form.Label className='texttitle' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>{ficrionInfo.fictionName}</Form.Label>
+                    <Form.Label className='texttitle' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>
+                        {editName ?
+                            <>
+                                <input type='text' onChange={event => setNewFictionName(event.target.value)} defaultValue={fictionName}></input>
+                                <Button onClick={() => {
+                                    setfictionName(newFictionName)
+                                    editNameToggle()
+                                }}>
+                                    บันทึก
+                                </Button>
+                                <Button onClick={editNameToggle}>
+                                    ยกเลิก
+                                </Button>
+                            </>
+                            :
+                            <>
+                                {fictionName}
+                                <BsPencilSquare onClick={editNameToggle} />
+                            </>
+                        }
+                    </Form.Label>
+
                     <Row >
                         <Col sm={4}>
                             <div className="card m-3">
