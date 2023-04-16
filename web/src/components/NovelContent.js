@@ -20,8 +20,7 @@ function Novelcontent() {
 
     useEffect(() => {
         let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
-        const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
-        axios.get(url, { headers: { Authorization: AuthStr } })
+        axios.get(url)
             .then(response => {
                 if (response.status == 200) {
                     setFicrionInfo(response.data)

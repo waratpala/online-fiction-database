@@ -26,9 +26,7 @@ function Editnovel() {
   useEffect(() => {
 
     let url = "http://127.0.0.1:5000/content/" + chapterid
-    // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
-    const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
-    axios.get(url, { headers: { Authorization: AuthStr } })
+    axios.get(url)
       .then(response => {
         if (response.status == 200) {
           setFictionInfo(response.data)
@@ -52,10 +50,7 @@ function Editnovel() {
     formData.append('title', title);
     formData.append('content', content);
 
-    // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
-    const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
-
-
+    const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
     axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + chapterid, formData, { headers: { Authorization: AuthStr } })
       .then(response => {
       })

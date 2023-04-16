@@ -11,6 +11,7 @@ import './style/ManageNovel.css'
 import Headerpage from './Header';
 
 function ManageNovel() {
+    const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
     const [novelList, setNovelList] = useState("");
     const [page, setPage] = useState(1);
     const [filter, setfilter] = useState("");
@@ -20,8 +21,7 @@ function ManageNovel() {
     useEffect(() => {
 
         let url = "http://127.0.0.1:5000/writer?limit=10&sort=" + sort + "&filter=" + filter + "&search=" + search + "&page=" + String(page)
-        // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
-        const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE2MjYxMjksImlhdCI6MTY4MTUzOTY2OSwic3ViIjp7InVzZXIiOjF9fQ.GiNsotPhin0jGMSFSTWmQ1r-jlWYD3deaBweZ_Z1UeQ';
+        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
                 if (response.status == 200) {
