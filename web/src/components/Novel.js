@@ -25,15 +25,7 @@ function Novel() {
 
     axios.get(url)
       .then(response => {
-        if (response.status == 200) {
-          setNovelList(response.data)
-        }
-        if (response.status == 400) {
-
-        }
-        if (response.status == 404) {
-
-        }
+        setNovelList(response.data);
       })
       .catch(error => {
         console.log(error);

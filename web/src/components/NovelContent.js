@@ -22,15 +22,7 @@ function Novelcontent() {
         let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
         axios.get(url)
             .then(response => {
-                if (response.status == 200) {
-                    setFicrionInfo(response.data)
-                }
-                if (response.status == 400) {
-
-                }
-                if (response.status == 404) {
-
-                }
+                setFicrionInfo(response.data);
             })
             .catch(error => {
                 console.log(error);

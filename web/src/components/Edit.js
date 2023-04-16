@@ -28,15 +28,7 @@ function Editnovel() {
     let url = "http://127.0.0.1:5000/content/" + chapterid
     axios.get(url)
       .then(response => {
-        if (response.status == 200) {
-          setFictionInfo(response.data)
-        }
-        if (response.status == 400) {
-
-        }
-        if (response.status == 404) {
-
-        }
+        setFictionInfo(response.data);
       })
       .catch(error => {
         console.log(error);
