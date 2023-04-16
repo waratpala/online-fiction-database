@@ -17,14 +17,54 @@ import { BsPencilSquare } from "react-icons/bs";
 
 function Noveldetail() {
     const { fictionid } = useParams();
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [del, setDel] = useState(false);
+    const [edit, setEdit] = useState(false);
+
+    const deleteClose = () => setDel(false);
+    const deleteShow = () => setDel(true);
+
+    const editClose = () => setEdit(false);
+    const editShow = () => setEdit(true);
 
     const [ficrionInfo, setFicrionInfo] = useState("");
     const [page, setPage] = useState(1);
     const [sort, setSort] = useState("DESC");
     const [endpoint, setEndpoint] = useState(null);
+
+    const [modalChapterID, SetModalChapterID] = useState(0)
+    const [modalChapterName, SetModalChapterName] = useState(0)
+
+    const [chapterTitle, setChapterTitle] = useState(0)
+    const [chapterContent, setChapterContent] = useState(0)
+
+    const getChapterInfo = (chapterID) => {
+        let url = "http://127.0.0.1:5000/content/" + chapterID
+        axios.get(url)
+            .then(response => {
+                setChapterTitle(response.data.title);
+                setChapterContent(response.data.content);
+                editShow()
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    const editChapter = () => {
+
+        let formData = new FormData();
+        formData.append('title', chapterTitle);
+        formData.append('content', chapterContent);
+
+        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + modalChapterID, formData, { headers: { Authorization: AuthStr } })
+            .then(response => {
+                editClose()
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
 
 
     useEffect(() => {
@@ -128,119 +168,73 @@ function Noveldetail() {
                                     <td>{category(item.category)}</td>
                                     <td>
                                         <div className='button1'>
-                                            <Button variant="secondary" as={Link} to={"/noveledit/" + fictionid + "/" + item.chapterID}>
+                                            <Button variant="secondary" onClick={() => {
+                                                SetModalChapterID(item.chapterID)
+                                                SetModalChapterName(item.title)
+                                                getChapterInfo(item.chapterID)
+                                            }}>
                                                 แก้ไข
                                             </Button>
-                                            <Button variant="danger" onClick={handleShow}>
+                                            <Button variant="danger" onClick={() => {
+                                                SetModalChapterID(item.chapterID)
+                                                SetModalChapterName(item.title)
+                                                deleteShow()
+                                            }}>
                                                 ลบ
                                             </Button>
 
-                                            <Modal show={show} onHide={handleClose} className="modal1">
-                                                <Modal.Body >ยืนยันการลบ</Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="secondary" onClick={handleClose}>
-                                                        ยกเลิก
-                                                    </Button>
-                                                    <Button type='submit' variant="danger" onClick={() => { console.log('test') }}>
-                                                        {/* <Button variant="danger"> */}
-                                                        ตกลง
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
                                         </div>
                                     </td>
                                 </tr>
 
                             ))}
-                            <tr>
-                                <td>1</td>
-                                <td>ตอนที่ 1</td>
-                                <td>ตอนที่ 1</td>
-                                <td>
-                                    <div className='button1'>
-                                        <Button variant="secondary" as={Link} to="/noveledit">
-                                            แก้ไข
-                                        </Button>
-                                        <Button variant="danger" onClick={handleShow}>
-                                            ลบ
-                                        </Button>
-
-                                        <Modal show={show} onHide={handleClose} className="modal1">
-                                            <Modal.Body >ยืนยันการลบ</Modal.Body>
-                                            <Modal.Footer>
-                                                <Button variant="secondary" onClick={handleClose}>
-                                                    ยกเลิก
-                                                </Button>
-                                                <Button variant="danger" onClick={handleClose}>
-                                                    ตกลง
-                                                </Button>
-                                            </Modal.Footer>
-                                        </Modal>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>ตอนที่ 2</td>
-                                <td>ตอนที่ 2</td>
-                                <td>
-                                    <div className='button1'>
-                                        <i style={{ color: 'white', fontSize: '30px' }}><BsPencilSquare /></i>
-                                        <Button variant="danger" onClick={handleShow}>
-                                            ลบ
-                                        </Button>
-
-                                        <Modal show={show} onHide={handleClose}>
-                                            <Modal.Header closeButton>
-                                                {/* <Modal.Title>Modal heading</Modal.Title> */}
-                                            </Modal.Header>
-                                            <Modal.Body>ยืนยันการลบ</Modal.Body>
-                                            <Modal.Footer>
-                                                <Button variant="secondary" onClick={handleClose}>
-                                                    ยกเลิก
-                                                </Button>
-                                                <Button variant="danger" onClick={handleClose}>
-                                                    ตกลง
-                                                </Button>
-                                            </Modal.Footer>
-                                        </Modal>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>ตอนที่ 3</td>
-                                <td>ตอนที่ 3</td>
-                                <td>
-                                    <div className='button1'>
-                                        <Button variant="secondary" onClick={handleClose}>
-                                            แก้ไข
-                                        </Button>
-                                        <Button variant="danger" onClick={handleShow}>
-                                            ลบ
-                                        </Button>
-
-                                        <Modal show={show} onHide={handleClose}>
-                                            <Modal.Header closeButton>
-                                                {/* <Modal.Title>Modal heading</Modal.Title> */}
-                                            </Modal.Header>
-                                            <Modal.Body>ยืนยันการลบ</Modal.Body>
-                                            <Modal.Footer>
-                                                <Button variant="secondary" onClick={handleClose}>
-                                                    ยกเลิก
-                                                </Button>
-                                                <Button variant="danger" onClick={handleClose}>
-                                                    ตกลง
-                                                </Button>
-                                            </Modal.Footer>
-                                        </Modal>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
                     </Table>
                 </div>
             </Container>
+
+            <Modal show={del} onHide={deleteClose}>
+                <Modal.Header closeButton className='modalHeader'>
+                    <Modal.Title>Delete heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modalBody'>
+                    <label>ทำการลบเนื้อหาจากตอน {modalChapterName}</label>
+                </Modal.Body>
+                <Modal.Footer className='modalFooter'>
+                    <Button variant="secondary" onClick={deleteClose}>
+                        ยกเลิก
+                    </Button>
+                    <Button type='submit' variant="danger" onClick={() => { console.log('test') }}>
+                        {/* <Button variant="danger"> */}
+                        ตกลง
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={edit} fullscreen={true} onHide={editClose}>
+                <Modal.Header closeButton className='modalHeader'>
+                    <Modal.Title>Edit heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modalBody'>
+                    <div className="form-group">
+                        <label className='form-label'>ชื่อตอน</label>
+                        <input type="text" className="form-control" defaultValue={chapterTitle} onChange={event => setChapterTitle(event.target.value)} />
+                    </div>
+                    <div className="form-group mt-2">
+                        <label className='form-label'>เนื่อหา</label>
+                        <textarea className="form-control" rows="20" defaultValue={chapterContent} onChange={event => setChapterContent(event.target.value)}></textarea>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer className='modalFooter'>
+                    <Button variant="secondary" onClick={editClose}>
+                        ยกเลิก
+                    </Button>
+                    <Button type='submit' variant="danger" onClick={() => { editChapter() }}>
+                        {/* <Button variant="danger"> */}
+                        ตกลง
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }
