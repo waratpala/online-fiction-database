@@ -85,7 +85,7 @@ def getUser():
     return make_response(jsonify(user), 200)
 
 
-@app.route("/login", methods=['GET'])
+@app.route("/login", methods=['Post'])
 def LoginAPI():
     username = request.form['username']
     password = request.form['password']
@@ -102,7 +102,7 @@ def LoginAPI():
     return res
 
 
-@app.route("/login", methods=['Post'])
+@app.route("/register", methods=['Post'])
 def NewUserAPI():
 
     username = request.form['username']
