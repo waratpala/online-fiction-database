@@ -71,8 +71,8 @@ function Headerpage() {
                   className="me-2"
                   onChange={e => setPassword(e.target.value)}
                 />
-                <Button type="button" onClick={handleSubmit}>ล็อกอิน</Button>
               </Form>
+              <Button type="button" onClick={handleSubmit}>ล็อกอิน</Button>
               <Button variant="outline-info" as={Link} to="/Register">สมัครสมาชิก</Button>
             </>
           )}
