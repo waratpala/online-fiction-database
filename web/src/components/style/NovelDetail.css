@@ -44,6 +44,14 @@
     color: white;
 }
 
-/* .modal1{
+.modalHeader{
+    background-color: #00ADB5;
+}
+
+.modalBody{
     background-color: #222831;
-} */
+}
+
+.modalFooter{
+    background-color: #222831;
+}
