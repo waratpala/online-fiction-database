@@ -123,9 +123,9 @@ def NewUserAPI():
     username = request.form['username']
     password = request.form['password']
 
-    if username is None:
+    if username is None or username == '':
         return make_response(jsonify({"status": "username is empty."}), 400)
-    if password is None:
+    if password is None or username == '':
         return make_response(jsonify({"status": "password is empty."}), 400)
     if registerValidation(username, password):
         return make_response(jsonify({"status": "English letters and numbers only."}), 400)
@@ -305,7 +305,7 @@ def AddNewFictionAPI():
     user = jwtDecode(bearer .split()[1])
 
     fictionName = request.form['fiction_name']
-    if fictionName is None:
+    if fictionName is None or fictionName == '':
         return make_response(jsonify({"status": "fiction_name is empty"}), 400)
     filename = str(uuid.uuid4())
 
