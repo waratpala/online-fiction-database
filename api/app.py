@@ -225,12 +225,28 @@ def UpdateFictionImageAPI(fictionID):
     return make_response({"status": "ok"}, 201)
 
 
-@ app.route("/<fiction>", methods=['GET'])
-def GetChapterAPI(fiction):
+@ app.route("/<fictionID>", methods=['GET'])
+def GetChapterAPI(fictionID):
 
     sort = "chapter " + request.args.get('sort')
 
-    result, err = GetChapter(sort, fiction)
+    result, err = GetChapter(sort, fictionID)
+    if err != None:
+        if (type(err) == 'str'):
+            return make_response(jsonify({"status": str(err)}), 400)
+        return make_response(jsonify(str(err)), 500)
+
+    return make_response(jsonify(result))
+
+
+@ app.route("/writer/<fictionID>", methods=['GET'])
+@ authenticationUser()
+@ authenticationPermission()
+def GetWriterChapterAPI(fictionID):
+
+    sort = "chapter " + request.args.get('sort')
+
+    result, err = GetChapter(sort, fictionID)
     if err != None:
         if (type(err) == 'str'):
             return make_response(jsonify({"status": str(err)}), 400)

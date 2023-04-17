@@ -2,20 +2,19 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Nav from 'react-bootstrap/Nav';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsPencilSquare } from "react-icons/bs";
 
 function Noveldetail() {
+    const token = sessionStorage.getItem("token");
     const { fictionid } = useParams();
     const [del, setDel] = useState(false);
     const [edit, setEdit] = useState(false);
@@ -46,8 +45,8 @@ function Noveldetail() {
     const [modalChapterID, SetModalChapterID] = useState(0)
     const [modalChapterName, SetModalChapterName] = useState(0)
 
-    const [chapterTitle, setChapterTitle] = useState(0)
-    const [chapterContent, setChapterContent] = useState(0)
+    const [chapterTitle, setChapterTitle] = useState('')
+    const [chapterContent, setChapterContent] = useState('')
 
     const getChapterInfo = (chapterID) => {
         let url = "http://127.0.0.1:5000/content/" + chapterID
@@ -55,11 +54,12 @@ function Noveldetail() {
             .then(response => {
                 setChapterTitle(response.data.title);
                 setChapterContent(response.data.content);
-                setChapterContent(response.data.content);
                 editShow()
             })
             .catch(error => {
-                console.log(error);
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/403');
+                }
             });
     }
 
@@ -69,36 +69,39 @@ function Noveldetail() {
         formData.append('title', chapterTitle);
         formData.append('content', chapterContent);
 
-        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        const AuthStr = 'Bearer ' + token;
         axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + modalChapterID, formData, { headers: { Authorization: AuthStr } })
             .then(response => {
                 editClose()
             })
             .catch(error => {
-                console.log(error);
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/');
             });
     };
 
     useEffect(() => {
-        let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
-        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=" + sort
+        const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
-                if (response.status == 200) {
-                    setFicrionInfo(response.data)
-                    setfictionName(response.data.fictionName)
-                    setImageURL(response.data.picture)
-                    setImagesShow(response.data.picture)
+                setFicrionInfo(response.data)
+                setfictionName(response.data.fictionName)
+                setImageURL(response.data.picture)
+                setImagesShow(response.data.picture)
+            }).catch(error => {
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
                 }
-                if (response.status == 400) {
-
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/403');
                 }
-                if (response.status == 404) {
-
-                }
-            })
-            .catch(error => {
-                console.log(error);
+                window.location.replace('http://localhost:3000/');
             });
 
     }, [])
@@ -119,7 +122,7 @@ function Noveldetail() {
         console.log(4554)
         // setShow(false)
         // const url = 'http://127.0.0.1:5000/writer/' + fictionid + '/' + categoryID
-        // // const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        // // const AuthStr = 'Bearer ' + token;
         // const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
         // axios.delete(url, { headers: { Authorization: AuthStr } })
         //     .then(function (response) {
@@ -132,7 +135,7 @@ function Noveldetail() {
 
     function deleteFiction() {
         const url = 'http://127.0.0.1:5000/writer/' + fictionid
-        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        const AuthStr = 'Bearer ' + token;
         axios.delete(url, { headers: { Authorization: AuthStr } })
             .then(function (response) {
                 window.location.replace('http://localhost:3000/createnovel');
@@ -166,7 +169,7 @@ function Noveldetail() {
         let data = new FormData();
         data.append('title', newFictionName);
 
-        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        const AuthStr = 'Bearer ' + token;
         const url = 'http://127.0.0.1:5000/fiction/name/' + fictionid
 
         axios.put(url, data, { headers: { Authorization: AuthStr } })
@@ -189,7 +192,7 @@ function Noveldetail() {
             maxBodyLength: Infinity,
             url: 'http://127.0.0.1:5000/fiction/image/' + fictionid,
             headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
+                'Authorization': 'Bearer ' + token,
                 "Content-Type": "multipart/form-data"
             },
             data: data

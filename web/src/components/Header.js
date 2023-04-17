@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import './style/Header.css'
 import { useState, useEffect } from 'react';
 
@@ -49,15 +49,17 @@ function Headerpage() {
         <Navbar.Brand as={Link} to="/">หน้าหลัก</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/createnovel">เขียนนิยาย</Nav.Link>
-          </Nav>
           {token ? (
             <>
+              <Nav className="me-auto">
+                <Nav.Link as={Link} to="/createnovel">เขียนนิยาย</Nav.Link>
+              </Nav>
               <Button type="button" onClick={handleLogount}>ล็อกเอ้า</Button>
             </>
           ) : (
             <>
+              <Nav className="me-auto">
+              </Nav>
               <Form className="d-flex">
                 <Form.Control
                   type="input"

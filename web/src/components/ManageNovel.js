@@ -1,19 +1,16 @@
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import ManageNovelitem from './ManageNovelItem';
 import './style/ManageNovel.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Headerpage from './Header';
 
 function ManageNovel() {
-    const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const [novelList, setNovelList] = useState("");
     const [page, setPage] = useState(1);
     const [filter, setfilter] = useState("");
@@ -42,7 +39,7 @@ function ManageNovel() {
             maxBodyLength: Infinity,
             url: 'http://127.0.0.1:5000/writer',
             headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
+                'Authorization': 'Bearer ' + token,
                 "Content-Type": "multipart/form-data"
             },
             data: data
@@ -56,26 +53,32 @@ function ManageNovel() {
                 setRefreshKey(oldKey => oldKey + 1)
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/');
             });
     }
 
     useEffect(() => {
 
         let url = "http://127.0.0.1:5000/writer?limit=10&sort=" + sort + "&filter=" + filter + "&search=" + search + "&page=" + String(page)
-        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
                 setNovelList(response.data)
-                if (response.status == 401) {
-
-                }
-                if (response.status == 403) {
-
-                }
             })
             .catch(error => {
-                console.log(error);
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/');
             });
     }, [filter, sort, search, refreshKey])
 
@@ -92,11 +95,6 @@ function ManageNovel() {
     }
 
     const searchRef = useRef(null)
-
-    function onImageChage(e) {
-        setImages([...e.target.files]);
-        setSelectedFile(e.target.files[0])
-    }
 
     const handleClick = event => {
         setSearch(searchRef.current.value)

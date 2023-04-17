@@ -11,6 +11,8 @@ import Noveldetail from './components/NovelDetail';
 import Editnovel from './components/Edit';
 import ReadNovel from './components/Read';
 import Homepage from './components/Home';
+import Page403 from './components/Page403';
+import Page500 from './components/Page500';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/novelcontent/:fictionid" element={<Novelcontent />} />
           <Route path="/noveledit/:fictionid/:chapterid" element={<Editnovel />} />
           <Route path="/novelread/:fictionid/:chapterid" element={<ReadNovel />} />
+          <Route path="/403" element={<Page403 />} />
+          <Route path="/500" element={<Page500 />} />
         </Routes>
       </BrowserRouter>
     </>
