@@ -19,6 +19,7 @@ function Noveldetail() {
     const { fictionid } = useParams();
     const [del, setDel] = useState(false);
     const [edit, setEdit] = useState(false);
+    const [editImage, setEditImage] = useState(false);
     const [editName, setEditName] = useState(false);
 
     const deleteClose = () => setDel(false);
@@ -27,13 +28,20 @@ function Noveldetail() {
     const editClose = () => setEdit(false);
     const editShow = () => setEdit(true);
 
+    const editImageClose = () => setEditImage(false);
+    const editImageShow = () => setEditImage(true);
+    const [selectedFile, setSelectedFile] = useState(null);
+
     const editNameToggle = () => setEditName(!editName);
 
     const [ficrionInfo, setFicrionInfo] = useState("");
     const [fictionName, setfictionName] = useState("");
     const [newFictionName, setNewFictionName] = useState("");
     const [sort, setSort] = useState("DESC");
-    const [endpoint, setEndpoint] = useState(null);
+
+    const [images, setImages] = useState([]);
+    const [imagesShow, setImagesShow] = useState("");
+    const [imageURL, setImageURL] = useState([]);
 
     const [modalChapterID, SetModalChapterID] = useState(0)
     const [modalChapterName, SetModalChapterName] = useState(0)
@@ -46,6 +54,7 @@ function Noveldetail() {
         axios.get(url)
             .then(response => {
                 setChapterTitle(response.data.title);
+                setChapterContent(response.data.content);
                 setChapterContent(response.data.content);
                 editShow()
             })
@@ -70,7 +79,6 @@ function Noveldetail() {
             });
     };
 
-
     useEffect(() => {
         let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
         const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
@@ -79,6 +87,8 @@ function Noveldetail() {
                 if (response.status == 200) {
                     setFicrionInfo(response.data)
                     setfictionName(response.data.fictionName)
+                    setImageURL(response.data.picture)
+                    setImagesShow(response.data.picture)
                 }
                 if (response.status == 400) {
 
@@ -91,7 +101,19 @@ function Noveldetail() {
                 console.log(error);
             });
 
-    }, [sort])
+    }, [])
+
+    useEffect(() => {
+        if (images.length < 1) return;
+        const newImageURL = [];
+        images.forEach((image) => newImageURL.push(URL.createObjectURL(image)));
+        setImageURL(newImageURL);
+    }, [images]);
+
+    function onImageChage(e) {
+        setImages([...e.target.files]);
+        setSelectedFile(e.target.files[0])
+    }
 
     function deleteChaptet() {
         console.log(4554)
@@ -126,6 +148,7 @@ function Noveldetail() {
                 return 'ไม่พบข้อมูล';;
         }
     }
+
     function handleWditName() {
 
         let data = new FormData();
@@ -137,6 +160,32 @@ function Noveldetail() {
         axios.put(url, data, { headers: { Authorization: AuthStr } })
             .then(function (response) {
                 setfictionName(newFictionName)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    function handleWditImage() {
+
+        let data = new FormData();
+        data.append("fiction_image", selectedFile);
+
+
+        let config = {
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: 'http://127.0.0.1:5000/fiction/image/' + fictionid,
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
+                "Content-Type": "multipart/form-data"
+            },
+            data: data
+        };
+
+        axios.request(config)
+            .then(function (response) {
+                setImagesShow(imageURL)
             })
             .catch(function (error) {
                 console.log(error);
@@ -155,6 +204,7 @@ function Noveldetail() {
                                 <Button onClick={() => {
                                     setfictionName(newFictionName)
                                     editNameToggle()
+                                    handleWditName()
                                 }}>
                                     บันทึก
                                 </Button>
@@ -174,8 +224,10 @@ function Noveldetail() {
                         <Col sm={4}>
                             <div className="card m-3">
                                 <div>
-                                    <h3 style={{ color: 'black', marginLeft: '175px' }}><BsPencilSquare /></h3>
-                                    <img src={ficrionInfo.picture} alt="" style={{ height: '200px' }} />
+                                    <h3 style={{ color: 'black', marginLeft: '175px' }}>
+                                        <BsPencilSquare onClick={() => editImageShow()} />
+                                    </h3>
+                                    <img src={imagesShow} alt="" style={{ height: '200px' }} />
                                 </div>
                             </div>
 
@@ -246,7 +298,6 @@ function Noveldetail() {
                         ยกเลิก
                     </Button>
                     <Button type='submit' variant="danger" onClick={() => { console.log('test') }}>
-                        {/* <Button variant="danger"> */}
                         ตกลง
                     </Button>
                 </Modal.Footer>
@@ -271,7 +322,32 @@ function Noveldetail() {
                         ยกเลิก
                     </Button>
                     <Button type='submit' variant="danger" onClick={() => { editChapter() }}>
-                        {/* <Button variant="danger"> */}
+                        ตกลง
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={editImage} onHide={editImageClose}>
+                <Modal.Header closeButton className='modalHeader'>
+                    <Modal.Title>Udate Image</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modalBody'>
+                    <img src={imageURL} height={200} />
+                    <div>
+                        <input type="file" accept="image/*" onChange={onImageChage}></input>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer className='modalFooter'>
+                    <Button variant="secondary" onClick={() => {
+                        setImageURL(ficrionInfo.picture)
+                        editImageClose()
+                    }}>
+                        ยกเลิก
+                    </Button>
+                    <Button type='submit' variant="danger" onClick={() => {
+                        handleWditImage()
+                        editImageClose()
+                    }}>
                         ตกลง
                     </Button>
                 </Modal.Footer>

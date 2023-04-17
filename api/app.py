@@ -17,10 +17,25 @@ UPLOAD_FOLDER = 'upload'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
-app.config['JSON_AS_ASCII'] = False
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# CORS(app, supports_credentials=True)
+# cors = CORS(app, resources={
+#     r'/*': {
+#             "Access-Control-Allow-Origin": [
+#                 'http://localhost:3000',  # React
+#                 'http://127.0.0.1:3000',  # React
+#             ],
+#             "Access-Control-Allow-Credentials": True,
+#             'supports_credentials': True
+#             },
+# },
+#     supports_credentials=True,
+#     expose_headers="*")
 
 CORS(app)
+
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def allowed(filename):
@@ -29,7 +44,7 @@ def allowed(filename):
 
 def authenticationUser():
     def _authenticationUser(f):
-        @wraps(f)
+        @ wraps(f)
         def __authenticationUser(*args, **kwargs):
 
             token = None
@@ -53,7 +68,7 @@ def authenticationUser():
 
 def authenticationPermission():
     def _authenticationPermission(f):
-        @wraps(f)
+        @ wraps(f)
         def __authenticationPermission(*args, **kwargs):
 
             bearer = request.headers.get('Authorization')
@@ -74,8 +89,8 @@ def authenticationPermission():
     return _authenticationPermission
 
 
-@app.route("/user", methods=['GET'])
-@authenticationUser()
+@ app.route("/user", methods=['GET'])
+@ authenticationUser()
 def getUser():
     bearer = request.headers.get('Authorization')
     id = jwtDecode(bearer .split()[1])
@@ -85,7 +100,7 @@ def getUser():
     return make_response(jsonify(user), 200)
 
 
-@app.route("/login", methods=['Post'])
+@ app.route("/login", methods=['Post'])
 def LoginAPI():
     username = request.form['username']
     password = request.form['password']
@@ -102,7 +117,7 @@ def LoginAPI():
     return res
 
 
-@app.route("/register", methods=['Post'])
+@ app.route("/register", methods=['Post'])
 def NewUserAPI():
 
     username = request.form['username']
@@ -127,7 +142,7 @@ def NewUserAPI():
     return res
 
 
-@app.route("/fiction", methods=['GET'])
+@ app.route("/fiction", methods=['GET'])
 def GetFictionNameAPI():
 
     page = request.args.get('page')
@@ -210,7 +225,7 @@ def UpdateFictionImageAPI(fictionID):
     return make_response({"status": "ok"}, 201)
 
 
-@app.route("/<fiction>", methods=['GET'])
+@ app.route("/<fiction>", methods=['GET'])
 def GetChapterAPI(fiction):
 
     sort = "chapter " + request.args.get('sort')
@@ -224,7 +239,7 @@ def GetChapterAPI(fiction):
     return make_response(jsonify(result))
 
 
-@app.route("/content/<chapterID>", methods=['GET'])
+@ app.route("/content/<chapterID>", methods=['GET'])
 def GetContentAPI(chapterID):
 
     result, err = GetContent(chapterID)
@@ -234,8 +249,8 @@ def GetContentAPI(chapterID):
     return make_response(jsonify(result))
 
 
-@app.route("/writer", methods=['GET'])
-@authenticationUser()
+@ app.route("/writer", methods=['GET'])
+@ authenticationUser()
 def GetWriterFictionListAPI():
 
     bearer = request.headers.get('Authorization')

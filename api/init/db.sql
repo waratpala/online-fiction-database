@@ -98,7 +98,8 @@ INSERT INTO `chapter` (`fictionID`, `chapter`,`categoryID`,`title`,`content`) VA
 (1, 1, 2,'new','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
 (1, 2, 2,'new','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
 
-
+INSERT INTO `fiction_number` (`id`, `total`, `hor`, `mys`, `fan`, `sci`, `act`, `dra`) VALUES
+(1, 8598, 1433, 1426, 1490, 1327, 1479, 1409);
 
 
 
