@@ -130,6 +130,18 @@ function Noveldetail() {
         //     });
     }
 
+    function deleteFiction() {
+        const url = 'http://127.0.0.1:5000/writer/' + fictionid
+        const AuthStr = 'Bearer ' + sessionStorage.getItem("token");
+        axios.delete(url, { headers: { Authorization: AuthStr } })
+            .then(function (response) {
+                window.location.replace('http://localhost:3000/createnovel');
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
     function category(categoryID) {
         switch (categoryID) {
             case 2:
@@ -218,6 +230,9 @@ function Noveldetail() {
                                 <BsPencilSquare onClick={editNameToggle} />
                             </>
                         }
+                        <Button variant="secondary">
+                            ลบ
+                        </Button>
                     </Form.Label>
 
                     <Row >

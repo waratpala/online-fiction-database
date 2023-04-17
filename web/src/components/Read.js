@@ -41,6 +41,7 @@ function ReadNovel() {
 
   return (
     <>
+      <Header />
       <Container>
         <div className='controlitem m-3' style={{ backgroundColor: '#393E46' }}>
           <Form.Label className='texttitleedit' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white', width: '100%', height: '50px' }}>

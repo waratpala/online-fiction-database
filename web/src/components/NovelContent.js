@@ -29,7 +29,13 @@ function Novelcontent() {
             });
     }, [sort])
 
-    const handleClick = event => {
+    function handleClick() {
+        if (sort == "DESC") {
+            setSort("ASC")
+        }
+        else {
+            setSort("DESC")
+        }
     };
 
     return (
@@ -78,8 +84,9 @@ function Novelcontent() {
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
                                     <td>
-                                        <Link to={"/noveledit/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
+                                        <Link to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
                                     </td>
+                                    <td></td>
                                 </tr>
                             ))}
                         </tbody>
