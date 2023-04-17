@@ -4,10 +4,12 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
+import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ManageNovelitem from './ManageNovelItem';
 import './style/ManageNovel.css'
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import Headerpage from './Header';
 
 function ManageNovel() {
@@ -17,6 +19,46 @@ function ManageNovel() {
     const [filter, setfilter] = useState("");
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState("DESC");
+    const [refreshKey, setRefreshKey] = useState(0);
+
+
+    const editImageClose = () => setEditImage(false);
+    const editImageShow = () => setEditImage(true);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [editImage, setEditImage] = useState(false);
+    const [FictionName, setFictionName] = useState("");
+    const [images, setImages] = useState([]);
+    const [imageURL, setImageURL] = useState('http://127.0.0.1:5000/image/default.jpg');
+
+    function handleWditImage() {
+
+        let data = new FormData();
+        data.append('fiction_name', FictionName);
+        data.append("fiction_image", selectedFile);
+
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'http://127.0.0.1:5000/writer',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("token"),
+                "Content-Type": "multipart/form-data"
+            },
+            data: data
+        };
+
+        axios.request(config)
+            .then((response) => {
+                setFictionName('')
+                setImageURL('http://127.0.0.1:5000/image/default.jpg')
+                setSelectedFile(null)
+                setRefreshKey(oldKey => oldKey + 1)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     useEffect(() => {
 
@@ -35,9 +77,26 @@ function ManageNovel() {
             .catch(error => {
                 console.log(error);
             });
-    }, [filter, sort, search])
+    }, [filter, sort, search, refreshKey])
+
+    useEffect(() => {
+        if (images.length < 1) return;
+        const newImageURL = [];
+        images.forEach((image) => newImageURL.push(URL.createObjectURL(image)));
+        setImageURL(newImageURL);
+    }, [images]);
+
+    function onImageChage(e) {
+        setImages([...e.target.files]);
+        setSelectedFile(e.target.files[0])
+    }
 
     const searchRef = useRef(null)
+
+    function onImageChage(e) {
+        setImages([...e.target.files]);
+        setSelectedFile(e.target.files[0])
+    }
 
     const handleClick = event => {
         setSearch(searchRef.current.value)
@@ -60,6 +119,7 @@ function ManageNovel() {
                                 style={{ width: '20%', height: '50px', marginTop: '0px' }}
                             />
                             <Button onClick={handleClick} variant="outline-info" style={{ width: '10%', height: '50px' }}>ค้นหา</Button>
+                            <AiOutlinePlusCircle style={{ width: '20%', height: '50px' }} onClick={() => editImageShow()} />
                         </Form>
                     </Form.Group>
                     <hr style={{ color: 'white' }} />
@@ -69,6 +129,34 @@ function ManageNovel() {
                 </div>
 
             </Container>
+
+            <Modal show={editImage} onHide={editImageClose}>
+                <Modal.Header closeButton className='modalHeader'>
+                    <Modal.Title>Udate Image</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modalBody'>
+                    <img src={imageURL} height={200} />
+                    <div>
+                        <input type="file" accept="image/*" onChange={onImageChage}></input>
+                    </div>
+                    <div><input type='text' onChange={event => setFictionName(event.target.value)}></input></div>
+                </Modal.Body>
+                <Modal.Footer className='modalFooter'>
+                    <Button variant="secondary" onClick={() => {
+                        editImageClose()
+                        setImageURL('http://127.0.0.1:5000/image/default.jpg')
+                        setFictionName('')
+                    }}>
+                        ยกเลิก
+                    </Button>
+                    <Button type='submit' variant="danger" onClick={() => {
+                        handleWditImage()
+                        editImageClose()
+                    }}>
+                        ตกลง
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
 
     );

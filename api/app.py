@@ -308,7 +308,12 @@ def AddNewFictionAPI():
     if fictionName is None:
         return make_response(jsonify({"status": "fiction_name is empty"}), 400)
     filename = str(uuid.uuid4())
-    file = request.files['fiction_image']
+
+    try:
+        file = request.files['fiction_image']
+    except:
+        file = None
+
     url = None
     if (file):
         file_name, file_extension = os.path.splitext(file.filename)
