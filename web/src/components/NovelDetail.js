@@ -114,7 +114,6 @@ function Noveldetail() {
         labels: ['นิยายระทึกขวัญ', 'นิยายสืบสวน', 'นิยายแฟนตาซี', 'นิยายวิทยาศาสตร์', 'นิยายแอ๊คชั่น', 'นิยายรักดราม่า', 'ไม่พบข้อมูล'],
         datasets: [
             {
-
                 label: '% of categoty',
                 data: [fictionInfo?.chapterlist?.filter(cat => cat.category === 2).length,
                 fictionInfo?.chapterlist?.filter(cat => cat.category === 3).length,
