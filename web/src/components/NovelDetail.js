@@ -48,6 +48,7 @@ function Noveldetail() {
     const [edit, setEdit] = useState(false);
     const [editImage, setEditImage] = useState(false);
     const [editName, setEditName] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const deleteFClose = () => setDelF(false);
     const deleteFShow = () => setDelF(true);
@@ -190,7 +191,7 @@ function Noveldetail() {
         const AuthStr = 'Bearer ' + token;
         axios.post("http://127.0.0.1:5000/writer/" + fictionid, formData, { headers: { Authorization: AuthStr } })
             .then(response => {
-                // setFictionInfo([...fictionInfo, res.data]) #มิกแก้ ของ return หน่อย ไม่มีท่าจะ apply
+                setRefreshKey(oldKey => oldKey + 1)
                 newClose()
             })
             .catch(error => {
@@ -233,7 +234,7 @@ function Noveldetail() {
             .then(function (response) {
                 deleteCClose()
                 if (response.status === 200) {
-                    fictionInfo.chapterlist = fictionInfo.chapterlist.filter((val) => { //มิกแก้ feel so bad
+                    fictionInfo.chapterlist = fictionInfo.chapterlist.filter((val) => {
                         return val.chapterID != modalChapterID
                     })
                 }
@@ -267,7 +268,7 @@ function Noveldetail() {
                 window.location.replace('http://localhost:3000/500');
             });
 
-    }, [])
+    }, [refreshKey])
 
     // var data = {
     //     labels: fictionInfo?.chapterlist?.map((item, index) => (item.chapter)),
