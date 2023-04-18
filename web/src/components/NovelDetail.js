@@ -39,15 +39,24 @@ import { Pie } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Noveldetail() {
+
     const token = sessionStorage.getItem("token");
     const { fictionid } = useParams();
-    const [del, setDel] = useState(false);
+    const [delF, setDelF] = useState(false);
+    const [delC, setDelC] = useState(false);
+    const [newC, setNewC] = useState(false);
     const [edit, setEdit] = useState(false);
     const [editImage, setEditImage] = useState(false);
     const [editName, setEditName] = useState(false);
 
-    const deleteClose = () => setDel(false);
-    const deleteShow = () => setDel(true);
+    const deleteFClose = () => setDelF(false);
+    const deleteFShow = () => setDelF(true);
+
+    const deleteCClose = () => setDelC(false);
+    const deleteCShow = () => setDelC(true);
+
+    const newClose = () => setNewC(false);
+    const newShow = () => setNewC(true);
 
     const editClose = () => setEdit(false);
     const editShow = () => setEdit(true);
@@ -154,6 +163,47 @@ function Noveldetail() {
             });
     }
 
+    function deleteFiction() {
+        const url = 'http://127.0.0.1:5000/writer/' + fictionid
+        const AuthStr = 'Bearer ' + token;
+        axios.delete(url, { headers: { Authorization: AuthStr } })
+            .then(function (response) {
+                window.location.replace('http://localhost:3000/createnovel');
+            })
+            .catch(function (error) {
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/500');
+            });
+    }
+
+    const newChapter = () => {
+
+        let formData = new FormData();
+        formData.append('title', chapterTitle);
+        formData.append('content', chapterContent);
+
+        const AuthStr = 'Bearer ' + token;
+        axios.post("http://127.0.0.1:5000/writer/" + fictionid, formData, { headers: { Authorization: AuthStr } })
+            .then(response => {
+                // setFictionInfo([...fictionInfo, res.data]) #มิกแก้ ของ return หน่อย ไม่มีท่าจะ apply
+                newClose()
+            })
+            .catch(error => {
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/500');
+            });
+    };
+
     const editChapter = () => {
 
         let formData = new FormData();
@@ -176,8 +226,29 @@ function Noveldetail() {
             });
     };
 
+    function deleteChapter() {
+        const url = 'http://127.0.0.1:5000/writer/' + fictionid + '/' + modalChapterID
+        const AuthStr = 'Bearer ' + token;
+        axios.delete(url, { headers: { Authorization: AuthStr } })
+            .then(function (response) {
+                deleteCClose()
+                if (response.status === 200) {
+                    fictionInfo.chapterlist = fictionInfo.chapterlist.filter((val) => { //มิกแก้ feel so bad
+                        return val.chapterID != modalChapterID
+                    })
+                }
+            })
+            .catch(function (error) {
+        if (error.response.status === 403) {
+            window.location.replace('http://localhost:3000/403');
+        }
+        window.location.replace('http://localhost:3000/500');
+            });
+    }
+
     useEffect(() => {
-        let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=" + sort
+        let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
+        // let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=" + sort #มิกแก้ api ใช้มะได้
         const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
@@ -192,6 +263,7 @@ function Noveldetail() {
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
+                console.log(error)
                 window.location.replace('http://localhost:3000/500');
             });
 
@@ -219,42 +291,6 @@ function Noveldetail() {
     function onImageChage(e) {
         setImages([...e.target.files]);
         setSelectedFile(e.target.files[0])
-    }
-
-    function deleteChaptet() {
-        console.log(4554)
-        // setShow(false)
-        // const url = 'http://127.0.0.1:5000/writer/' + fictionid + '/' + categoryID
-        // // const AuthStr = 'Bearer ' + token;
-        // const AuthStr = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODE0NjU2MDMsImlhdCI6MTY4MTM3OTE0Mywic3ViIjp7InVzZXIiOjF9fQ.iSxROETQ_-GhIhWy3EeeSAJquFkgetWfa46aQMYDbYo';
-        // axios.delete(url, { headers: { Authorization: AuthStr } })
-        //     .then(function (response) {
-        //         console.log(response.data)
-        //     })
-        //     .catch(function (error) {
-        // if (error.response.status === 403) {
-        //     window.location.replace('http://localhost:3000/403');
-        // }
-        // window.location.replace('http://localhost:3000/500');
-        //     });
-    }
-
-    function deleteFiction() {
-        const url = 'http://127.0.0.1:5000/writer/' + fictionid
-        const AuthStr = 'Bearer ' + token;
-        axios.delete(url, { headers: { Authorization: AuthStr } })
-            .then(function (response) {
-                window.location.replace('http://localhost:3000/createnovel');
-            })
-            .catch(function (error) {
-                if (error.response.status === 401) {
-                    window.location.replace('http://localhost:3000/');
-                }
-                if (error.response.status === 403) {
-                    window.location.replace('http://localhost:3000/403');
-                }
-                window.location.replace('http://localhost:3000/500');
-            });
     }
 
     function category(categoryID) {
@@ -357,7 +393,9 @@ function Noveldetail() {
                                 <BsPencilSquare onClick={editNameToggle} />
                             </>
                         }
-                        <Button variant="secondary">
+                        <Button variant="secondary" onClick={() => {
+                            deleteFShow()
+                        }}>
                             ลบ
                         </Button>
                     </Form.Label>
@@ -386,7 +424,11 @@ function Noveldetail() {
                     </Row>
                     <Form.Group className='textepisodedetail'>
                         <Form.Label >สารบัญตอน</Form.Label>
-                        <h3 className='btnadd' >  <AiOutlinePlusCircle /></h3>
+                        <h3 className='btnadd' onClick={() => {
+                            setChapterTitle("")
+                            setChapterContent("")
+                            newShow()
+                        }}><AiOutlinePlusCircle /></h3>
                     </Form.Group>
                     <Table className='listnamedetail'>
                         <thead>
@@ -416,7 +458,7 @@ function Noveldetail() {
                                             <Button variant="danger" onClick={() => {
                                                 SetModalChapterID(item.chapterID)
                                                 SetModalChapterName(item.title)
-                                                deleteShow()
+                                                deleteCShow()
                                             }}>
                                                 ลบ
                                             </Button>
@@ -431,18 +473,32 @@ function Noveldetail() {
                 </div>
             </Container>
 
-            <Modal show={del} onHide={deleteClose}>
+            <Modal show={delF} onHide={deleteFClose}>
                 <Modal.Header closeButton className='modalHeader'>
-                    <Modal.Title>Delete heading</Modal.Title>
+                    <Modal.Title>Delete Fiction</Modal.Title>
+                </Modal.Header>
+                <Modal.Footer className='modalFooter'>
+                    <Button variant="secondary" onClick={deleteFClose}>
+                        ยกเลิก
+                    </Button>
+                    <Button type='submit' variant="danger" onClick={() => { deleteFiction() }}>
+                        ตกลง
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={delC} onHide={deleteCClose}>
+                <Modal.Header closeButton className='modalHeader'>
+                    <Modal.Title>Delete Chapter</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
                     <label>ทำการลบเนื้อหาจากตอน {modalChapterName}</label>
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>
-                    <Button variant="secondary" onClick={deleteClose}>
+                    <Button variant="secondary" onClick={deleteCClose}>
                         ยกเลิก
                     </Button>
-                    <Button type='submit' variant="danger" onClick={() => { console.log('test') }}>
+                    <Button type='submit' variant="danger" onClick={() => { deleteChapter() }}>
                         ตกลง
                     </Button>
                 </Modal.Footer>
@@ -450,7 +506,7 @@ function Noveldetail() {
 
             <Modal show={edit} fullscreen={true} onHide={editClose}>
                 <Modal.Header closeButton className='modalHeader'>
-                    <Modal.Title>Edit heading</Modal.Title>
+                    <Modal.Title>Edit Chapter</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
                     <div className="form-group">
@@ -467,6 +523,30 @@ function Noveldetail() {
                         ยกเลิก
                     </Button>
                     <Button type='submit' variant="danger" onClick={() => { editChapter() }}>
+                        ตกลง
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={newC} fullscreen={true} onHide={newClose}>
+                <Modal.Header closeButton className='modalHeader'>
+                    <Modal.Title>New Chapter</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modalBody'>
+                    <div className="form-group">
+                        <label className='form-label'>ชื่อตอน</label>
+                        <input type="text" className="form-control" defaultValue={chapterTitle} onChange={event => setChapterTitle(event.target.value)} />
+                    </div>
+                    <div className="form-group mt-2">
+                        <label className='form-label'>เนื่อหา</label>
+                        <textarea className="form-control" rows="20" defaultValue={chapterContent} onChange={event => setChapterContent(event.target.value)}></textarea>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer className='modalFooter'>
+                    <Button variant="secondary" onClick={newClose}>
+                        ยกเลิก
+                    </Button>
+                    <Button type='submit' variant="danger" onClick={() => { newChapter() }}>
                         ตกลง
                     </Button>
                 </Modal.Footer>
