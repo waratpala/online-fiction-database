@@ -53,13 +53,13 @@ function ManageNovel() {
                 setRefreshKey(oldKey => oldKey + 1)
             })
             .catch(function (error) {
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                if (error.response.status === 500) {
-                    window.location.replace('http://localhost:3000/403');
-                }
-                window.location.replace('http://localhost:3000/');
+                window.location.replace('http://localhost:3000/500');
             });
     }
 
@@ -72,13 +72,13 @@ function ManageNovel() {
                 setNovelList(response.data)
             })
             .catch(error => {
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                if (error.response.status === 500) {
-                    window.location.replace('http://localhost:3000/403');
-                }
-                window.location.replace('http://localhost:3000/');
+                window.location.replace('http://localhost:3000/500');
             });
     }, [filter, sort, search, refreshKey])
 

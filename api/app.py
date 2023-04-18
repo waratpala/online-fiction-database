@@ -143,7 +143,7 @@ def NewUserAPI():
 
 
 @ app.route("/fiction", methods=['GET'])
-def GetFictionNameAPI():
+def GetFictionListAPI():
 
     page = request.args.get('page')
     limit = request.args.get('limit')

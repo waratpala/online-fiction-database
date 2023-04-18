@@ -28,7 +28,7 @@ function Novel() {
         setNovelList(response.data);
       })
       .catch(error => {
-        console.log(error);
+        window.location.replace('http://localhost:3000/500');
       });
   }, [filter, sort, search])
 

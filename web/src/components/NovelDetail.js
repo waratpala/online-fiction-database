@@ -12,6 +12,27 @@ import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsPencilSquare } from "react-icons/bs";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 function Noveldetail() {
     const token = sessionStorage.getItem("token");
@@ -48,6 +69,28 @@ function Noveldetail() {
     const [chapterTitle, setChapterTitle] = useState('')
     const [chapterContent, setChapterContent] = useState('')
 
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+        },
+        scales: {
+            y: {
+                min: 1,
+                max: 7,
+                stepSize: 1,
+                ticks: {
+                    beginAtZero: false,
+                    callback: function (value, index, ticks) {
+                        return category(value);
+                    }
+                }
+            }
+        },
+    };
+
     const getChapterInfo = (chapterID) => {
         let url = "http://127.0.0.1:5000/content/" + chapterID
         axios.get(url)
@@ -57,9 +100,7 @@ function Noveldetail() {
                 editShow()
             })
             .catch(error => {
-                if (error.response.status === 500) {
-                    window.location.replace('http://localhost:3000/403');
-                }
+                window.location.replace('http://localhost:3000/500');
             });
     }
 
@@ -75,13 +116,13 @@ function Noveldetail() {
                 editClose()
             })
             .catch(error => {
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                if (error.response.status === 500) {
-                    window.location.replace('http://localhost:3000/403');
-                }
-                window.location.replace('http://localhost:3000/');
+                window.location.replace('http://localhost:3000/500');
             });
     };
 
@@ -95,16 +136,28 @@ function Noveldetail() {
                 setImageURL(response.data.picture)
                 setImagesShow(response.data.picture)
             }).catch(error => {
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                if (error.response.status === 500) {
-                    window.location.replace('http://localhost:3000/403');
-                }
-                window.location.replace('http://localhost:3000/');
+                window.location.replace('http://localhost:3000/500');
             });
 
     }, [])
+
+    var data = {
+        labels: ficrionInfo?.chapterlist?.map((item, index) => (item.chapter)),
+        datasets: [
+            {
+                label: 'Chapter',
+                data: ficrionInfo?.chapterlist?.map((item, index) => (item.category)),
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+        ],
+    };
 
     useEffect(() => {
         if (images.length < 1) return;
@@ -129,7 +182,10 @@ function Noveldetail() {
         //         console.log(response.data)
         //     })
         //     .catch(function (error) {
-        //         console.log(error);
+        // if (error.response.status === 403) {
+        //     window.location.replace('http://localhost:3000/403');
+        // }
+        // window.location.replace('http://localhost:3000/500');
         //     });
     }
 
@@ -141,7 +197,13 @@ function Noveldetail() {
                 window.location.replace('http://localhost:3000/createnovel');
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/500');
             });
     }
 
@@ -177,7 +239,13 @@ function Noveldetail() {
                 setfictionName(newFictionName)
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/500');
             });
     }
 
@@ -203,7 +271,13 @@ function Noveldetail() {
                 setImagesShow(imageURL)
             })
             .catch(function (error) {
-                console.log(error);
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/500');
             });
     }
 
@@ -252,7 +326,9 @@ function Noveldetail() {
                         </Col>
                         <Col sm={8}>
                             <div className='CourseDetails m-3'>
-                                <img src='./images/d-1.png' style={{ width: '100%', height: '200px' }} />
+                                <div style={{ width: '100%', height: '200px' }}>
+                                    <Line options={options} data={data} />
+                                </div>
                             </div>
 
                         </Col>
