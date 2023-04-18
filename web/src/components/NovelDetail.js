@@ -249,7 +249,7 @@ function Noveldetail() {
 
     useEffect(() => {
         // let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
-        let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=DESC"
+        let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=" + sort
         const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
