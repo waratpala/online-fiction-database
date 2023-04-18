@@ -365,9 +365,9 @@ def AddNewChapterAPI(fictionID):
     if len(content.replace(" ", "")) < 3000:
         return make_response(jsonify({"status": "content less than 3,000 characters."}), 400)
 
-    # category = Model.predictData(content)
+    model = Model("user", "password", "host", "database")
+    category = model.predictData(content)
 
-    category = 2
     err = NewChapter(fictionID, title, content, category)
     if err != None:
         return make_response(jsonify(str(err)), 500)
