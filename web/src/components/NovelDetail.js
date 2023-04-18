@@ -97,12 +97,6 @@ function Noveldetail() {
     // };
 
     const options = {
-        layout: {
-            // padding: {
-            //     top: -50,
-            //     bottom: -50,
-            // },
-        },
         plugins: {
             legend: {
                 position: 'right',
@@ -110,18 +104,22 @@ function Noveldetail() {
         },
     };
 
+    useEffect(() => {
+        setData([fictionInfo?.chapter_cat?.c2,
+        fictionInfo?.chapter_cat?.c3,
+        fictionInfo?.chapter_cat?.c4,
+        fictionInfo?.chapter_cat?.c5,
+        fictionInfo?.chapter_cat?.c6,
+        fictionInfo?.chapter_cat?.c7,
+        fictionInfo?.chapter_cat?.c1,])
+    }, [fictionInfo])
+
     var piedata = {
         labels: ['นิยายระทึกขวัญ', 'นิยายสืบสวน', 'นิยายแฟนตาซี', 'นิยายวิทยาศาสตร์', 'นิยายแอ๊คชั่น', 'นิยายรักดราม่า', 'ไม่พบข้อมูล'],
         datasets: [
             {
                 label: '% of categoty',
-                data: [fictionInfo?.chapterlist?.filter(cat => cat.category === 2).length,
-                fictionInfo?.chapterlist?.filter(cat => cat.category === 3).length,
-                fictionInfo?.chapterlist?.filter(cat => cat.category === 4).length,
-                fictionInfo?.chapterlist?.filter(cat => cat.category === 5).length,
-                fictionInfo?.chapterlist?.filter(cat => cat.category === 6).length,
-                fictionInfo?.chapterlist?.filter(cat => cat.category === 7).length,
-                fictionInfo?.chapterlist?.filter(cat => cat.category === 1).length],
+                data: data,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',

@@ -10,24 +10,72 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
 import './style/NovelContent.css';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
 
 function Novelcontent() {
     const { fictionid } = useParams();
-    const [ficrionInfo, setFicrionInfo] = useState("");
+    const [fictionInfo, setFictionInfo] = useState("");
     const [page, setPage] = useState(1);
     const [sort, setSort] = useState("DESC");
-
+    const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0,]);
 
     useEffect(() => {
         let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
         axios.get(url)
             .then(response => {
-                setFicrionInfo(response.data);
+                setFictionInfo(response.data);
             })
             .catch(error => {
                 console.log(error);
             });
     }, [sort])
+
+    const options = {
+        plugins: {
+            legend: {
+                position: 'right',
+            },
+        },
+    };
+
+    useEffect(() => {
+        setData([fictionInfo?.chapter_cat?.c2,
+        fictionInfo?.chapter_cat?.c3,
+        fictionInfo?.chapter_cat?.c4,
+        fictionInfo?.chapter_cat?.c5,
+        fictionInfo?.chapter_cat?.c6,
+        fictionInfo?.chapter_cat?.c7,
+        fictionInfo?.chapter_cat?.c1,])
+    }, [fictionInfo])
+
+    var piedata = {
+        labels: ['นิยายระทึกขวัญ', 'นิยายสืบสวน', 'นิยายแฟนตาซี', 'นิยายวิทยาศาสตร์', 'นิยายแอ๊คชั่น', 'นิยายรักดราม่า', 'ไม่พบข้อมูล'],
+        datasets: [
+            {
+                label: '% of categoty',
+                data: data,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
 
     function handleClick() {
         if (sort == "DESC") {
@@ -48,18 +96,20 @@ function Novelcontent() {
                         <Col sm={4}>
                             <div className="card m-3">
                                 <div>
-                                    <img src={ficrionInfo.picture} alt="" style={{ width: '200px', height: '200px' }} />
+                                    <img src={fictionInfo.picture} alt="" style={{ width: '200px', height: '200px' }} />
                                 </div>
                             </div>
 
                         </Col>
                         <Col sm={8}>
-                            <h2 className='m-2'>{ficrionInfo.fictionName}</h2>
+                            <h2 className='m-2'>{fictionInfo.fictionName}</h2>
                             <div className='img-starCouse '>
-                                <h4 >โดย {ficrionInfo.user_name}</h4>
+                                <h4 >โดย {fictionInfo.user_name}</h4>
                             </div>
                             <div className='CourseDetails m-3'>
-                                <img src="./images/d-1.png" style={{ width: '100%', height: '200px' }} />
+                                <div style={{ width: '100%', height: '300px' }}>
+                                    <Pie options={options} data={piedata} />
+                                </div>
                             </div>
 
                         </Col>
@@ -80,7 +130,7 @@ function Novelcontent() {
                             </tr>
                         </thead>
                         <tbody>
-                            {ficrionInfo?.chapterlist?.map((item, index) => (
+                            {fictionInfo?.chapterlist?.map((item, index) => (
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
                                     <td>

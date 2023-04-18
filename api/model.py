@@ -169,6 +169,19 @@ def GetChapter(sort, fictionID):
         mycursor.execute(sql, val)
         fictionContent = mycursor.fetchone()
 
+        sql = """SELECT sum(case when categoryID = 2 then 1 else 0 end) AS c2,
+    	sum(case when categoryID = 3 then 1 else 0 end) AS c3,
+    	sum(case when categoryID = 4 then 1 else 0 end) AS c4,
+    	sum(case when categoryID = 5 then 1 else 0 end) AS c5,
+    	sum(case when categoryID = 6 then 1 else 0 end) AS c6,
+    	sum(case when categoryID = 7 then 1 else 0 end) AS c7,
+    	sum(case when categoryID = 1 then 1 else 0 end) AS c1
+        FROM chapter
+        WHERE fictionID = %s;"""
+        val = (fictionID,)
+        mycursor.execute(sql, val)
+        fictionContent['chapter_cat'] = mycursor.fetchone()
+
         sql = "SELECT chapterID,chapter,title,categoryID category FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY %s"
         val = (fictionID, sort)
 
