@@ -12,27 +12,31 @@ import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsPencilSquare } from "react-icons/bs";
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
+// import {
+//     Chart as ChartJS,
+//     CategoryScale,
+//     LinearScale,
+//     PointElement,
+//     LineElement,
+//     Title,
+//     Tooltip,
+//     Legend,
+// } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-);
+// ChartJS.register(
+//     CategoryScale,
+//     LinearScale,
+//     PointElement,
+//     LineElement,
+//     Title,
+//     Tooltip,
+//     Legend
+// );
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Noveldetail() {
     const token = sessionStorage.getItem("token");
@@ -54,7 +58,7 @@ function Noveldetail() {
 
     const editNameToggle = () => setEditName(!editName);
 
-    const [ficrionInfo, setFicrionInfo] = useState("");
+    const [fictionInfo, setFictionInfo] = useState("");
     const [fictionName, setfictionName] = useState("");
     const [newFictionName, setNewFictionName] = useState("");
     const [sort, setSort] = useState("DESC");
@@ -68,27 +72,75 @@ function Noveldetail() {
 
     const [chapterTitle, setChapterTitle] = useState('')
     const [chapterContent, setChapterContent] = useState('')
+    const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0])
+
+    // const options = {
+    //     responsive: true,
+    //     plugins: {
+    //         legend: {
+    //             position: 'top',
+    //         },
+    //     },
+    //     scales: {
+    //         y: {
+    //             min: 1,
+    //             max: 7,
+    //             stepSize: 1,
+    //             ticks: {
+    //                 beginAtZero: false,
+    //                 callback: function (value, index, ticks) {
+    //                     return category(value);
+    //                 }
+    //             }
+    //         }
+    //     },
+    // };
 
     const options = {
-        responsive: true,
+        layout: {
+            // padding: {
+            //     top: -50,
+            //     bottom: -50,
+            // },
+        },
         plugins: {
             legend: {
-                position: 'top',
+                position: 'right',
             },
         },
-        scales: {
-            y: {
-                min: 1,
-                max: 7,
-                stepSize: 1,
-                ticks: {
-                    beginAtZero: false,
-                    callback: function (value, index, ticks) {
-                        return category(value);
-                    }
-                }
-            }
-        },
+    };
+
+    var piedata = {
+        labels: ['นิยายระทึกขวัญ', 'นิยายสืบสวน', 'นิยายแฟนตาซี', 'นิยายวิทยาศาสตร์', 'นิยายแอ๊คชั่น', 'นิยายรักดราม่า', 'ไม่พบข้อมูล'],
+        datasets: [
+            {
+                label: '% of categoty',
+                data: [fictionInfo?.chapterlist?.filter(cat => cat.category === 2).length,
+                fictionInfo?.chapterlist?.filter(cat => cat.category === 3).length,
+                fictionInfo?.chapterlist?.filter(cat => cat.category === 4).length,
+                fictionInfo?.chapterlist?.filter(cat => cat.category === 5).length,
+                fictionInfo?.chapterlist?.filter(cat => cat.category === 6).length,
+                fictionInfo?.chapterlist?.filter(cat => cat.category === 7).length,
+                fictionInfo?.chapterlist?.filter(cat => cat.category === 1).length],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
     };
 
     const getChapterInfo = (chapterID) => {
@@ -131,7 +183,7 @@ function Noveldetail() {
         const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
-                setFicrionInfo(response.data)
+                setFictionInfo(response.data)
                 setfictionName(response.data.fictionName)
                 setImageURL(response.data.picture)
                 setImagesShow(response.data.picture)
@@ -147,17 +199,17 @@ function Noveldetail() {
 
     }, [])
 
-    var data = {
-        labels: ficrionInfo?.chapterlist?.map((item, index) => (item.chapter)),
-        datasets: [
-            {
-                label: 'Chapter',
-                data: ficrionInfo?.chapterlist?.map((item, index) => (item.category)),
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-        ],
-    };
+    // var data = {
+    //     labels: fictionInfo?.chapterlist?.map((item, index) => (item.chapter)),
+    //     datasets: [
+    //         {
+    //             label: 'Chapter',
+    //             data: fictionInfo?.chapterlist?.map((item, index) => (item.category)),
+    //             borderColor: 'rgb(255, 99, 132)',
+    //             backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    //         },
+    //     ],
+    // };
 
     useEffect(() => {
         if (images.length < 1) return;
@@ -325,9 +377,10 @@ function Noveldetail() {
 
                         </Col>
                         <Col sm={8}>
-                            <div className='CourseDetails m-3'>
-                                <div style={{ width: '100%', height: '200px' }}>
-                                    <Line options={options} data={data} />
+                            <div className='CourseDetails'>
+                                <div style={{ width: '100%', height: '300px' }}>
+                                    {/* <Line options={options} data={data} /> */}
+                                    <Pie options={options} data={piedata} />
                                 </div>
                             </div>
 
@@ -347,7 +400,7 @@ function Noveldetail() {
                             </tr>
                         </thead>
                         <tbody>
-                            {ficrionInfo?.chapterlist?.map((item, index) => (
+                            {fictionInfo?.chapterlist?.map((item, index) => (
 
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
@@ -433,7 +486,7 @@ function Noveldetail() {
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>
                     <Button variant="secondary" onClick={() => {
-                        setImageURL(ficrionInfo.picture)
+                        setImageURL(fictionInfo.picture)
                         editImageClose()
                     }}>
                         ยกเลิก

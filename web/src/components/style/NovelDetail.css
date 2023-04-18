@@ -9,7 +9,7 @@
 
 
 
-.controlitemdetail{
+.controlitemdetail {
     background-color: #222831;
     position: absolute;
     width: 1350px;
@@ -17,7 +17,7 @@
     left: 50px;
 }
 
-.texttitle{
+.texttitle {
     background-color: #00ADB5;
     display: block;
     color: white;
@@ -25,33 +25,33 @@
     border-radius: 3px;
 }
 
-.textepisodedetail{
+.textepisodedetail {
     background-color: #00ADB5;
     display: flex;
     color: white;
-    height: 50px; 
+    height: 50px;
     border-radius: 3px;
 }
 
-.btnadd{
+.btnadd {
     height: 40px;
     color: aliceblue;
     font-size: 35px;
     margin-left: 1200px;
 }
 
-.listnamedetail{
+.listnamedetail {
     color: white;
 }
 
-.modalHeader{
+.modalHeader {
     background-color: #00ADB5;
 }
 
-.modalBody{
+.modalBody {
     background-color: #222831;
 }
 
-.modalFooter{
+.modalFooter {
     background-color: #222831;
 }
