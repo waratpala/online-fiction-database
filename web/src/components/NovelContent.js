@@ -91,7 +91,12 @@ function Novelcontent() {
             <Header />
             <Container>
                 <div className='controlitemcontent m-3'>
-                    <Form.Label className='textcontent' >นิยาย</Form.Label>
+                    <Form.Label className='textcontent' >
+                        <h3>{fictionInfo.fictionName}</h3>
+                        <div className='img-starCouse '>
+                            <h5 >โดย {fictionInfo.user_name}</h5>
+                        </div>
+                    </Form.Label>
                     <Row >
                         <Col sm={4}>
                             <div className="card m-3">
@@ -102,10 +107,6 @@ function Novelcontent() {
 
                         </Col>
                         <Col sm={8}>
-                            <h2 className='m-2'>{fictionInfo.fictionName}</h2>
-                            <div className='img-starCouse '>
-                                <h4 >โดย {fictionInfo.user_name}</h4>
-                            </div>
                             <div className='CourseDetails m-3'>
                                 <div style={{ width: '100%', height: '300px' }}>
                                     <Pie options={options} data={piedata} />

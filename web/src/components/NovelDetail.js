@@ -239,16 +239,16 @@ function Noveldetail() {
                 }
             })
             .catch(function (error) {
-        if (error.response.status === 403) {
-            window.location.replace('http://localhost:3000/403');
-        }
-        window.location.replace('http://localhost:3000/500');
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                window.location.replace('http://localhost:3000/500');
             });
     }
 
     useEffect(() => {
-        let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
-        // let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=" + sort #มิกแก้ api ใช้มะได้
+        // let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
+        let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=DESC"
         const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
