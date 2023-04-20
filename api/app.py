@@ -306,11 +306,11 @@ def GetWriterFictionListAPI():
 def GetImageAPI(imageName):
 
     x, file_extension = os.path.splitext(imageName)
-    type = mimetypeCheck(file_extension)
+    type = mimetypeCheck(file_extension.lower())
     filePath = os.path.join(
         UPLOAD_FOLDER, imageName)
     if (os.path.isfile(filePath)):
-        return send_file(filePath, mimetype=type)
+        return send_file(filePath, mimetype='image/png')
     return make_response(jsonify(), 404)
 
 

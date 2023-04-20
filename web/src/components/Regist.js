@@ -48,7 +48,7 @@ function Registpage() {
             <Form className="Regist" onSubmit={handleSubmit}>
                 <p className="title">สร้างบัญชีผู้ใช้งาน</p>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Control type="email" value={email.emailInput} placeholder="Enter email" onChange={e => setEmail(e.target.value)} />
+                    <Form.Control type="text" value={email.emailInput} placeholder="Enter username" onChange={e => setEmail(e.target.value)} />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">

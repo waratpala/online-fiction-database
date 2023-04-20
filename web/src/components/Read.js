@@ -26,6 +26,7 @@ function ReadNovel() {
       .then(response => {
         if (response.status == 200) {
           setContentInfo(response.data)
+          console.log(response.data)
         }
         if (response.status == 400) {
 
@@ -49,7 +50,7 @@ function ReadNovel() {
           </Form.Label>
           <div className='editcontent m-5'>
             <div>#{contentInfo.chapter} {contentInfo.title}</div>
-            <div>{contentInfo.Content}</div>
+            <div>{contentInfo.content}</div>
           </div>
         </div>
 

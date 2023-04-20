@@ -84,27 +84,27 @@ function Noveldetail() {
     const [chapterContent, setChapterContent] = useState('')
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0])
 
-    // const options = {
-    //     responsive: true,
-    //     plugins: {
-    //         legend: {
-    //             position: 'top',
-    //         },
-    //     },
-    //     scales: {
-    //         y: {
-    //             min: 1,
-    //             max: 7,
-    //             stepSize: 1,
-    //             ticks: {
-    //                 beginAtZero: false,
-    //                 callback: function (value, index, ticks) {
-    //                     return category(value);
-    //                 }
-    //             }
-    //         }
-    //     },
-    // };
+    const optionsP = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+        },
+        scales: {
+            y: {
+                min: 1,
+                max: 7,
+                stepSize: 1,
+                ticks: {
+                    beginAtZero: false,
+                    callback: function (value, index, ticks) {
+                        return category(value);
+                    }
+                }
+            }
+        },
+    };
 
     const options = {
         plugins: {
@@ -131,12 +131,13 @@ function Noveldetail() {
                 label: '% of categoty',
                 data: data,
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 255, 255, 1)',
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
@@ -145,6 +146,7 @@ function Noveldetail() {
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
+                    'rgba(255, 255, 255, 1)',
                 ],
                 borderWidth: 1,
             },
@@ -394,7 +396,7 @@ function Noveldetail() {
                                 <BsPencilSquare onClick={editNameToggle} />
                             </>
                         }
-                        <Button variant="secondary" onClick={() => {
+                        <Button variant="secondary" style={{ float: 'right', background: 'red', marginRight: "0.5%", marginTop: "0.5%" }} onClick={() => {
                             deleteFShow()
                         }}>
                             ลบ
@@ -402,18 +404,18 @@ function Noveldetail() {
                     </Form.Label>
 
                     <Row >
-                        <Col sm={4}>
-                            <div className="card m-3">
+                        <Col sm={3}>
+                            <div style={{ textAlign: 'center' }}>
+                                <h3 style={{ color: 'black', marginLeft: '175px' }}>
+                                    <BsPencilSquare onClick={() => editImageShow()} />
+                                </h3>
                                 <div>
-                                    <h3 style={{ color: 'black', marginLeft: '175px' }}>
-                                        <BsPencilSquare onClick={() => editImageShow()} />
-                                    </h3>
-                                    <img src={imagesShow} alt="" style={{ height: '200px' }} />
+                                    <img src={imagesShow} alt="" width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
                                 </div>
                             </div>
 
                         </Col>
-                        <Col sm={8}>
+                        <Col sm={9}>
                             <div className='CourseDetails'>
                                 <div style={{ width: '100%', height: '300px' }}>
                                     {/* <Line options={options} data={data} /> */}
@@ -558,8 +560,8 @@ function Noveldetail() {
                     <Modal.Title>Udate Image</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
-                    <img src={imageURL} height={200} />
-                    <div>
+                    <div style={{ textAlign: 'center' }}>
+                        <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
                         <input type="file" accept="image/*" onChange={onImageChage}></input>
                     </div>
                 </Modal.Body>

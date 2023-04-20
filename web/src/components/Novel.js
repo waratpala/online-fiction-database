@@ -68,8 +68,7 @@ function Novel() {
                 style={{ width: '80%', height: '50px', marginTop: '0px', marginLeft: '10px' }}
                 onSubmit={e => setSearch(e.target.value)}
               />
-              <BsSearch />
-              <Button onClick={handleClick} variant="outline-info" style={{ width: '35%', height: '50px' }}>ค้นหา</Button>
+              <Button onClick={handleClick} style={{ width: '35%', height: '50px' }}>ค้นหา</Button>
             </Form>
           </Form.Group>
 

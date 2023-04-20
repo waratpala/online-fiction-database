@@ -15,7 +15,7 @@ function Novelitem(props) {
                 {props.novelList?.data?.map((item, index) => (
                     <Col key={item.fictionID} sm={2} className='m-2'>
                         <Card as={Link} to={`/novelcontent/${item.fictionID}`}>
-                            <Card.Img variant="top" src={item.picture} />
+                            <Card.Img variant="top" src={item.picture} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
                             <Card.Body>
                                 <Card.Text>
                                     {item.fictionName}
