@@ -49,35 +49,27 @@ function Headerpage() {
         <Navbar.Brand as={Link} to="/">หน้าหลัก</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          {token ? (
-            <>
-              <Nav className="me-auto">
-                <Nav.Link as={Link} to="/createnovel">เขียนนิยาย</Nav.Link>
-              </Nav>
-              <Button type="button" onClick={handleLogount}>ล็อกเอ้า</Button>
-            </>
-          ) : (
-            <>
-              <Nav className="me-auto">
-              </Nav>
-              <Form className="d-flex">
-                <Form.Control
-                  type="input"
-                  placeholder="Username"
-                  className="me-2"
-                  onChange={e => setUser(e.target.value)}
-                />
-                <Form.Control
-                  type="input"
-                  placeholder="Password"
-                  className="me-2"
-                  onChange={e => setPassword(e.target.value)}
-                />
-              </Form>
-              <Button type="button" onClick={handleSubmit}>ล็อกอิน</Button>
-              <Button variant="outline-info" as={Link} to="/Register">สมัครสมาชิก</Button>
-            </>
-          )}
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/createnovel">เขียนนิยาย</Nav.Link>
+          </Nav>
+          <Form className="d-flex">
+                  <Form.Control
+                    type="input"
+                    placeholder="Username"
+                    className="me-2"
+
+                  />
+           </Form>
+           <Form className="d-flex">
+                  <Form.Control
+                    type="input"
+                    placeholder="Password"
+                    className="me-2"
+
+                  />
+           </Form>
+            <Button variant="outline-info" as={Link} to="/Login">ล็อกอิน</Button>
+            <Button variant="outline-info" as={Link} to="/Register">สมัครสมาชิก</Button>
         </Navbar.Collapse>
       </Container >
     </Navbar >
