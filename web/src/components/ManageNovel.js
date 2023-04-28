@@ -117,7 +117,7 @@ function ManageNovel() {
                                 style={{ width: '20%', height: '50px', marginTop: '0px' }}
                             />
                             <Button onClick={handleClick} variant="outline-info" style={{ width: '10%', height: '50px' }}>ค้นหา</Button>
-                            <AiOutlinePlusCircle style={{ width: '20%', height: '50px' }} onClick={() => editImageShow()} />
+                            <AiOutlinePlusCircle style={{ width: '20%', height: '50px',cursor:'pointer',marginLeft:'700px' }} onClick={() => editImageShow()} />
                         </Form>
                     </Form.Group>
                     <hr style={{ color: 'white' }} />

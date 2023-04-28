@@ -59,17 +59,18 @@ function Novel() {
               <option value="DESC">อัพเดทล่าสุด</option>
               <option value="ASC">เก่าสุด</option>
             </Form.Select>
-            <Form className="d-flex" >
-              <Form.Control ref={searchRef}
+            <Form className="box-search d-flex" >
+              <i><BsSearch id='search-icon' color='black'/></i>
+              <input  ref={searchRef}
                 type="search"
                 placeholder="Search"
-                className="me-2"
+                className="input-search me-2"
                 aria-label="Search"
                 style={{ width: '80%', height: '50px', marginTop: '0px', marginLeft: '10px' }}
                 onSubmit={e => setSearch(e.target.value)}
               />
-              <Button onClick={handleClick} style={{ width: '35%', height: '50px' }}>ค้นหา</Button>
             </Form>
+            <Button variant="outline-info" onClick={handleClick} style={{ width: '100px', height: '50px' }}>ค้นหา</Button>
           </Form.Group>
 
         </Form.Group>
