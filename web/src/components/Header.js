@@ -4,6 +4,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
+import { BsFillHouseDoorFill,BsFillPencilFill,BsFillPersonFill } from "react-icons/bs";
+import { BiLogOut,BiLogIn } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import './style/Header.css'
 import { useState, useEffect } from 'react';
@@ -46,15 +48,15 @@ function Headerpage() {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className='headerpage'>
       <Container>
-        <Navbar.Brand as={Link} to="/">หน้าหลัก</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/"><BsFillHouseDoorFill/>หน้าหลัก</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           {token ? (
             <>
               <Nav className="me-auto">
-                <Nav.Link as={Link} to="/createnovel">เขียนนิยาย</Nav.Link>
+                <Nav.Link as={Link} to="/createnovel"><BsFillPencilFill/>เขียนนิยาย</Nav.Link>
               </Nav>
-              <Button type="button" onClick={handleLogount}>ล็อกเอ้า</Button>
+              <Button variant="outline-info" type="button" onClick={handleLogount}><BiLogOut/>ล็อกเอ้า</Button>
             </>
           ) : (
             <>
@@ -74,8 +76,8 @@ function Headerpage() {
                   onChange={e => setPassword(e.target.value)}
                 />
               </Form>
-              <Button type="button" onClick={handleSubmit}>ล็อกอิน</Button>
-              <Button variant="outline-info" as={Link} to="/Register">สมัครสมาชิก</Button>
+              <Button variant="outline-info" type="button" style={{marginRight:'5px'}} onClick={handleSubmit}><BiLogIn/>ล็อกอิน</Button>
+              <Button variant="outline-info" as={Link} to="/Register"><BsFillPersonFill/>สมัครสมาชิก</Button>
             </>
           )}
         </Navbar.Collapse>

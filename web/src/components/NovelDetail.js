@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { BsPencilSquare } from "react-icons/bs";
+import { BsPencilSquare,BsFillTrashFill } from "react-icons/bs";
 // import {
 //     Chart as ChartJS,
 //     CategoryScale,
@@ -393,21 +393,21 @@ function Noveldetail() {
                             :
                             <>
                                 {fictionName}
-                                <BsPencilSquare onClick={editNameToggle} />
+                                <BsPencilSquare style={{ cursor:'pointer' }} onClick={editNameToggle} />
                             </>
                         }
-                        <Button variant="secondary" style={{ float: 'right', background: 'red', marginRight: "0.5%", marginTop: "0.5%" }} onClick={() => {
+                        <i variant="secondary" style={{ float: 'right', color: 'red', marginRight: "0.5%", marginTop: "0.5%", fontSize:'20px',cursor:'pointer'}} onClick={() => {
                             deleteFShow()
                         }}>
-                            ลบ
-                        </Button>
+                            <BsFillTrashFill/>
+                        </i>
                     </Form.Label>
 
                     <Row >
                         <Col sm={3}>
                             <div style={{ textAlign: 'center' }}>
                                 <h3 style={{ color: 'black', marginLeft: '175px' }}>
-                                    <BsPencilSquare onClick={() => editImageShow()} />
+                                    <BsPencilSquare style={{ cursor:'pointer', color:'white' }} onClick={() => editImageShow()} />
                                 </h3>
                                 <div>
                                     <img src={imagesShow} alt="" width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
@@ -451,20 +451,20 @@ function Noveldetail() {
                                     <td>{category(item.category)}</td>
                                     <td>
                                         <div className='button1'>
-                                            <Button variant="secondary" onClick={() => {
+                                            <i variant="secondary" style={{color:'white',marginRight:'5px',fontSize:'20px',cursor:'pointer'}} onClick={() => {
                                                 SetModalChapterID(item.chapterID)
                                                 SetModalChapterName(item.title)
                                                 getChapterInfo(item.chapterID)
                                             }}>
-                                                แก้ไข
-                                            </Button>
-                                            <Button variant="danger" onClick={() => {
+                                                <BsPencilSquare/>
+                                            </i>
+                                            <i variant="danger" style={{color:'red',fontSize:'20px',cursor:'pointer'}} onClick={() => {
                                                 SetModalChapterID(item.chapterID)
                                                 SetModalChapterName(item.title)
                                                 deleteCShow()
                                             }}>
-                                                ลบ
-                                            </Button>
+                                                <BsFillTrashFill/>
+                                            </i>
 
                                         </div>
                                     </td>
