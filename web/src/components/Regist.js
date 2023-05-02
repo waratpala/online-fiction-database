@@ -22,7 +22,7 @@ function Registpage() {
             headers: { 'content-type': 'multipart/form-data' }
         }
 
-        axios.post("http://127.0.0.1:5000/login", formData, config)
+        axios.post("http://127.0.0.1:5000/register", formData, config)
             .then(response => {
 
                 if (response.status == 201) {
@@ -38,7 +38,9 @@ function Registpage() {
                 }
             })
             .catch(error => {
-                console.log(error);
+                if (error.response.status == 400) {
+                    console.log(error.response.data.status)
+                }
             });
     };
 
