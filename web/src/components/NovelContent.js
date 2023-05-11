@@ -10,8 +10,19 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
 import './style/NovelContent.css';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement,
+} from 'chart.js';
+import { Pie, Line } from 'react-chartjs-2';
+
 
 
 function Novelcontent() {
@@ -20,6 +31,43 @@ function Novelcontent() {
     const [page, setPage] = useState(1);
     const [sort, setSort] = useState("DESC");
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0,]);
+
+
+    ChartJS.register(
+        CategoryScale,
+        LinearScale,
+        PointElement,
+        LineElement,
+        Title,
+        Tooltip,
+        Legend
+    );
+
+    const optionsLine = {
+        plugins: {
+            legend: {
+                position: 'right',
+            },
+        },
+    };
+
+    const dataLine = {
+        labels: ['January', 'February', 'March'],
+        datasets: [
+            {
+                label: 'Dataset 1',
+                data: [1, 3, 4],
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+            {
+                label: 'Dataset 2',
+                data: [2, 7, 6],
+                borderColor: 'rgb(53, 162, 235)',
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            },
+        ],
+    };
 
     useEffect(() => {
         let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
@@ -103,13 +151,19 @@ function Novelcontent() {
                             </div>
 
                         </Col>
-                        <Col sm={9}>
+                        <Col sm={3}>
                             <div className='CourseDetails m-3'>
                                 <div style={{ width: '100%', height: '300px' }}>
                                     <Pie options={options} data={piedata} />
                                 </div>
                             </div>
-
+                        </Col>
+                        <Col sm={6}>
+                            <div className='CourseDetails m-3'>
+                                <div style={{ width: '100%', height: '300px' }}>
+                                    <Line options={optionsLine} data={dataLine} />
+                                </div>
+                            </div>
                         </Col>
                     </Row>
                     <Form.Group className='textepisode'>

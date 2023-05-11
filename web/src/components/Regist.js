@@ -2,46 +2,59 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import axios from 'axios';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import HeaderpageRegist from './RegistHeader';
 import './style/Regist.css'
 
 function Registpage() {
-    const [email, setEmail] = useState("");
+    const [username, setUser] = useState("");
     const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState({});
 
     let handleSubmit = async (e) => {
         e.preventDefault();
+        let err = { ...errors, usernameErr: null, passwordErr: null }
 
-        let formData = new FormData();
-        formData.append('username', email);
-        formData.append('password', password);
-
-        const config = {
-            headers: { 'content-type': 'multipart/form-data' }
+        if (username.trim() === "") {
+            err.usernameErr = "username is a required field."
+        } else {
+            err.usernameErr = null
         }
 
-        axios.post("http://127.0.0.1:5000/register", formData, config)
-            .then(response => {
+        if (password.trim().length === 0) {
+            err.passwordErr = "password is a required field."
+        } else {
+            err.passwordErr = null
+        }
 
-                if (response.status == 201) {
+        if (err.passwordErr === null && err.usernameErr === null) {
+            let formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+
+            const config = {
+                headers: { 'content-type': 'multipart/form-data' }
+            }
+
+            axios.post("http://127.0.0.1:5000/register", formData, config)
+                .then(response => {
                     sessionStorage.setItem("token", response.data.token);
-                }
-                if (response.status == 400) {
-                    if (response.data.status = "Duplicate Name") {
-
+                    window.location.replace('http://localhost:3000');
+                })
+                .catch(error => {
+                    if (error.response.status === 400) {
+                        if (error.response.data['status'] = "Duplicate Name") {
+                            err.usernameErr = "Username already in use."
+                            setUser("")
+                            setPassword("")
+                        }
                     }
-                }
-                if (response.status == 404) {
+                    if (error.response.status === 500) {
+                        window.location.replace('http://localhost:3000/500');
+                    }
+                });
+        }
 
-                }
-            })
-            .catch(error => {
-                if (error.response.status == 400) {
-                    console.log(error.response.data.status)
-                }
-            });
+        setErrors(err)
     };
 
     return (
@@ -50,11 +63,27 @@ function Registpage() {
             <Form className="Regist" onSubmit={handleSubmit}>
                 <p className="title">สร้างบัญชีผู้ใช้งาน</p>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Control type="text" value={email.emailInput} placeholder="Enter username" onChange={e => setEmail(e.target.value)} />
+                    <Form.Control
+                        type="text"
+                        placeholder="username"
+                        className="me-2"
+                        value={username}
+                        onChange={e => setUser(e.target.value)}
+                        isInvalid={!!errors.usernameErr}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors.usernameErr}</Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Control type="password" value={password.passwordInput} placeholder="Password" onChange={e => setPassword(e.target.value)} />
+                    <Form.Control
+                        type="password"
+                        placeholder="password"
+                        className="me-2"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        isInvalid={!!errors.passwordErr}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors.passwordErr}</Form.Control.Feedback>
                 </Form.Group>
                 <Button type="submit" className='btnsubmit' >
                     สร้างบัญชี

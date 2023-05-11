@@ -28,7 +28,9 @@ function Novel() {
         setNovelList(response.data);
       })
       .catch(error => {
-        window.location.replace('http://localhost:3000/500');
+        if (error.response.status === 500) {
+          window.location.replace('http://localhost:3000/500');
+        }
       });
   }, [filter, sort, search])
 
@@ -60,8 +62,8 @@ function Novel() {
               <option value="ASC">เก่าสุด</option>
             </Form.Select>
             <Form className="box-search d-flex" >
-              <i><BsSearch id='search-icon' color='black'/></i>
-              <input  ref={searchRef}
+              <i><BsSearch id='search-icon' color='black' /></i>
+              <input ref={searchRef}
                 type="search"
                 placeholder="Search"
                 className="input-search me-2"
