@@ -48,7 +48,7 @@ function Headerpage() {
           window.location.reload(false);
         })
         .catch((error) => {
-          if (error.response.status === 403) {
+          if (error.response.status === 404) {
             err.usernameErr = "username ro password was wrong."
             setUser("")
             setPassword("")

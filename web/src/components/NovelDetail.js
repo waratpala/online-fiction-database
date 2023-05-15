@@ -94,7 +94,7 @@ function Noveldetail() {
     };
 
     const dataLine = {
-        labels: ['January', 'February', 'March'],
+        labels: fictionInfo?.chapterlist.map((item, index) => item.chapter),
         datasets: [
             {
                 label: 'Dataset 1',
@@ -285,7 +285,7 @@ function Noveldetail() {
                 deleteCClose()
                 if (response.status === 200) {
                     fictionInfo.chapterlist = fictionInfo.chapterlist.filter((val) => {
-                        return val.chapterID != modalChapterID
+                        return val.chapterID !== modalChapterID
                     })
                 }
             })
