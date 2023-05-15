@@ -52,7 +52,7 @@ function Novelcontent() {
     };
 
     const dataLine = {
-        labels: ['January', 'February', 'March'],
+        labels: fictionInfo?.chapterlist.map((item, index) => item.chapter),
         datasets: [
             {
                 label: 'Dataset 1',
@@ -89,6 +89,7 @@ function Novelcontent() {
     };
 
     useEffect(() => {
+        console.log(fictionInfo);
         setData([fictionInfo?.chapter_cat?.c2,
         fictionInfo?.chapter_cat?.c3,
         fictionInfo?.chapter_cat?.c4,
