@@ -7,6 +7,7 @@ import Modal from 'react-bootstrap/Modal';
 import ManageNovelitem from './ManageNovelItem';
 import './style/ManageNovel.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { BsSearch } from "react-icons/bs";
 import Headerpage from './Header';
 
 function ManageNovel() {
@@ -124,9 +125,9 @@ function ManageNovel() {
             <Headerpage />
 
             <Container>
-                <div className='controlitem m-3' style={{ backgroundColor: '#222831' }}>
-                    <Form.Label className='textmanage' >จัดการนิยาย</Form.Label>
-                    <Form.Group className="m-3">
+                <div className='controlitem-manage ' style={{ backgroundColor: '#222831' }}>
+                    <Form.Label className='text-manage' >จัดการนิยาย</Form.Label>
+                    {/* <Form.Group className="m-3">
                         <Form className="d-flex" >
                             <Form.Control ref={searchRef}
                                 type="search"
@@ -138,6 +139,22 @@ function ManageNovel() {
                             <Button onClick={handleClick} variant="outline-info" style={{ width: '10%', height: '50px' }}>ค้นหา</Button>
                             <AiOutlinePlusCircle style={{ width: '20%', height: '50px', cursor: 'pointer', marginLeft: '700px' }} onClick={() => editImageShow()} />
                         </Form>
+                    </Form.Group> */}
+
+                    <Form.Group className="search-box">
+                        <Form className="box-search" >
+                            <i><BsSearch id='search-icon' color='black' /></i>
+                                <input ref={searchRef}
+                                type="search"
+                                placeholder="Search"
+                                className="input-search me-2"
+                                aria-label="Search"
+                                    
+                                onSubmit={e => setSearch(e.target.value)}
+                                    />
+                        </Form>
+                        <Button variant="outline-info" onClick={handleClick} >ค้นหา</Button>
+                        <AiOutlinePlusCircle className="add-icon"  onClick={() => editImageShow()} />
                     </Form.Group>
                     <hr style={{ color: 'white' }} />
 
