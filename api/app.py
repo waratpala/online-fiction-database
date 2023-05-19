@@ -317,14 +317,19 @@ def GetWriterFictionListAPI():
     try:
         page = int(page)
         limit = int(limit)
-        if (filterDB):
-            filterDB = int(filterDB)
-        if (filterDB == 0):
-            filterDB = None
         if search == None:
             search = ""
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
+
+    if filterDB == '':
+        filterDB = None
+
+    if (filterDB):
+        try:
+            filterDB = int(filterDB)
+        except:
+            return make_response(jsonify({"status": "TypeError"}), 400)
 
     sort = "fictionID " + sort
 

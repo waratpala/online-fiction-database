@@ -12,7 +12,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/fiction ?page=2&limit=10",
+					"raw": "http://127.0.0.1:5000/fiction?limit=10&sort=DESC&page=1",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -22,31 +22,30 @@
 					],
 					"port": "5000",
 					"path": [
-						"fiction "
+						"fiction"
 					],
 					"query": [
-						{
-							"key": "page",
-							"value": "2"
-						},
 						{
 							"key": "limit",
 							"value": "10"
 						},
 						{
 							"key": "sort",
-							"value": null,
-							"disabled": true
+							"value": "DESC"
 						},
 						{
 							"key": "filter",
-							"value": null,
+							"value": "",
 							"disabled": true
 						},
 						{
 							"key": "search",
-							"value": null,
+							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1"
 						}
 					]
 				}
@@ -55,23 +54,20 @@
 		},
 		{
 			"name": "login",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
 							"key": "username",
-							"value": "w",
+							"value": "x",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "w",
+							"value": "x",
 							"type": "text"
 						}
 					]
@@ -114,7 +110,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/login",
+					"raw": "http://127.0.0.1:5000/register",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -124,7 +120,7 @@
 					],
 					"port": "5000",
 					"path": [
-						"login"
+						"register"
 					]
 				}
 			},
@@ -133,6 +129,9 @@
 		{
 			"name": "fiction info",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -152,7 +151,7 @@
 					"variable": [
 						{
 							"key": "fictionID",
-							"value": "55808"
+							"value": "1"
 						}
 					]
 				}
@@ -162,10 +161,13 @@
 		{
 			"name": "get chapter",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/:fictionID?page=2&limit=10",
+					"raw": "http://127.0.0.1:5000/:fictionID?sort=DESC",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -179,33 +181,14 @@
 					],
 					"query": [
 						{
-							"key": "page",
-							"value": "2"
-						},
-						{
-							"key": "limit",
-							"value": "10"
-						},
-						{
 							"key": "sort",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "filter",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "search",
-							"value": "",
-							"disabled": true
+							"value": "DESC"
 						}
 					],
 					"variable": [
 						{
 							"key": "fictionID",
-							"value": "12402"
+							"value": "1"
 						}
 					]
 				}
@@ -234,7 +217,7 @@
 					"variable": [
 						{
 							"key": "chapterID",
-							"value": "1464"
+							"value": "1"
 						}
 					]
 				}
@@ -247,7 +230,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/writer?page=1&limit=10",
+					"raw": "http://127.0.0.1:5000/writer?page=1&limit=10&sort=DESC",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -262,16 +245,18 @@
 					"query": [
 						{
 							"key": "page",
-							"value": "1"
+							"value": "1",
+							"description": "need"
 						},
 						{
 							"key": "limit",
-							"value": "10"
+							"value": "10",
+							"description": "need"
 						},
 						{
 							"key": "sort",
-							"value": "",
-							"disabled": true
+							"value": "DESC",
+							"description": "need"
 						},
 						{
 							"key": "filter",
@@ -298,13 +283,13 @@
 					"formdata": [
 						{
 							"key": "fiction_name",
-							"value": "test2",
+							"value": "saw",
 							"type": "text"
 						},
 						{
 							"key": "fiction_image",
 							"type": "file",
-							"src": "/D:/image/021b2771f5e9c6a3e720688f310dc85e.jpg"
+							"src": "/D:/image/641f62b933ff79899e45c4fd8780e67b.jpg"
 						}
 					]
 				},
@@ -368,7 +353,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/writer/:fictionID/:chapter",
+					"raw": "http://127.0.0.1:5000/writer/:fictionID/:chapterID",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -380,16 +365,16 @@
 					"path": [
 						"writer",
 						":fictionID",
-						":chapter"
+						":chapterID"
 					],
 					"variable": [
 						{
 							"key": "fictionID",
-							"value": "581282"
+							"value": "1"
 						},
 						{
-							"key": "chapter",
-							"value": "1"
+							"key": "chapterID",
+							"value": null
 						}
 					]
 				}
@@ -417,7 +402,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/writer/:fictionID/:chapter",
+					"raw": "http://127.0.0.1:5000/writer/:fictionID/:chapterID",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -429,16 +414,16 @@
 					"path": [
 						"writer",
 						":fictionID",
-						":chapter"
+						":chapterID"
 					],
 					"variable": [
 						{
 							"key": "fictionID",
-							"value": "581282"
+							"value": "1"
 						},
 						{
-							"key": "chapter",
-							"value": "2"
+							"key": "chapterID",
+							"value": "1"
 						}
 					]
 				}
@@ -460,13 +445,13 @@
 						},
 						{
 							"key": "content",
-							"value": "newcontent",
+							"value": "all",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/writer/:fictionID/:chapter",
+					"raw": "http://127.0.0.1:5000/writer/:fictionID",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -477,17 +462,12 @@
 					"port": "5000",
 					"path": [
 						"writer",
-						":fictionID",
-						":chapter"
+						":fictionID"
 					],
 					"variable": [
 						{
 							"key": "fictionID",
-							"value": "581282"
-						},
-						{
-							"key": "chapter",
-							"value": "31"
+							"value": "1"
 						}
 					]
 				}
@@ -522,6 +502,172 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/user",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fiction",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/writer/:fictionID",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"writer",
+						":fictionID"
+					],
+					"variable": [
+						{
+							"key": "fictionID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update fiction name",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "xxxx",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/fiction/name/:fictionID",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"fiction",
+						"name",
+						":fictionID"
+					],
+					"variable": [
+						{
+							"key": "fictionID",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update image",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fiction_image",
+							"type": "file",
+							"src": "/D:/image/641f62b933ff79899e45c4fd8780e67b.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/fiction/image/:fictionID",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"fiction",
+						"image",
+						":fictionID"
+					],
+					"variable": [
+						{
+							"key": "fictionID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get writer chapter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/writer/:fictionID?sort=DESC",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"writer",
+						":fictionID"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "DESC"
+						}
+					],
+					"variable": [
+						{
+							"key": "fictionID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
@@ -529,7 +675,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEyOTA1MDQsImlhdCI6MTY4MTIwNDA0NCwic3ViIjoxfQ.Co6GXfHykDxC_N4xBkuUls6GJp5_aIgiIPyjI7wjxXs",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODIwMDUwMjgsImlhdCI6MTY4MTkxODU2OCwic3ViIjp7InVzZXIiOjF9fQ.NNL3XGzuVKgKqOHWOzZhUw_Ysl4DVW5hbj6nhNNmpzI",
 				"type": "string"
 			}
 		]
