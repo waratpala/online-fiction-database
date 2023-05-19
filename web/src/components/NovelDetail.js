@@ -94,7 +94,7 @@ function Noveldetail() {
     };
 
     const dataLine = {
-        labels: fictionInfo?.chapterlist.map((item, index) => item.chapter),
+        labels: fictionInfo?.chapterlist?.map((item, index) => item.chapter),
         datasets: [
             {
                 label: 'Dataset 1',

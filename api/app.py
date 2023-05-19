@@ -175,18 +175,23 @@ def GetFictionListAPI():
     page = request.args.get('page')
     limit = request.args.get('limit')
     sort = request.args.get('sort')
-    filterDB = request.args.get('filter')
+    filterDB = request.args.get('filter', default=None, type=None)
     search = request.args.get('search')
 
     try:
         page = int(page)
         limit = int(limit)
-        if (filterDB):
-            filterDB = int(filterDB)
-        if (filterDB == 0):
-            filterDB = None
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
+
+    if filterDB == '':
+        filterDB = None
+
+    if (filterDB):
+        try:
+            filterDB = int(filterDB)
+        except:
+            return make_response(jsonify({"status": "TypeError"}), 400)
 
     sort = "fictionID " + sort
 
