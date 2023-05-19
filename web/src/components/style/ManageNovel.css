@@ -1,8 +1,69 @@
-.textmanage{
+.controlitem-manage{
+    background-color: #222831;
+    border-radius: 2px;
+    width: 98%;
+    position: absolute;
+    top: 100px;
+    left: 10px;
+}
+
+.text-manage{
+    font-family: fantasy;
     background-color: #00ADB5;
     display: block;
     color: white;
+    font-size: 25px;
     height: 50px;
+    padding: 5px; 
     border-radius: 3px;
 }
 
+.box-search{
+    background-color: white;
+    border-radius: 5px;
+    width: 250px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
+input{
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    font-size: 1.25rem;
+    margin-left: 5px;
+}
+
+input:focus{
+    outline: none;
+}
+
+.search-box{
+    display: flex;
+    position: relative;
+ }
+
+
+ .add-icon{
+    width: 20%;
+    height: 50px;
+    cursor: pointer;
+    position: absolute;
+    left: 83%;
+
+ }
+ 
+
+ @media screen and (max-width: 900px) {
+
+     .controlitem-manage{
+        position: absolute;
+        left: 5px;
+    
+    }
+     
+ }

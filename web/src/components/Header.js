@@ -83,8 +83,8 @@ function Headerpage() {
             <>
               <Nav className="me-auto">
               </Nav>
-              <Form className="d-flex">
-                <Form.Group>
+              <Form className=" form-input">
+                <Form.Group className='text-input'>
                   <Form.Control
                     type="text"
                     placeholder="username"
@@ -95,7 +95,7 @@ function Headerpage() {
                   />
                   <Form.Control.Feedback type="invalid">{errors.usernameErr}</Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group>
+                <Form.Group className='password-input'>
                   <Form.Control
                     type="password"
                     placeholder="password"
@@ -107,8 +107,8 @@ function Headerpage() {
                   <Form.Control.Feedback type="invalid">{errors.passwordErr}</Form.Control.Feedback>
                 </Form.Group>
               </Form>
-              <Button variant="outline-info" type="submit" onClick={handleSubmit} style={{ marginRight: '5px' }}><BiLogIn />ล็อกอิน</Button>
-              <Button variant="outline-info" as={Link} to="/Register"><BsFillPersonFill />สมัครสมาชิก</Button>
+              <Button className='btn-login' variant="outline-info" type="submit" onClick={handleSubmit} style={{ marginRight: '10px',marginLeft: '10px' }}><BiLogIn />ล็อกอิน</Button>
+              <Button className='btn-regist'variant="outline-info" as={Link} to="/Register"><BsFillPersonFill />สมัครสมาชิก</Button>
             </>
           )}
         </Navbar.Collapse>
