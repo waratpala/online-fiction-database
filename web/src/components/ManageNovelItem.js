@@ -13,7 +13,7 @@ function ManageNovelitem(props) {
                 {props.novelList?.data?.map((item, index) => (
                     <Col key={item.fictionID} sm={2} className='m-2'>
                         <Card as={Link} to={`/noveldetail/${item.fictionID}`}>
-                            <Card.Img variant="top" src={item.picture} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
+                            <Card.Img variant="top" src={item.picture} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretchco', }} />
                             <Card.Body>
                                 <Card.Text>
                                     {item.fictionName}

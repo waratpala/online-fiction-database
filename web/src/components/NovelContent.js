@@ -141,11 +141,10 @@ function Novelcontent() {
         <>
             <Header />
             <Container>
-                <div className='controlitemcontent m-3'>
-                    <Form.Label className='textcontent' >
-                        <h3>{fictionInfo.fictionName} โดย {fictionInfo.user_name}</h3>
-                    </Form.Label>
-                    <Row >
+                <div className='controlitem-content'>
+                        <h3 className='text-novelname'>{fictionInfo.fictionName} โดย {fictionInfo.user_name}</h3>
+                  
+                    <Row className='row-type'>
                         <Col sm={3} >
                             <div style={{ textAlign: 'center' }}>
                                 <img src={fictionInfo.picture} alt="" width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
@@ -167,8 +166,8 @@ function Novelcontent() {
                             </div>
                         </Col>
                     </Row>
-                    <Form.Group className='textepisode'>
-                        <Form.Label  >สารบัญตอน</Form.Label>
+                    <Form.Group className='text-episode'>
+                        <Form.Label  className='m-text-episode'>สารบัญตอน</Form.Label>
                         <Button onClick={handleClick} className='btnsort'>  ↿ ⇂ ตอนล่าสุด</Button>
 
                     </Form.Group>

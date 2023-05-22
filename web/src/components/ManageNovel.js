@@ -141,8 +141,8 @@ function ManageNovel() {
                         </Form>
                     </Form.Group> */}
 
-                    <Form.Group className="search-box">
-                        <Form className="box-search" >
+                    <Form.Group className="search-box-manage">
+                        <Form className="box-search-manage" >
                             <i><BsSearch id='search-icon' color='black' /></i>
                                 <input ref={searchRef}
                                 type="search"

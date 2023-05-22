@@ -11,39 +11,80 @@ body{
     color: white;
 }
 
-.controlitemcontent{
+.controlitem-content{
     background-color: #222831;
+    border-radius: 2px;
+    width: 98%;
     position: absolute;
-    width: 1350px;
     top: 100px;
-    left: 50px;
+    left: 15px;
 }
 
-.textcontent{
+
+.text-novelname{
+    font-family: fantasy;
     background-color: #00ADB5;
     display: block;
     color: white;
+    font-size: 25px;
     height: 50px;
+    padding: 5px; 
     border-radius: 3px;
+    
 }
 
-.textepisode{
+
+.row-type{
+    margin-bottom: 25px;
+}
+
+.text-episode{
+    font-family: fantasy;
     background-color: #00ADB5;
+    position: relative;
     display: block;
     color: white;
     height: 50px; 
     border-radius: 3px;
+    
 }
-
+.m-text-episode{
+    position: absolute;
+    font-size: 20px;
+    left: 1%;
+    top: 7px;
+}
 .btnsort{
     height: 40px;
     background-color: aliceblue;
     color: black;
     text-align: center;
-    margin-top: 5px;
-    margin-left: 1150px;
+    position: absolute;
+    border: 0;
+    width: auto;
+    left: 92%;
+    top: 5px;
+    
 }
 
+.btnsort:hover{
+    background-color: #015256;
+  }
 .listname{
     color: white;
+}
+
+
+@media screen and (max-width: 900px) {
+
+    .controlitem-content{
+       position: absolute;
+       left: 5px;
+   
+   }
+   .add-icon{
+       position: absolute;
+       left: 82%;
+   
+    }
 }

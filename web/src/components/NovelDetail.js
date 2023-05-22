@@ -443,8 +443,8 @@ function Noveldetail() {
         <>
             <Header />
             <Container>
-                <div className='controlitemdetail m-3'>
-                    <Form.Label className='texttitle' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>
+                <div className='controlitem-detail'>
+                    <Form.Label className='text-title' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>
                         {editName ?
                             <>
                                 <Row>
@@ -466,7 +466,7 @@ function Noveldetail() {
                                         }}>
                                             บันทึก
                                         </Button>
-                                        <Button onClick={editNameToggle}>
+                                        <Button variant="secondary" onClick={editNameToggle}>
                                             ยกเลิก
                                         </Button>
                                     </div>
@@ -483,7 +483,7 @@ function Noveldetail() {
                             <>
                                 {fictionName}
                                 <BsPencilSquare style={{ cursor: 'pointer' }} onClick={editNameToggle} />
-                                <i variant="secondary" style={{ float: 'right', color: 'red', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                <i variant="secondary" style={{ float: 'right', color: 'white', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
                                     deleteFShow()
                                 }}>
                                     <BsFillTrashFill />
@@ -492,7 +492,7 @@ function Noveldetail() {
                         }
                     </Form.Label>
 
-                    <Row >
+                    <Row className='row-type'>
                         <Col sm={3}>
                             <div style={{ textAlign: 'center' }}>
                                 <h3 style={{ color: 'black', marginLeft: '175px' }}>
@@ -519,9 +519,9 @@ function Noveldetail() {
                             </div>
                         </Col>
                     </Row>
-                    <Form.Group className='textepisodedetail'>
-                        <Form.Label >สารบัญตอน</Form.Label>
-                        <h3 className='btnadd' onClick={() => {
+                    <Form.Group className='text-episode-detail'>
+                        <h4>สารบัญตอน</h4>
+                        <h3 className='btn-add' onClick={() => {
                             setChapterTitle("")
                             setChapterContent("")
                             newShow()
@@ -552,7 +552,7 @@ function Noveldetail() {
                                             }}>
                                                 <BsPencilSquare />
                                             </i>
-                                            <i variant="danger" style={{ color: 'red', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                            <i variant="danger" style={{ color: 'white', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
                                                 SetModalChapterID(item.chapterID)
                                                 SetModalChapterName(item.title)
                                                 deleteCShow()
@@ -688,7 +688,7 @@ function Noveldetail() {
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
                     <div style={{ textAlign: 'center' }}>
-                        <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
+                        <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'cover', }} />
                         <input type="file" accept="image/*" onChange={onImageChage}></input>
                     </div>
                 </Modal.Body>

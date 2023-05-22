@@ -11,7 +11,7 @@ import Nav from 'react-bootstrap/Nav';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
-import './style/Edit.css'
+import './style/Read.css'
 
 
 function ReadNovel() {
@@ -44,8 +44,8 @@ function ReadNovel() {
     <>
       <Header />
       <Container>
-        <div className='controlitem m-3' style={{ backgroundColor: '#393E46' }}>
-          <Form.Label className='texttitleedit' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white', width: '100%', height: '50px' }}>
+        <div className='controlitem-read'>
+          <Form.Label className='text-title' >
             {contentInfo.fiction_name}
           </Form.Label>
           <div className='editcontent m-5'>
