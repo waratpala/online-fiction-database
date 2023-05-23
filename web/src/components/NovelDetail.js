@@ -687,9 +687,10 @@ function Noveldetail() {
                     <Modal.Title>Udate Image</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
-                    <div style={{ textAlign: 'center' }}>
-                        <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'cover', }} />
-                        <input type="file" accept="image/*" onChange={onImageChage}></input>
+                <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'cover', }} />
+                    <div >
+                        <label className="input-choose-image" htmlFor="inputGroupFile">choose image</label>
+                        <input type="file" accept="image/*"  id="inputGroupFile" onChange={onImageChage} style={{ display:'none' }}></input>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>

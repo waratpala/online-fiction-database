@@ -58,6 +58,8 @@
     top: 2px;
 }
 
+
+
 .listnamedetail {
     color: white;
 }
@@ -73,3 +75,13 @@
 .modalFooter {
     background-color: #222831;
 }
+
+.input-choose-image{
+    margin-top: 5px;
+    border-radius: 3px;
+    border: 20px;
+    background-color: aliceblue;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+ }

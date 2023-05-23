@@ -166,17 +166,18 @@ function ManageNovel() {
 
             <Modal show={editImage} onHide={editImageClose}>
                 <Modal.Header closeButton className='modalHeader'>
-                    <Modal.Title>Udate Image</Modal.Title>
+                    <Modal.Title> Add Novel</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
                     <img src={imageURL} height={200} />
                     <div>
-                        <input type="file" accept="image/*" onChange={onImageChage}></input>
+                        <label className="input-choose-image" htmlFor="inputGroupFile">choose image</label>
+                        <input type="file" accept="image/*" id="inputGroupFile" onChange={onImageChage} style={{ display:'none' }}></input>
                     </div>
                     <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Control
                             type="text"
-                            placeholder="name"
+                            placeholder="Novel name"
                             className="me-2"
                             value={fictionName}
                             onChange={event => setFictionName(event.target.value)}
@@ -186,6 +187,11 @@ function ManageNovel() {
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>
+                    <Button type='submit' variant="danger" onClick={() => {
+                        handleNewFiction()
+                    }}>
+                        ตกลง
+                    </Button>
                     <Button variant="secondary" onClick={() => {
                         editImageClose()
                         setImageURL('http://127.0.0.1:5000/image/default.jpg')
@@ -194,11 +200,7 @@ function ManageNovel() {
                     }}>
                         ยกเลิก
                     </Button>
-                    <Button type='submit' variant="danger" onClick={() => {
-                        handleNewFiction()
-                    }}>
-                        ตกลง
-                    </Button>
+                    
                 </Modal.Footer>
             </Modal>
         </>
