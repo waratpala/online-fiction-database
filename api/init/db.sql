@@ -17,6 +17,7 @@ CREATE TABLE `fiction` (
   `fictionID` int NOT NULL AUTO_INCREMENT,
   `fictionName` varchar(100) NOT NULL,
   `categoryID` int DEFAULT NULL,
+  `abstract` mediumtext,
   `picture` varchar(255) NOT NULL DEFAULT 'http://127.0.0.1:5000/image/default.jpg',
   `writer` int NOT NULL,
   `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,9 +33,6 @@ CREATE TABLE `chapter` (
   `fictionID` int DEFAULT NULL,
   `chapter` int DEFAULT NULL,
   `categoryID` int DEFAULT NULL,
-  `category_prop` FLOAT DEFAULT NULL,
-  `subcategoryID` int DEFAULT NULL,
-  `subcategory_prop` FLOAT DEFAULT NULL,
   `title` varchar(1000) DEFAULT NULL,
   `content` mediumtext,
   `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -94,8 +92,8 @@ INSERT INTO `category` (`categoryID`, `name`) VALUES
 INSERT INTO `user` (`user_name`, `password`) VALUES
 ('x', 'x');
 
-INSERT INTO `fiction` (`fictionName`, `picture`,`writer`) VALUES
-('test-fiction-name', 'http://127.0.0.1:5000/image/test11.jpg', 1);
+INSERT INTO `fiction` (`fictionName`, `abstract`,`picture`,`writer`) VALUES
+('test-fiction-name', 'tetstsetst', 'http://127.0.0.1:5000/image/test11.jpg', 1);
 
 INSERT INTO `chapter` (`fictionID`, `chapter`,`categoryID`,`title`,`content`) VALUES
 (1, 1, 2,'new','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),

@@ -70,7 +70,24 @@ def UpdateFictionName(fictionID, title):
     except TypeError as err:
         return err
 
+def UpdateFictionAbstract(fictionID, abstract):
+    try:
+        mydb = DbConnection().connection
+        mycursor = mydb.cursor(dictionary=True, buffered=True)
 
+        sql = "UPDATE fiction SET abstract=%s WHERE fictionID=%s"
+        val = (abstract, fictionID)
+
+        mycursor.execute(sql, val)
+        mydb.commit()
+
+        return None
+
+    except mysql.connector.Error as err:
+        return err
+    except TypeError as err:
+        return err
+    
 def GetImageName(fictionID):
     try:
         mydb = DbConnection().connection
@@ -163,7 +180,7 @@ def GetChapter(sort, fictionID):
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True, buffered=True)
 
-        sql = "SELECT fictionID,fictionName,categoryID,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s"
+        sql = "SELECT fictionID,fictionName,categoryID,abstract,picture,user_name FROM fiction INNER JOIN user ON writer=id WHERE fictionID = %s"
         val = (fictionID,)
 
         mycursor.execute(sql, val)
@@ -223,17 +240,18 @@ def GetContent(chapterID):
         return None, err
 
 
-def NewFiction(fictionName, writerID, url):
+def NewFiction(fictionName, abstract, writerID, url):
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True, buffered=True)
 
         if (url):
-            sql = ("INSERT INTO fiction (fictionName,writer,picture) VALUES (%s,%s,%s)")
-            val = (fictionName, writerID, url)
+            sql = (
+                "INSERT INTO fiction (fictionName,abstract,writer,picture) VALUES (%s,%s,%s,%s)")
+            val = (fictionName, abstract, writerID, url)
         else:
-            sql = ("INSERT INTO fiction (fictionName,writer) VALUES (%s,%s)")
-            val = (fictionName, writerID)
+            sql = ("INSERT INTO fiction (fictionName,abstract,writer) VALUES (%s,%s,%s)")
+            val = (fictionName, abstract, writerID)
 
         mycursor.execute(sql, val)
         mydb.commit()

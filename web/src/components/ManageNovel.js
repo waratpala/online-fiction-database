@@ -26,6 +26,7 @@ function ManageNovel() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [editImage, setEditImage] = useState(false);
     const [fictionName, setFictionName] = useState("");
+    const [abstract, setAbstract] = useState("");
     const [images, setImages] = useState([]);
     const [imageURL, setImageURL] = useState('http://127.0.0.1:5000/image/default.jpg');
 
@@ -42,6 +43,7 @@ function ManageNovel() {
         if (err.fictionNaemErr === null) {
             let data = new FormData();
             data.append('fiction_name', fictionName);
+            data.append('abstract', abstract);
             data.append("fiction_image", selectedFile);
 
 
@@ -144,17 +146,17 @@ function ManageNovel() {
                     <Form.Group className="search-box-manage">
                         <Form className="box-search-manage" >
                             <i><BsSearch id='search-icon' color='black' /></i>
-                                <input ref={searchRef}
+                            <input ref={searchRef}
                                 type="search"
                                 placeholder="Search"
                                 className="input-search me-2"
                                 aria-label="Search"
-                                    
+
                                 onSubmit={e => setSearch(e.target.value)}
-                                    />
+                            />
                         </Form>
                         <Button variant="outline-info" onClick={handleClick} >ค้นหา</Button>
-                        <AiOutlinePlusCircle className="add-icon"  onClick={() => editImageShow()} />
+                        <AiOutlinePlusCircle className="add-icon" onClick={() => editImageShow()} />
                     </Form.Group>
                     <hr style={{ color: 'white' }} />
 
@@ -172,9 +174,10 @@ function ManageNovel() {
                     <img src={imageURL} height={200} />
                     <div>
                         <label className="input-choose-image" htmlFor="inputGroupFile">choose image</label>
-                        <input type="file" accept="image/*" id="inputGroupFile" onChange={onImageChage} style={{ display:'none' }}></input>
+                        <input type="file" accept="image/*" id="inputGroupFile" onChange={onImageChage} style={{ display: 'none' }}></input>
                     </div>
                     <Form.Group className="mb-3" controlId="formBasicPassword">
+                        <Form.Label>ชื่อเรื่อง</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Novel name"
@@ -184,6 +187,15 @@ function ManageNovel() {
                             isInvalid={!!errors.fictionNaemErr}
                         />
                         <Form.Control.Feedback type="invalid">{errors.passwordErr}</Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className='mt-2'>
+                        <Form.Label>เรื่องย่อ</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={8}
+                            defaultValue={abstract}
+                            onChange={event => setAbstract(event.target.value)}
+                        />
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>
@@ -196,11 +208,12 @@ function ManageNovel() {
                         editImageClose()
                         setImageURL('http://127.0.0.1:5000/image/default.jpg')
                         setFictionName('')
+                        setAbstract('')
                         setErrors({ ...errors, fictionNaemErr: null })
                     }}>
                         ยกเลิก
                     </Button>
-                    
+
                 </Modal.Footer>
             </Modal>
         </>

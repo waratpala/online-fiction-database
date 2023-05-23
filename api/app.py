@@ -223,6 +223,21 @@ def UpdateFictionNameAPI(fictionID):
 
     return make_response({"status": "OK"}, 201)
 
+@ app.route("/fiction/abstract/<fictionID>", methods=['PUT'])
+@ authenticationUser()
+@ authenticationPermission()
+def UpdateAbstractAPI(fictionID):
+
+    try:
+        abstract = request.form['abstract']
+    except:
+        abstract = ''
+
+    err = UpdateFictionAbstract(fictionID, abstract)
+    if err != None:
+        return make_response(jsonify(str(err)), 500)
+
+    return make_response({"status": "OK"}, 201)
 
 @ app.route("/fiction/image/<fictionID>", methods=['PUT'])
 @ authenticationUser()
@@ -371,6 +386,14 @@ def AddNewFictionAPI():
     filename = str(uuid.uuid4())
 
     try:
+        abstract = request.form['abstract']
+    except:
+        abstract = ''
+    
+    if(abstract == None):
+        abstract = ''
+
+    try:
         file = request.files['fiction_image']
     except:
         file = None
@@ -388,7 +411,7 @@ def AddNewFictionAPI():
         url = "http://127.0.0.1:5000/image/" + file.filename
 
     err = NewFiction(
-        fictionName, user["sub"]['user'], url)
+        fictionName, abstract, user["sub"]['user'], url)
 
     if err != None:
         return make_response(jsonify(str(err)), 500)

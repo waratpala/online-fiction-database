@@ -12,29 +12,8 @@ import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-);
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -48,6 +27,7 @@ function Noveldetail() {
     const [edit, setEdit] = useState(false);
     const [editImage, setEditImage] = useState(false);
     const [editName, setEditName] = useState(false);
+    const [editAbstract, setEditAbstract] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
     const [errors, setErrors] = useState({});
 
@@ -68,10 +48,13 @@ function Noveldetail() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const editNameToggle = () => setEditName(!editName);
+    const editAbstractToggle = () => setEditAbstract(!editAbstract);
 
     const [fictionInfo, setFictionInfo] = useState("");
     const [fictionName, setfictionName] = useState("");
+    const [abstract, setAbstract] = useState("");
     const [newFictionName, setNewFictionName] = useState("");
+    const [newAbstract, setNewAbstract] = useState("");
     const [sort, setSort] = useState("DESC");
 
     const [images, setImages] = useState([]);
@@ -84,32 +67,6 @@ function Noveldetail() {
     const [chapterTitle, setChapterTitle] = useState('')
     const [chapterContent, setChapterContent] = useState('')
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0])
-
-    const optionsLine = {
-        plugins: {
-            legend: {
-                position: 'right',
-            },
-        },
-    };
-
-    const dataLine = {
-        labels: fictionInfo?.chapterlist?.map((item, index) => item.chapter),
-        datasets: [
-            {
-                label: 'Dataset 1',
-                data: [1, 3, 4],
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
-                label: 'Dataset 2',
-                data: [2, 7, 6],
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-        ],
-    };
 
     const options = {
         plugins: {
@@ -307,6 +264,7 @@ function Noveldetail() {
             .then(response => {
                 setFictionInfo(response.data)
                 setfictionName(response.data.fictionName)
+                setAbstract(response.data.abstract)
                 setImageURL(response.data.picture)
                 setImagesShow(response.data.picture)
             }).catch(error => {
@@ -323,18 +281,6 @@ function Noveldetail() {
             });
 
     }, [refreshKey])
-
-    // var data = {
-    //     labels: fictionInfo?.chapterlist?.map((item, index) => (item.chapter)),
-    //     datasets: [
-    //         {
-    //             label: 'Chapter',
-    //             data: fictionInfo?.chapterlist?.map((item, index) => (item.category)),
-    //             borderColor: 'rgb(255, 99, 132)',
-    //             backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    //         },
-    //     ],
-    // };
 
     useEffect(() => {
         if (images.length < 1) return;
@@ -367,7 +313,7 @@ function Noveldetail() {
         }
     }
 
-    function handleWditName() {
+    function handleEditName() {
 
         let err = { ...errors, editFictionNameErr: null }
 
@@ -403,6 +349,32 @@ function Noveldetail() {
                 });
         }
         setErrors(err)
+    }
+
+    function handleEditAbstract() {
+
+        let data = new FormData();
+        data.append('abstract', newAbstract);
+
+        const AuthStr = 'Bearer ' + token;
+        const url = 'http://127.0.0.1:5000/fiction/abstract/' + fictionid
+
+        axios.put(url, data, { headers: { Authorization: AuthStr } })
+            .then(function (response) {
+                setAbstract(newAbstract)
+                editAbstractToggle()
+            })
+            .catch(function (error) {
+                if (error.response.status === 401) {
+                    window.location.replace('http://localhost:3000/');
+                }
+                if (error.response.status === 403) {
+                    window.location.replace('http://localhost:3000/403');
+                }
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/500');
+                }
+            });
     }
 
     function handleWditImage() {
@@ -462,7 +434,7 @@ function Noveldetail() {
                                     <div className="col-md-4">
                                         <Button onClick={() => {
                                             setfictionName(newFictionName)
-                                            handleWditName()
+                                            handleEditName()
                                         }}>
                                             บันทึก
                                         </Button>
@@ -512,11 +484,47 @@ function Noveldetail() {
                             </div>
                         </Col>
                         <Col sm={6}>
-                            <div className='CourseDetails m-3'>
-                                <div style={{ width: '100%', height: '300px' }}>
-                                    <Line options={optionsLine} data={dataLine} />
-                                </div>
-                            </div>
+                            {editAbstract ?
+                                <>
+                                    <div className='CourseDetails m-3'>
+                                        <div className='CourseDetails m-3'>
+                                            <Form.Group className='mt-2'>
+                                                <Form.Label >เรื่องย่อ</Form.Label>
+                                                <Form.Control
+                                                    as="textarea"
+                                                    rows={8}
+                                                    defaultValue={abstract}
+                                                    onChange={event => setNewAbstract(event.target.value)}
+                                                />
+                                            </Form.Group>
+                                            <Button onClick={() => {
+                                                setAbstract(newAbstract)
+                                                handleEditAbstract()
+                                            }}>
+                                                บันทึก
+                                            </Button>
+                                            <Button variant="secondary" onClick={editAbstractToggle}>
+                                                ยกเลิก
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </> :
+                                <>
+                                    <div className='CourseDetails m-3'>
+                                        <Form.Group className='mt-2'>
+                                            <Form.Label>เรื่องย่อ</Form.Label>
+                                            <BsPencilSquare style={{ cursor: 'pointer', color: 'white' }} onClick={() => editAbstractToggle()} />
+                                            <Form.Control
+                                                as="textarea"
+                                                rows={8}
+                                                defaultValue={abstract}
+                                                disabled
+                                                readOnly
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                </>
+                            }
                         </Col>
                     </Row>
                     <Form.Group className='text-episode-detail'>
@@ -687,10 +695,10 @@ function Noveldetail() {
                     <Modal.Title>Udate Image</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
-                <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'cover', }} />
+                    <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'cover', }} />
                     <div >
                         <label className="input-choose-image" htmlFor="inputGroupFile">choose image</label>
-                        <input type="file" accept="image/*"  id="inputGroupFile" onChange={onImageChage} style={{ display:'none' }}></input>
+                        <input type="file" accept="image/*" id="inputGroupFile" onChange={onImageChage} style={{ display: 'none' }}></input>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>

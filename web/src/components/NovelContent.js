@@ -10,18 +10,8 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
 import './style/NovelContent.css';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-} from 'chart.js';
-import { Pie, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Colors } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
 
 
@@ -33,41 +23,7 @@ function Novelcontent() {
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0,]);
 
 
-    ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        PointElement,
-        LineElement,
-        Title,
-        Tooltip,
-        Legend
-    );
-
-    const optionsLine = {
-        plugins: {
-            legend: {
-                position: 'right',
-            },
-        },
-    };
-
-    const dataLine = {
-        labels: fictionInfo?.chapterlist?.map((item, index) => item.chapter),
-        datasets: [
-            {
-                label: 'Dataset 1',
-                data: [1, 3, 4],
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
-                label: 'Dataset 2',
-                data: [2, 7, 6],
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-        ],
-    };
+    ChartJS.register(ArcElement, Tooltip, Legend);
 
     useEffect(() => {
         let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
@@ -142,8 +98,8 @@ function Novelcontent() {
             <Header />
             <Container>
                 <div className='controlitem-content'>
-                        <h3 className='text-novelname'>{fictionInfo.fictionName} โดย {fictionInfo.user_name}</h3>
-                  
+                    <h3 className='text-novelname'>{fictionInfo.fictionName} โดย {fictionInfo.user_name}</h3>
+
                     <Row className='row-type'>
                         <Col sm={3} >
                             <div style={{ textAlign: 'center' }}>
@@ -160,14 +116,21 @@ function Novelcontent() {
                         </Col>
                         <Col sm={6}>
                             <div className='CourseDetails m-3'>
-                                <div style={{ width: '100%', height: '300px' }}>
-                                    <Line options={optionsLine} data={dataLine} />
-                                </div>
+                                <Form.Group className='mt-2'>
+                                    <Form.Label>เรื่องย่อ</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={8}
+                                        defaultValue={fictionInfo.abstract}
+                                        disabled
+                                        readOnly
+                                    />
+                                </Form.Group>
                             </div>
                         </Col>
                     </Row>
                     <Form.Group className='text-episode'>
-                        <Form.Label  className='m-text-episode'>สารบัญตอน</Form.Label>
+                        <Form.Label className='m-text-episode'>สารบัญตอน</Form.Label>
                         <Button onClick={handleClick} className='btnsort'> ↿⇂ตอนล่าสุด</Button>
 
                     </Form.Group>
