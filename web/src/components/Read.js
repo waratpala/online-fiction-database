@@ -4,20 +4,21 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import { useParams } from 'react-router-dom'
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
-import './style/Edit.css'
+import './style/Read.css'
 
 
 function ReadNovel() {
   let token = sessionStorage.getItem("token");
   const { chapterid } = useParams();
   const [contentInfo, setContentInfo] = useState("");
+  const textAreaRef = useRef(null);
 
   useEffect(() => {
 
@@ -26,6 +27,7 @@ function ReadNovel() {
       .then(response => {
         if (response.status == 200) {
           setContentInfo(response.data)
+          console.log(response.data)
         }
         if (response.status == 400) {
 
@@ -39,17 +41,35 @@ function ReadNovel() {
       });
   }, [])
 
+  const resizeTextArea = () => {
+    textAreaRef.current.style.height = "auto";
+    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
+  };
+
+  useEffect(resizeTextArea, [contentInfo]);
+
   return (
     <>
       <Header />
       <Container>
-        <div className='controlitem m-3' style={{ backgroundColor: '#393E46' }}>
-          <Form.Label className='texttitleedit' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white', width: '100%', height: '50px' }}>
+        <div className='controlitem-read'>
+          <Form.Label className='text-title' >
             {contentInfo.fiction_name}
           </Form.Label>
           <div className='editcontent m-5'>
             <div>#{contentInfo.chapter} {contentInfo.title}</div>
-            <div>{contentInfo.Content}</div>
+            <div className='CourseDetails m-3'>
+              <Form.Group className='mt-2'>
+                <Form.Label>เรื่องย่อ</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  ref={textAreaRef}
+                  defaultValue={contentInfo.content}
+                  disabled
+                  readOnly
+                />
+              </Form.Group>
+            </div>
           </div>
         </div>
 

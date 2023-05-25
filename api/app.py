@@ -102,14 +102,30 @@ def getUser():
 
 @ app.route("/login", methods=['Post'])
 def LoginAPI():
-    username = request.form['username']
-    password = request.form['password']
+
+    try:
+        username = request.form['username']
+    except:
+        return make_response(jsonify({"status": "request form username."}), 400)
+
+    try:
+        password = request.form['password']
+    except:
+        return make_response(jsonify({"status": "request form password."}), 400)
+
+    username = username.strip()
+    password = password.strip()
+
+    if username is None or username == '':
+        return make_response(jsonify({"status": "username is empty."}), 400)
+    if password is None or password == '':
+        return make_response(jsonify({"status": "password is empty."}), 400)
 
     userID, err = VerifierUser(username, password)
     if err != None:
         return make_response(jsonify(str(err)), 500)
     if userID is None:
-        return make_response(jsonify({"status": "username ro password was wrong."}), 403)
+        return make_response(jsonify({"status": "username ro password was wrong."}), 404)
 
     token = jwtEncode(userID)
     res = make_response(jsonify({"token": token}), 200)
@@ -120,13 +136,24 @@ def LoginAPI():
 @ app.route("/register", methods=['Post'])
 def NewUserAPI():
 
-    username = request.form['username']
-    password = request.form['password']
+    try:
+        username = request.form['username']
+    except:
+        return make_response(jsonify({"status": "request form username."}), 400)
+
+    try:
+        password = request.form['password']
+    except:
+        return make_response(jsonify({"status": "request form password."}), 400)
+
+    username = username.strip()
+    password = password.strip()
 
     if username is None or username == '':
         return make_response(jsonify({"status": "username is empty."}), 400)
-    if password is None or username == '':
+    if password is None or password == '':
         return make_response(jsonify({"status": "password is empty."}), 400)
+
     if registerValidation(username, password):
         return make_response(jsonify({"status": "English letters and numbers only."}), 400)
 
@@ -148,18 +175,23 @@ def GetFictionListAPI():
     page = request.args.get('page')
     limit = request.args.get('limit')
     sort = request.args.get('sort')
-    filterDB = request.args.get('filter')
+    filterDB = request.args.get('filter', default=None, type=None)
     search = request.args.get('search')
 
     try:
         page = int(page)
         limit = int(limit)
-        if (filterDB):
-            filterDB = int(filterDB)
-        if (filterDB == ""):
-            filterDB = None
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
+
+    if filterDB == '':
+        filterDB = None
+
+    if (filterDB):
+        try:
+            filterDB = int(filterDB)
+        except:
+            return make_response(jsonify({"status": "TypeError"}), 400)
 
     sort = "fictionID " + sort
 
@@ -177,9 +209,13 @@ def GetFictionListAPI():
 @ authenticationPermission()
 def UpdateFictionNameAPI(fictionID):
 
-    title = request.form['title']
+    try:
+        title = request.form['title']
+    except:
+        return make_response(jsonify({'status': 'request form tile'}), 400)
+
     if title is None or title == "":
-        return make_response(jsonify({'status': 'title is null'}), 400)
+        return make_response(jsonify({'status': 'title is empty'}), 400)
 
     err = UpdateFictionName(fictionID, title)
     if err != None:
@@ -187,6 +223,21 @@ def UpdateFictionNameAPI(fictionID):
 
     return make_response({"status": "OK"}, 201)
 
+@ app.route("/fiction/abstract/<fictionID>", methods=['PUT'])
+@ authenticationUser()
+@ authenticationPermission()
+def UpdateAbstractAPI(fictionID):
+
+    try:
+        abstract = request.form['abstract']
+    except:
+        abstract = ''
+
+    err = UpdateFictionAbstract(fictionID, abstract)
+    if err != None:
+        return make_response(jsonify(str(err)), 500)
+
+    return make_response({"status": "OK"}, 201)
 
 @ app.route("/fiction/image/<fictionID>", methods=['PUT'])
 @ authenticationUser()
@@ -281,14 +332,19 @@ def GetWriterFictionListAPI():
     try:
         page = int(page)
         limit = int(limit)
-        if (filterDB):
-            filterDB = int(filterDB)
-        if (filterDB == ""):
-            filterDB = None
         if search == None:
             search = ""
     except TypeError as err:
         return make_response(jsonify({"status": "TypeError"}), 400)
+
+    if filterDB == '':
+        filterDB = None
+
+    if (filterDB):
+        try:
+            filterDB = int(filterDB)
+        except:
+            return make_response(jsonify({"status": "TypeError"}), 400)
 
     sort = "fictionID " + sort
 
@@ -306,7 +362,7 @@ def GetWriterFictionListAPI():
 def GetImageAPI(imageName):
 
     x, file_extension = os.path.splitext(imageName)
-    type = mimetypeCheck(file_extension)
+    type = mimetypeCheck(file_extension.lower())
     filePath = os.path.join(
         UPLOAD_FOLDER, imageName)
     if (os.path.isfile(filePath)):
@@ -320,10 +376,22 @@ def AddNewFictionAPI():
     bearer = request.headers.get('Authorization')
     user = jwtDecode(bearer .split()[1])
 
-    fictionName = request.form['fiction_name']
+    try:
+        fictionName = request.form['fiction_name']
+    except:
+        return make_response(jsonify({'status': 'request form fiction_name'}), 400)
+
     if fictionName is None or fictionName == '':
         return make_response(jsonify({"status": "fiction_name is empty"}), 400)
     filename = str(uuid.uuid4())
+
+    try:
+        abstract = request.form['abstract']
+    except:
+        abstract = ''
+    
+    if(abstract == None):
+        abstract = ''
 
     try:
         file = request.files['fiction_image']
@@ -343,7 +411,7 @@ def AddNewFictionAPI():
         url = "http://127.0.0.1:5000/image/" + file.filename
 
     err = NewFiction(
-        fictionName, user["sub"]['user'], url)
+        fictionName, abstract, user["sub"]['user'], url)
 
     if err != None:
         return make_response(jsonify(str(err)), 500)
@@ -356,8 +424,16 @@ def AddNewFictionAPI():
 @ authenticationPermission()
 def AddNewChapterAPI(fictionID):
 
-    title = request.form['title']
-    content = request.form['content']
+    try:
+        title = request.form['title']
+    except:
+        return make_response(jsonify({'status': 'request form title'}), 400)
+
+    try:
+        content = request.form['content']
+    except:
+        return make_response(jsonify({'status': 'request form content'}), 400)
+
     if title is None or title == "":
         return make_response(jsonify({"status": "title is empty."}), 400)
     if content is None or content == "":
@@ -380,8 +456,15 @@ def AddNewChapterAPI(fictionID):
 @ authenticationPermission()
 def UpdateChapterAPI(fictionID, chapterID):
 
-    title = request.form['title']
-    content = request.form['content']
+    try:
+        title = request.form['title']
+    except:
+        return make_response(jsonify({'status': 'request form title'}), 400)
+
+    try:
+        content = request.form['content']
+    except:
+        return make_response(jsonify({'status': 'request form content'}), 400)
 
     err = UpdateChapter(chapterID, title, content)
     if err != None:

@@ -11,30 +11,9 @@ import { useParams } from "react-router-dom";
 import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { BsPencilSquare } from "react-icons/bs";
-// import {
-//     Chart as ChartJS,
-//     CategoryScale,
-//     LinearScale,
-//     PointElement,
-//     LineElement,
-//     Title,
-//     Tooltip,
-//     Legend,
-// } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-
-// ChartJS.register(
-//     CategoryScale,
-//     LinearScale,
-//     PointElement,
-//     LineElement,
-//     Title,
-//     Tooltip,
-//     Legend
-// );
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -48,7 +27,9 @@ function Noveldetail() {
     const [edit, setEdit] = useState(false);
     const [editImage, setEditImage] = useState(false);
     const [editName, setEditName] = useState(false);
+    const [editAbstract, setEditAbstract] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [errors, setErrors] = useState({});
 
     const deleteFClose = () => setDelF(false);
     const deleteFShow = () => setDelF(true);
@@ -67,10 +48,13 @@ function Noveldetail() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const editNameToggle = () => setEditName(!editName);
+    const editAbstractToggle = () => setEditAbstract(!editAbstract);
 
     const [fictionInfo, setFictionInfo] = useState("");
     const [fictionName, setfictionName] = useState("");
+    const [abstract, setAbstract] = useState("");
     const [newFictionName, setNewFictionName] = useState("");
+    const [newAbstract, setNewAbstract] = useState("");
     const [sort, setSort] = useState("DESC");
 
     const [images, setImages] = useState([]);
@@ -83,28 +67,6 @@ function Noveldetail() {
     const [chapterTitle, setChapterTitle] = useState('')
     const [chapterContent, setChapterContent] = useState('')
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0])
-
-    // const options = {
-    //     responsive: true,
-    //     plugins: {
-    //         legend: {
-    //             position: 'top',
-    //         },
-    //     },
-    //     scales: {
-    //         y: {
-    //             min: 1,
-    //             max: 7,
-    //             stepSize: 1,
-    //             ticks: {
-    //                 beginAtZero: false,
-    //                 callback: function (value, index, ticks) {
-    //                     return category(value);
-    //                 }
-    //             }
-    //         }
-    //     },
-    // };
 
     const options = {
         plugins: {
@@ -131,12 +93,13 @@ function Noveldetail() {
                 label: '% of categoty',
                 data: data,
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 255, 255, 1)',
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
@@ -145,6 +108,7 @@ function Noveldetail() {
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
+                    'rgba(255, 255, 255, 1)',
                 ],
                 borderWidth: 1,
             },
@@ -160,7 +124,9 @@ function Noveldetail() {
                 editShow()
             })
             .catch(error => {
-                window.location.replace('http://localhost:3000/500');
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/500');
+                }
             });
     }
 
@@ -178,53 +144,94 @@ function Noveldetail() {
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                window.location.replace('http://localhost:3000/500');
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/500');
+                }
             });
     }
 
     const newChapter = () => {
 
-        let formData = new FormData();
-        formData.append('title', chapterTitle);
-        formData.append('content', chapterContent);
+        let err = { ...errors, NewChapterTitleErr: null, NewChapterContentErr: null }
 
-        const AuthStr = 'Bearer ' + token;
-        axios.post("http://127.0.0.1:5000/writer/" + fictionid, formData, { headers: { Authorization: AuthStr } })
-            .then(response => {
-                setRefreshKey(oldKey => oldKey + 1)
-                newClose()
-            })
-            .catch(error => {
-                if (error.response.status === 401) {
-                    window.location.replace('http://localhost:3000/');
-                }
-                if (error.response.status === 403) {
-                    window.location.replace('http://localhost:3000/403');
-                }
-                window.location.replace('http://localhost:3000/500');
-            });
+        if (chapterTitle.trim() === "") {
+            err.NewChapterTitleErr = "chapter name is a required field."
+        } else {
+            err.NewChapterTitleErr = null
+        }
+        if (chapterContent.trim() === "") {
+            err.NewChapterContentErr = "chapter content is a required field."
+        } else {
+            err.NewChapterContentErr = null
+        }
+
+        if (err.NewChapterTitleErr === null && err.NewChapterContentErr === null) {
+            let formData = new FormData();
+            formData.append('title', chapterTitle);
+            formData.append('content', chapterContent);
+
+            const AuthStr = 'Bearer ' + token;
+            axios.post("http://127.0.0.1:5000/writer/" + fictionid, formData, { headers: { Authorization: AuthStr } })
+                .then(response => {
+                    setRefreshKey(oldKey => oldKey + 1)
+                    setChapterTitle('')
+                    setChapterContent('')
+                    newClose()
+                })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        window.location.replace('http://localhost:3000/');
+                    }
+                    if (error.response.status === 403) {
+                        window.location.replace('http://localhost:3000/403');
+                    }
+                    if (error.response.status === 500) {
+                        window.location.replace('http://localhost:3000/500');
+                    }
+                });
+        }
+
+        setErrors(err)
     };
 
     const editChapter = () => {
 
-        let formData = new FormData();
-        formData.append('title', chapterTitle);
-        formData.append('content', chapterContent);
+        let err = { ...errors, EditChapterTitleErr: null, EditChapterContentErr: null }
 
-        const AuthStr = 'Bearer ' + token;
-        axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + modalChapterID, formData, { headers: { Authorization: AuthStr } })
-            .then(response => {
-                editClose()
-            })
-            .catch(error => {
-                if (error.response.status === 401) {
-                    window.location.replace('http://localhost:3000/');
-                }
-                if (error.response.status === 403) {
-                    window.location.replace('http://localhost:3000/403');
-                }
-                window.location.replace('http://localhost:3000/500');
-            });
+        if (chapterTitle.trim() === "") {
+            err.EditChapterTitleErr = "chapter name is a required field."
+        } else {
+            err.EditChapterTitleErr = null
+        }
+        if (chapterContent.trim() === "") {
+            err.EditChapterContentErr = "chapter content is a required field."
+        } else {
+            err.EditChapterContentErr = null
+        }
+
+        if (err.EditChapterTitleErr === null && err.EditChapterContentErr === null) {
+            let formData = new FormData();
+            formData.append('title', chapterTitle);
+            formData.append('content', chapterContent);
+
+            const AuthStr = 'Bearer ' + token;
+            axios.put("http://127.0.0.1:5000/writer/" + fictionid + "/" + modalChapterID, formData, { headers: { Authorization: AuthStr } })
+                .then(response => {
+                    editClose()
+                })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        window.location.replace('http://localhost:3000/');
+                    }
+                    if (error.response.status === 403) {
+                        window.location.replace('http://localhost:3000/403');
+                    }
+                    if (error.response.status === 500) {
+                        window.location.replace('http://localhost:3000/500');
+                    }
+                });
+        }
+        setErrors(err)
     };
 
     function deleteChapter() {
@@ -235,7 +242,7 @@ function Noveldetail() {
                 deleteCClose()
                 if (response.status === 200) {
                     fictionInfo.chapterlist = fictionInfo.chapterlist.filter((val) => {
-                        return val.chapterID != modalChapterID
+                        return val.chapterID !== modalChapterID
                     })
                 }
             })
@@ -243,18 +250,21 @@ function Noveldetail() {
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                window.location.replace('http://localhost:3000/500');
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/500');
+                }
             });
     }
 
     useEffect(() => {
         // let url = "http://127.0.0.1:5000/" + fictionid + "?sort=" + sort
-        let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=DESC"
+        let url = "http://127.0.0.1:5000/writer/" + fictionid + "?sort=" + sort
         const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {
                 setFictionInfo(response.data)
                 setfictionName(response.data.fictionName)
+                setAbstract(response.data.abstract)
                 setImageURL(response.data.picture)
                 setImagesShow(response.data.picture)
             }).catch(error => {
@@ -265,22 +275,12 @@ function Noveldetail() {
                     window.location.replace('http://localhost:3000/403');
                 }
                 console.log(error)
-                window.location.replace('http://localhost:3000/500');
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/500');
+                }
             });
 
     }, [refreshKey])
-
-    // var data = {
-    //     labels: fictionInfo?.chapterlist?.map((item, index) => (item.chapter)),
-    //     datasets: [
-    //         {
-    //             label: 'Chapter',
-    //             data: fictionInfo?.chapterlist?.map((item, index) => (item.category)),
-    //             borderColor: 'rgb(255, 99, 132)',
-    //             backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    //         },
-    //     ],
-    // };
 
     useEffect(() => {
         if (images.length < 1) return;
@@ -313,17 +313,56 @@ function Noveldetail() {
         }
     }
 
-    function handleWditName() {
+    function handleEditName() {
+
+        let err = { ...errors, editFictionNameErr: null }
+
+        if (newFictionName.trim() === "") {
+            err.editFictionNameErr = "fiction name is a required field."
+        } else {
+            err.editFictionNameErr = null
+        }
+
+        console.log(err)
+        if (err.editFictionNameErr === null) {
+            let data = new FormData();
+            data.append('title', newFictionName);
+
+            const AuthStr = 'Bearer ' + token;
+            const url = 'http://127.0.0.1:5000/fiction/name/' + fictionid
+
+            axios.put(url, data, { headers: { Authorization: AuthStr } })
+                .then(function (response) {
+                    setfictionName(newFictionName)
+                    editNameToggle()
+                })
+                .catch(function (error) {
+                    if (error.response.status === 401) {
+                        window.location.replace('http://localhost:3000/');
+                    }
+                    if (error.response.status === 403) {
+                        window.location.replace('http://localhost:3000/403');
+                    }
+                    if (error.response.status === 500) {
+                        window.location.replace('http://localhost:3000/500');
+                    }
+                });
+        }
+        setErrors(err)
+    }
+
+    function handleEditAbstract() {
 
         let data = new FormData();
-        data.append('title', newFictionName);
+        data.append('abstract', newAbstract);
 
         const AuthStr = 'Bearer ' + token;
-        const url = 'http://127.0.0.1:5000/fiction/name/' + fictionid
+        const url = 'http://127.0.0.1:5000/fiction/abstract/' + fictionid
 
         axios.put(url, data, { headers: { Authorization: AuthStr } })
             .then(function (response) {
-                setfictionName(newFictionName)
+                setAbstract(newAbstract)
+                editAbstractToggle()
             })
             .catch(function (error) {
                 if (error.response.status === 401) {
@@ -332,7 +371,9 @@ function Noveldetail() {
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                window.location.replace('http://localhost:3000/500');
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/500');
+                }
             });
     }
 
@@ -364,7 +405,9 @@ function Noveldetail() {
                 if (error.response.status === 403) {
                     window.location.replace('http://localhost:3000/403');
                 }
-                window.location.replace('http://localhost:3000/500');
+                if (error.response.status === 500) {
+                    window.location.replace('http://localhost:3000/500');
+                }
             });
     }
 
@@ -372,60 +415,121 @@ function Noveldetail() {
         <>
             <Header />
             <Container>
-                <div className='controlitemdetail m-3'>
-                    <Form.Label className='texttitle' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>
+                <div className='controlitem-detail'>
+                    <Form.Label className='text-title' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>
                         {editName ?
                             <>
-                                <input type='text' onChange={event => setNewFictionName(event.target.value)} defaultValue={fictionName}></input>
-                                <Button onClick={() => {
-                                    setfictionName(newFictionName)
-                                    editNameToggle()
-                                    handleWditName()
-                                }}>
-                                    บันทึก
-                                </Button>
-                                <Button onClick={editNameToggle}>
-                                    ยกเลิก
-                                </Button>
+                                <Row>
+                                    <div className="col-md-4">
+                                        <Form.Group>
+                                            <Form.Control
+                                                type="text"
+                                                defaultValue={fictionName}
+                                                onChange={event => setNewFictionName(event.target.value)}
+                                                isInvalid={!!errors.editFictionNameErr}
+                                            />
+                                            <Form.Control.Feedback type="invalid">{errors.editFictionNameErr}</Form.Control.Feedback>
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Button onClick={() => {
+                                            setfictionName(newFictionName)
+                                            handleEditName()
+                                        }}>
+                                            บันทึก
+                                        </Button>
+                                        <Button variant="secondary" onClick={editNameToggle}>
+                                            ยกเลิก
+                                        </Button>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <i variant="secondary" style={{ float: 'right', color: 'red', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                            deleteFShow()
+                                        }}>
+                                            <BsFillTrashFill />
+                                        </i>
+                                    </div>
+                                </Row>
                             </>
                             :
                             <>
                                 {fictionName}
-                                <BsPencilSquare onClick={editNameToggle} />
+                                <BsPencilSquare style={{ cursor: 'pointer' }} onClick={editNameToggle} />
+                                <i variant="secondary" style={{ float: 'right', color: 'white', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                    deleteFShow()
+                                }}>
+                                    <BsFillTrashFill />
+                                </i>
                             </>
                         }
-                        <Button variant="secondary" onClick={() => {
-                            deleteFShow()
-                        }}>
-                            ลบ
-                        </Button>
                     </Form.Label>
 
-                    <Row >
-                        <Col sm={4}>
-                            <div className="card m-3">
+                    <Row className='row-type'>
+                        <Col sm={3}>
+                            <div style={{ textAlign: 'center' }}>
+                                <h3 style={{ color: 'black', marginLeft: '175px' }}>
+                                    <BsPencilSquare style={{ cursor: 'pointer', color: 'white' }} onClick={() => editImageShow()} />
+                                </h3>
                                 <div>
-                                    <h3 style={{ color: 'black', marginLeft: '175px' }}>
-                                        <BsPencilSquare onClick={() => editImageShow()} />
-                                    </h3>
-                                    <img src={imagesShow} alt="" style={{ height: '200px' }} />
+                                    <img src={imagesShow} alt="" width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
                                 </div>
                             </div>
 
                         </Col>
-                        <Col sm={8}>
+                        <Col sm={3}>
                             <div className='CourseDetails'>
                                 <div style={{ width: '100%', height: '300px' }}>
-                                    {/* <Line options={options} data={data} /> */}
                                     <Pie options={options} data={piedata} />
                                 </div>
                             </div>
-
+                        </Col>
+                        <Col sm={6}>
+                            {editAbstract ?
+                                <>
+                                    <div className='CourseDetails m-3'>
+                                        <div className='CourseDetails m-3'>
+                                            <Form.Group className='mt-2'>
+                                                <Form.Label >เรื่องย่อ</Form.Label>
+                                                <Form.Control
+                                                    as="textarea"
+                                                    rows={8}
+                                                    defaultValue={abstract}
+                                                    onChange={event => setNewAbstract(event.target.value)}
+                                                />
+                                            </Form.Group>
+                                            <Button onClick={() => {
+                                                setAbstract(newAbstract)
+                                                handleEditAbstract()
+                                            }}>
+                                                บันทึก
+                                            </Button>
+                                            <Button variant="secondary" onClick={editAbstractToggle}>
+                                                ยกเลิก
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </> :
+                                <>
+                                    <div className='CourseDetails m-3'>
+                                        <Form.Group className='mt-2'>
+                                            <Form.Label>เรื่องย่อ</Form.Label>
+                                            <BsPencilSquare style={{ cursor: 'pointer', color: 'white' }} onClick={() => editAbstractToggle()} />
+                                            <Form.Control
+                                                as="textarea"
+                                                rows={8}
+                                                defaultValue={abstract}
+                                                disabled
+                                                readOnly
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                </>
+                            }
                         </Col>
                     </Row>
-                    <Form.Group className='textepisodedetail'>
-                        <Form.Label >สารบัญตอน</Form.Label>
-                        <h3 className='btnadd' onClick={() => {
+                    <Form.Group className='text-episode-detail'>
+                        <h4>สารบัญตอน</h4>
+                        <h3 className='btn-add' onClick={() => {
                             setChapterTitle("")
                             setChapterContent("")
                             newShow()
@@ -449,20 +553,20 @@ function Noveldetail() {
                                     <td>{category(item.category)}</td>
                                     <td>
                                         <div className='button1'>
-                                            <Button variant="secondary" onClick={() => {
+                                            <i variant="secondary" style={{ color: 'white', marginRight: '5px', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
                                                 SetModalChapterID(item.chapterID)
                                                 SetModalChapterName(item.title)
                                                 getChapterInfo(item.chapterID)
                                             }}>
-                                                แก้ไข
-                                            </Button>
-                                            <Button variant="danger" onClick={() => {
+                                                <BsPencilSquare />
+                                            </i>
+                                            <i variant="danger" style={{ color: 'white', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
                                                 SetModalChapterID(item.chapterID)
                                                 SetModalChapterName(item.title)
                                                 deleteCShow()
                                             }}>
-                                                ลบ
-                                            </Button>
+                                                <BsFillTrashFill />
+                                            </i>
 
                                         </div>
                                     </td>
@@ -510,17 +614,33 @@ function Noveldetail() {
                     <Modal.Title>Edit Chapter</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
-                    <div className="form-group">
-                        <label className='form-label'>ชื่อตอน</label>
-                        <input type="text" className="form-control" defaultValue={chapterTitle} onChange={event => setChapterTitle(event.target.value)} />
-                    </div>
-                    <div className="form-group mt-2">
-                        <label className='form-label'>เนื่อหา</label>
-                        <textarea className="form-control" rows="20" defaultValue={chapterContent} onChange={event => setChapterContent(event.target.value)}></textarea>
-                    </div>
+                    <Form.Group>
+                        <Form.Label>ชื่อตอน</Form.Label>
+                        <Form.Control
+                            type="text"
+                            defaultValue={chapterTitle}
+                            onChange={event => setChapterTitle(event.target.value)}
+                            isInvalid={!!errors.EditChapterTitleErr}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.EditChapterTitleErr}</Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className='mt-2'>
+                        <Form.Label>เนื่อหา</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={20}
+                            defaultValue={chapterContent}
+                            onChange={event => setChapterContent(event.target.value)}
+                            isInvalid={!!errors.EditChapterContentErr}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.EditChapterContentErr}</Form.Control.Feedback>
+                    </Form.Group>
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>
-                    <Button variant="secondary" onClick={editClose}>
+                    <Button variant="secondary" onClick={() => {
+                        editClose()
+                        setErrors({ ...errors, EditChapterTitleErr: null, EditChapterContentErr: null })
+                    }}>
                         ยกเลิก
                     </Button>
                     <Button type='submit' variant="danger" onClick={() => { editChapter() }}>
@@ -534,17 +654,34 @@ function Noveldetail() {
                     <Modal.Title>New Chapter</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
-                    <div className="form-group">
-                        <label className='form-label'>ชื่อตอน</label>
-                        <input type="text" className="form-control" defaultValue={chapterTitle} onChange={event => setChapterTitle(event.target.value)} />
-                    </div>
-                    <div className="form-group mt-2">
-                        <label className='form-label'>เนื่อหา</label>
-                        <textarea className="form-control" rows="20" defaultValue={chapterContent} onChange={event => setChapterContent(event.target.value)}></textarea>
-                    </div>
+                    <Form.Group>
+                        <Form.Label>ชื่อตอน</Form.Label>
+                        <Form.Control
+                            type="text"
+                            defaultValue={chapterTitle}
+                            onChange={event => setChapterTitle(event.target.value)}
+                            isInvalid={!!errors.NewChapterTitleErr}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.NewChapterTitleErr}</Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className='mt-2'>
+                        <Form.Label>เนื่อหา</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={20}
+                            defaultValue={chapterContent}
+                            onChange={event => setChapterContent(event.target.value)}
+                            isInvalid={!!errors.NewChapterContentErr}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.NewChapterContentErr}</Form.Control.Feedback>
+                    </Form.Group>
+
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>
-                    <Button variant="secondary" onClick={newClose}>
+                    <Button variant="secondary" onClick={() => {
+                        newClose()
+                        setErrors({ ...errors, NewChapterTitleErr: null, NewChapterContentErr: null })
+                    }}>
                         ยกเลิก
                     </Button>
                     <Button type='submit' variant="danger" onClick={() => { newChapter() }}>
@@ -558,9 +695,10 @@ function Noveldetail() {
                     <Modal.Title>Udate Image</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
-                    <img src={imageURL} height={200} />
-                    <div>
-                        <input type="file" accept="image/*" onChange={onImageChage}></input>
+                    <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'cover', }} />
+                    <div >
+                        <label className="input-choose-image" htmlFor="inputGroupFile">choose image</label>
+                        <input type="file" accept="image/*" id="inputGroupFile" onChange={onImageChage} style={{ display: 'none' }}></input>
                     </div>
                 </Modal.Body>
                 <Modal.Footer className='modalFooter'>

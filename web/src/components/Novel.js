@@ -28,7 +28,9 @@ function Novel() {
         setNovelList(response.data);
       })
       .catch(error => {
-        window.location.replace('http://localhost:3000/500');
+        if (error.response.status === 500) {
+          window.location.replace('http://localhost:3000/500');
+        }
       });
   }, [filter, sort, search])
 
@@ -41,12 +43,12 @@ function Novel() {
 
   return (
     <Container>
-      <div className='controlitem m-3' >
-        <Form.Label className='textnovel' >นิยาย</Form.Label>
-        <Form.Group className="m-3">
-          <Form.Label style={{ color: 'white' }}>filter</Form.Label>
-          <Form.Group style={{ width: '100%', display: 'flex', margin: '5px' }}>
-            <Form.Select style={{ width: '15%', height: '50px' }} onChange={e => setfilter(e.target.value)}>
+      <div className='controlitem' >
+        <Form.Label className='text-novel' >นิยาย</Form.Label>
+        <Form.Group className="g-form">
+          <Form.Label className='text-filter'>filter</Form.Label>
+          <Form.Group className="form-option">
+            <Form.Select className='op-fition' onChange={e => setfilter(e.target.value)}>
               <option value="">ทั้งหมด</option>
               <option value="2">นิยายระทึกขวัญ</option>
               <option value="3">นิยายสืบสวน</option>
@@ -55,22 +57,25 @@ function Novel() {
               <option value="6">นิยายแอ๊คชั่น</option>
               <option value="7">นิยายรักดราม่า</option>
             </Form.Select>
-            <Form.Select style={{ width: '15%', height: '50px', marginLeft: '5px' }} onChange={e => setSort(e.target.value)}>
+            <Form.Select className='op-update' onChange={e => setSort(e.target.value)}>
               <option value="DESC">อัพเดทล่าสุด</option>
               <option value="ASC">เก่าสุด</option>
             </Form.Select>
-            <Form className="d-flex" >
-              <Form.Control ref={searchRef}
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-                style={{ width: '80%', height: '50px', marginTop: '0px', marginLeft: '10px' }}
-                onSubmit={e => setSearch(e.target.value)}
-              />
-              <BsSearch />
-              <Button onClick={handleClick} variant="outline-info" style={{ width: '35%', height: '50px' }}>ค้นหา</Button>
-            </Form>
+            <Form.Group className="search-box">
+              <Form className="box-search" >
+                <i><BsSearch id='search-icon' color='black' /></i>
+                <input ref={searchRef}
+                  type="search"
+                  placeholder="Search"
+                  className="input-search me-2"
+                  aria-label="Search"
+                  
+                  onSubmit={e => setSearch(e.target.value)}
+                />
+              </Form>
+              <Button variant="outline-info" onClick={handleClick} >ค้นหา</Button>
+            </Form.Group>
+            
           </Form.Group>
 
         </Form.Group>

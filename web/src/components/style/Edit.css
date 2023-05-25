@@ -1,12 +1,10 @@
-.editcontent{
+.editcontent {
     background-color: #222831;
-    width: 1300;
-    height: 500px;
     border-radius: 5px;
- 
+
 }
 
-.texttitleedit{
+.texttitleedit {
     background-color: #00ADB5;
     display: block;
     color: white;

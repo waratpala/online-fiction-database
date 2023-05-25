@@ -3,6 +3,60 @@
     top: 0px;
     left: 0px;
     width: 100%;
+    z-index: 1;
 }
 
+.form-input{
+    display: flex;
+}
 
+@media screen and (max-width: 567px) {
+ 
+    .form-input{
+        display: inline;
+    }
+   
+    .text-input{
+        width: 90%;
+        margin-top: 20px;
+    }
+
+    .password-input{
+        width: 90%;
+        margin-top: 5px;
+    }
+
+    .btn-login{
+        margin-top: 10px;
+    }
+
+    .btn-regist{
+        margin-top: 10px;
+    }
+ }
+
+ @media screen and (max-width: 995px) {
+ 
+    .form-input{
+        display: inline;
+    }
+   
+    .text-input{
+        width: 90%;
+        margin-top: 20px;
+    }
+
+    .password-input{
+        width: 90%;
+        margin-top: 5px;
+    }
+
+    .btn-login{
+        margin-top: 10px;
+    }
+
+    .btn-regist{
+        margin-top: 10px;
+    }
+ }
+ 
