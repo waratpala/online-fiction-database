@@ -17,20 +17,7 @@ UPLOAD_FOLDER = 'upload'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
-
-# CORS(app, supports_credentials=True)
-# cors = CORS(app, resources={
-#     r'/*': {
-#             "Access-Control-Allow-Origin": [
-#                 'http://localhost:3000',  # React
-#                 'http://127.0.0.1:3000',  # React
-#             ],
-#             "Access-Control-Allow-Credentials": True,
-#             'supports_credentials': True
-#             },
-# },
-#     supports_credentials=True,
-#     expose_headers="*")
+app.config['JSON_SORT_KEYS'] = False
 
 CORS(app)
 

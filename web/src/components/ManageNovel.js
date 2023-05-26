@@ -129,20 +129,6 @@ function ManageNovel() {
             <Container>
                 <div className='controlitem-manage ' style={{ backgroundColor: '#222831' }}>
                     <Form.Label className='text-manage' >จัดการนิยาย</Form.Label>
-                    {/* <Form.Group className="m-3">
-                        <Form className="d-flex" >
-                            <Form.Control ref={searchRef}
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                                aria-label="Search"
-                                style={{ width: '20%', height: '50px', marginTop: '0px' }}
-                            />
-                            <Button onClick={handleClick} variant="outline-info" style={{ width: '10%', height: '50px' }}>ค้นหา</Button>
-                            <AiOutlinePlusCircle style={{ width: '20%', height: '50px', cursor: 'pointer', marginLeft: '700px' }} onClick={() => editImageShow()} />
-                        </Form>
-                    </Form.Group> */}
-
                     <Form.Group className="search-box-manage">
                         <Form className="box-search-manage" >
                             <i><BsSearch id='search-icon' color='black' /></i>

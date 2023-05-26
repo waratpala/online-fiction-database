@@ -8,7 +8,6 @@ import Novel from './components/Novel';
 import ManageNovel from './components/ManageNovel';
 import Novelcontent from './components/NovelContent';
 import Noveldetail from './components/NovelDetail';
-import Editnovel from './components/Edit';
 import ReadNovel from './components/Read';
 import Homepage from './components/Home';
 import Page403 from './components/Page403';
@@ -24,7 +23,6 @@ function App() {
           <Route path="/createnovel" element={<ManageNovel />} />
           <Route path="/noveldetail/:fictionid" element={<Noveldetail />} />
           <Route path="/novelcontent/:fictionid" element={<Novelcontent />} />
-          <Route path="/noveledit/:fictionid/:chapterid" element={<Editnovel />} />
           <Route path="/novelread/:fictionid/:chapterid" element={<ReadNovel />} />
           <Route path="/403" element={<Page403 />} />
           <Route path="/500" element={<Page500 />} />

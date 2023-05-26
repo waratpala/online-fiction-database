@@ -33,6 +33,7 @@ CREATE TABLE `chapter` (
   `fictionID` int DEFAULT NULL,
   `chapter` int DEFAULT NULL,
   `categoryID` int DEFAULT NULL,
+  `sub_categoryID` int DEFAULT NULL,
   `title` varchar(1000) DEFAULT NULL,
   `content` mediumtext,
   `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -95,9 +96,9 @@ INSERT INTO `user` (`user_name`, `password`) VALUES
 INSERT INTO `fiction` (`fictionName`, `abstract`,`picture`,`writer`) VALUES
 ('test-fiction-name', 'tetstsetst', 'http://127.0.0.1:5000/image/test11.jpg', 1);
 
-INSERT INTO `chapter` (`fictionID`, `chapter`,`categoryID`,`title`,`content`) VALUES
-(1, 1, 2,'new','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
-(1, 2, 2,'new','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
+INSERT INTO `chapter` (`fictionID`, `chapter`, `sub_categoryID`,`categoryID`,`title`,`content`) VALUES
+(1, 1, 2, 3,'new','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
+(1, 2, 2, 3,'new','bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
 
 INSERT INTO `fiction_number` (`id`, `total`, `hor`, `mys`, `fan`, `sci`, `act`, `dra`) VALUES
 (1, 8598, 1433, 1426, 1490, 1327, 1479, 1409);

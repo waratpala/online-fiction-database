@@ -55,7 +55,7 @@ function Noveldetail() {
     const [abstract, setAbstract] = useState("");
     const [newFictionName, setNewFictionName] = useState("");
     const [newAbstract, setNewAbstract] = useState("");
-    const [sort, setSort] = useState("DESC");
+    const [sort, setSort] = useState("ASC");
 
     const [images, setImages] = useState([]);
     const [imagesShow, setImagesShow] = useState("");
@@ -538,10 +538,11 @@ function Noveldetail() {
                     <Table className='listnamedetail'>
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>ชื่อตอน</th>
-                                <th>ลักษณะตอน</th>
-                                <th style={{ width: '130px' }}></th>
+                                <th style={{ width: '10%' }}>#</th>
+                                <th style={{ width: '50%' }}>ชื่อตอน</th>
+                                <th style={{ width: '10%' }}>ประเถทหลัก</th>
+                                <th style={{ width: '10%' }}>ประเถทรอง</th>
+                                <th style={{ width: '5%' }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -550,6 +551,7 @@ function Noveldetail() {
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
                                     <td>{item.title}</td>
+                                    <td>{category(item.category)}</td>
                                     <td>{category(item.category)}</td>
                                     <td>
                                         <div className='button1'>

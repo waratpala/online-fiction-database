@@ -34,13 +34,11 @@ def GetFictionList(page, limit, filterDB, sort, search):
             return None, "max<curent"
 
         if (filterDB is None):
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
-            val = ("%" + search + "%", sort,
-                   pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND delete_at IS NULL ORDER BY " + sort + " LIMIT %s OFFSET %s"
+            val = ("%" + search + "%", pagination['limit'], pagination['offset'])
         else:
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
-            val = ("%" + search + "%", filterDB, sort,
-                   pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY "  + sort + " LIMIT %s OFFSET %s"
+            val = ("%" + search + "%", filterDB, pagination['limit'], pagination['offset'])
 
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
@@ -156,14 +154,12 @@ def GetWriterFiction(page, limit, filterDB, sort, search, writer):
             return None, "max<curent"
 
         if (filterDB is None):
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
-            val = (writer, "%" + search + "%", sort,
-                   pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND delete_at IS NULL ORDER BY " + sort + " LIMIT %s OFFSET %s"
+            val = (writer, "%" + search + "%", pagination['limit'], pagination['offset'])
 
         else:
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY %s LIMIT %s OFFSET %s"
-            val = (writer, "%" + search + "%", filterDB, sort,
-                   pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY" + sort + " LIMIT %s OFFSET %s"
+            val = (writer, "%" + search + "%", filterDB, pagination['limit'], pagination['offset'])
 
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
@@ -186,24 +182,25 @@ def GetChapter(sort, fictionID):
         mycursor.execute(sql, val)
         fictionContent = mycursor.fetchone()
 
-        sql = """SELECT sum(case when categoryID = 2 then 1 else 0 end) AS c2,
-    	sum(case when categoryID = 3 then 1 else 0 end) AS c3,
-    	sum(case when categoryID = 4 then 1 else 0 end) AS c4,
-    	sum(case when categoryID = 5 then 1 else 0 end) AS c5,
-    	sum(case when categoryID = 6 then 1 else 0 end) AS c6,
-    	sum(case when categoryID = 7 then 1 else 0 end) AS c7,
-    	sum(case when categoryID = 1 then 1 else 0 end) AS c1
+        sql = """SELECT sum(case when categoryID = 2 then 2 else 0 end) + sum(case when sub_categoryID = 2 then 1 else 0 end) AS c2,
+    	sum(case when categoryID = 3 then 2 else 0 end) + sum(case when sub_categoryID = 3 then 1 else 0 end) AS c3,
+    	sum(case when categoryID = 4 then 2 else 0 end) + sum(case when sub_categoryID = 4 then 1 else 0 end) AS c4,
+    	sum(case when categoryID = 5 then 2 else 0 end) + sum(case when sub_categoryID = 5 then 1 else 0 end) AS c5,
+    	sum(case when categoryID = 6 then 2 else 0 end) + sum(case when sub_categoryID = 6 then 1 else 0 end) AS c6,
+    	sum(case when categoryID = 7 then 2 else 0 end) + sum(case when sub_categoryID = 7 then 1 else 0 end) AS c7,
+    	sum(case when categoryID = 1 then 2 else 0 end) + sum(case when sub_categoryID = 8 then 1 else 0 end) AS c1
         FROM chapter
         WHERE fictionID = %s;"""
         val = (fictionID,)
         mycursor.execute(sql, val)
         fictionContent['chapter_cat'] = mycursor.fetchone()
 
-        sql = "SELECT chapterID,chapter,title,categoryID category FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY %s"
-        val = (fictionID, sort)
+        sql = 'SELECT chapterID,chapter,title,categoryID category,sub_categoryID sub_category FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY ' + sort
+        val = (fictionID,)
 
         mycursor.execute(sql, val)
         fictionContent['chapterlist'] = mycursor.fetchall()
+        fictionContent['sort'] = sort
 
         return fictionContent, None
 
@@ -342,8 +339,8 @@ def NewChapter(fictionID, title, content, category):
         mycursor.execute(sql, val)
         chapter = mycursor.fetchone()
 
-        sql = "INSERT INTO chapter (fictionID,chapter,categoryID,title,content) VALUES (%s,%s,%s,%s,%s)"
-        val = (fictionID, chapter['curerent'], category, title, content)
+        sql = "INSERT INTO chapter (fictionID,chapter,categoryID,sub_categoryID,title,content) VALUES (%s,%s,%s,%s,%s)"
+        val = (fictionID, chapter['curerent'], category[0], category[1], title, content)
         mycursor.execute(sql, val)
         mydb.commit()
 
