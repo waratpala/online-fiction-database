@@ -61,6 +61,7 @@ function ReadNovel() {
                   as="textarea"
                   ref={textAreaRef}
                   defaultValue={contentInfo.content}
+                  style={{ fontSize: 20 }}
                   disabled
                   readOnly
                 />

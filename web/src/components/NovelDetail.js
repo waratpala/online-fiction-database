@@ -621,6 +621,7 @@ function Noveldetail() {
                         <Form.Control
                             type="text"
                             defaultValue={chapterTitle}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterTitle(event.target.value)}
                             isInvalid={!!errors.EditChapterTitleErr}
                         />
@@ -632,6 +633,7 @@ function Noveldetail() {
                             as="textarea"
                             rows={20}
                             defaultValue={chapterContent}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterContent(event.target.value)}
                             isInvalid={!!errors.EditChapterContentErr}
                         />
@@ -661,6 +663,7 @@ function Noveldetail() {
                         <Form.Control
                             type="text"
                             defaultValue={chapterTitle}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterTitle(event.target.value)}
                             isInvalid={!!errors.NewChapterTitleErr}
                         />
@@ -672,6 +675,7 @@ function Noveldetail() {
                             as="textarea"
                             rows={20}
                             defaultValue={chapterContent}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterContent(event.target.value)}
                             isInvalid={!!errors.NewChapterContentErr}
                         />
