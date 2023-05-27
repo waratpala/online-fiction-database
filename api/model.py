@@ -182,13 +182,13 @@ def GetChapter(sort, fictionID):
         mycursor.execute(sql, val)
         fictionContent = mycursor.fetchone()
 
-        sql = """SELECT sum(case when categoryID = 2 then 2 else 0 end) + sum(case when sub_categoryID = 2 then 1 else 0 end) AS c2,
-    	sum(case when categoryID = 3 then 2 else 0 end) + sum(case when sub_categoryID = 3 then 1 else 0 end) AS c3,
-    	sum(case when categoryID = 4 then 2 else 0 end) + sum(case when sub_categoryID = 4 then 1 else 0 end) AS c4,
-    	sum(case when categoryID = 5 then 2 else 0 end) + sum(case when sub_categoryID = 5 then 1 else 0 end) AS c5,
-    	sum(case when categoryID = 6 then 2 else 0 end) + sum(case when sub_categoryID = 6 then 1 else 0 end) AS c6,
-    	sum(case when categoryID = 7 then 2 else 0 end) + sum(case when sub_categoryID = 7 then 1 else 0 end) AS c7,
-    	sum(case when categoryID = 1 then 2 else 0 end) + sum(case when sub_categoryID = 8 then 1 else 0 end) AS c1
+        sql = """SELECT sum(case when categoryID = 2 then 3 else 0 end) + sum(case when sub_categoryID = 2 then 1 else 0 end) AS c2,
+    	sum(case when categoryID = 3 then 3 else 0 end) + sum(case when sub_categoryID = 3 then 1 else 0 end) AS c3,
+    	sum(case when categoryID = 4 then 3 else 0 end) + sum(case when sub_categoryID = 4 then 1 else 0 end) AS c4,
+    	sum(case when categoryID = 5 then 3 else 0 end) + sum(case when sub_categoryID = 5 then 1 else 0 end) AS c5,
+    	sum(case when categoryID = 6 then 3 else 0 end) + sum(case when sub_categoryID = 6 then 1 else 0 end) AS c6,
+    	sum(case when categoryID = 7 then 3 else 0 end) + sum(case when sub_categoryID = 7 then 1 else 0 end) AS c7,
+    	sum(case when categoryID = 1 then 3 else 0 end) + sum(case when sub_categoryID = 8 then 1 else 0 end) AS c1
         FROM chapter
         WHERE fictionID = %s;"""
         val = (fictionID,)
@@ -339,7 +339,7 @@ def NewChapter(fictionID, title, content, category):
         mycursor.execute(sql, val)
         chapter = mycursor.fetchone()
 
-        sql = "INSERT INTO chapter (fictionID,chapter,categoryID,sub_categoryID,title,content) VALUES (%s,%s,%s,%s,%s)"
+        sql = "INSERT INTO chapter (fictionID,chapter, categoryID, sub_categoryID,title,content) VALUES (%s,%s,%s,%s,%s,%s)"
         val = (fictionID, chapter['curerent'], category[0], category[1], title, content)
         mycursor.execute(sql, val)
         mydb.commit()
