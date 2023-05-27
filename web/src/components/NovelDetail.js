@@ -550,7 +550,9 @@ function Noveldetail() {
 
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
-                                    <td>{item.title}</td>
+                                    <td>
+                                        <Link to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
+                                    </td>
                                     <td>{category(item.category)}</td>
                                     <td>{category(item.sub_category)}</td>
                                     <td>
