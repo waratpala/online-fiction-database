@@ -150,7 +150,7 @@ function Novelcontent() {
                     </Row>
                     <Form.Group className='text-episode'>
                         <Form.Label className='m-text-episode'>สารบัญตอน</Form.Label>
-                        <Button onClick={handleClick} className='btnsort'> ↿⇂ตอนล่าสุด</Button>
+                        <Button onClick={handleClick} className='btnsort'> ↿⇂</Button>
 
                     </Form.Group>
 
