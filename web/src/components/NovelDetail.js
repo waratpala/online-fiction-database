@@ -552,7 +552,7 @@ function Noveldetail() {
                                     <td>#{item.chapter}</td>
                                     <td>{item.title}</td>
                                     <td>{category(item.category)}</td>
-                                    <td>{category(item.category)}</td>
+                                    <td>{category(item.sub_category)}</td>
                                     <td>
                                         <div className='button1'>
                                             <i variant="secondary" style={{ color: 'white', marginRight: '5px', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
