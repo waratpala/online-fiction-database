@@ -4,6 +4,7 @@ import mysql.connector
 import pythainlp
 import time
 import string
+from scipy.stats import norm
 from pythainlp.util import normalize
 from pythainlp.corpus import thai_stopwords, thai_words
 from mysql_con import DbConnection
@@ -156,12 +157,15 @@ class Model:
         
         prop.sort(key=getProp)
         
-        sum = 0
+        box = []
         for i in prop:
-            sum += 1/(i["prop"]*-1)
-    
-        for i in prop:
-            i["prop"] = np.round((1/(i["prop"]*-1)/sum*100), 2)
+            box.append(i["prop"])
+
+        std = np.std(box)
+        mean = np.mean(box)
+
+        for i in range(len(box)) :
+            prop[i]["prop"] = norm.cdf((box[i]-mean)/std) * 100
 
         maxCategory = prop[-1]
         
