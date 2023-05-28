@@ -32,6 +32,8 @@ function Noveldetail() {
     const [refreshKey, setRefreshKey] = useState(0);
     const [errors, setErrors] = useState({});
 
+    const [loading, setLoading] = useState(false);
+
     const deleteFClose = () => setDelF(false);
     const deleteFShow = () => setDelF(true);
 
@@ -169,12 +171,14 @@ function Noveldetail() {
             formData.append('content', chapterContent);
 
             const AuthStr = 'Bearer ' + token;
+            setLoading(true);
             axios.post("http://127.0.0.1:5000/writer/" + fictionid, formData, { headers: { Authorization: AuthStr } })
                 .then(response => {
                     setRefreshKey(oldKey => oldKey + 1)
                     setChapterTitle('')
                     setChapterContent('')
                     newClose()
+                    setLoading(false);
                 })
                 .catch(error => {
                     if (error.response.status === 401) {
@@ -186,6 +190,7 @@ function Noveldetail() {
                     if (error.response.status === 500) {
                         window.location.replace('http://localhost:3000/500');
                     }
+                    setLoading(false);
                 });
         }
 
@@ -722,6 +727,13 @@ function Noveldetail() {
                         ตกลง
                     </Button>
                 </Modal.Footer>
+            </Modal>
+
+
+            <Modal show={loading}>
+                <Modal.Body className='modalBody'>
+                    <h1 style={{ textAlign: 'center' }}>Loading</h1>
+                </Modal.Body>
             </Modal>
         </>
     );
