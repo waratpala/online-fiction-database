@@ -63,6 +63,7 @@ function ManageNovel() {
                     setFictionName('')
                     setImageURL('http://127.0.0.1:5000/image/default.jpg')
                     setSelectedFile(null)
+                    setAbstract('')
                     editImageClose()
                     setRefreshKey(oldKey => oldKey + 1)
                 })
