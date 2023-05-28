@@ -6,19 +6,18 @@ import Col from 'react-bootstrap/Col';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom'
-import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Header from './Header';
 import './style/NovelContent.css';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, Colors } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import LineChart from './LineChart';
 
 
 
 function Novelcontent() {
     const { fictionid } = useParams();
     const [fictionInfo, setFictionInfo] = useState("");
-    const [page, setPage] = useState(1);
     const [sort, setSort] = useState("ASC");
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0,]);
 
@@ -45,37 +44,35 @@ function Novelcontent() {
     };
 
     useEffect(() => {
-        console.log(fictionInfo);
         setData([fictionInfo?.chapter_cat?.c2,
         fictionInfo?.chapter_cat?.c3,
         fictionInfo?.chapter_cat?.c4,
         fictionInfo?.chapter_cat?.c5,
         fictionInfo?.chapter_cat?.c6,
-        fictionInfo?.chapter_cat?.c7,
-        fictionInfo?.chapter_cat?.c1,])
+        fictionInfo?.chapter_cat?.c7,])
     }, [fictionInfo])
 
     function category(categoryID) {
         switch (categoryID) {
             case 2:
-                return 'นิยายระทึกขวัญ';
+                return 'ระทึกขวัญ';
             case 3:
-                return 'นิยายสืบสวน';
+                return 'สืบสวน';
             case 4:
-                return 'นิยายแฟนตาซี';
+                return 'แฟนตาซี';
             case 5:
-                return 'นิยายวิทยาศาสตร์';
+                return 'วิทยาศาสตร์';
             case 6:
-                return 'นิยายแอ๊คชั่น';
+                return 'แอ๊คชั่น';
             case 7:
-                return 'นิยายรักดราม่า';
+                return 'รักดราม่า';
             default:
                 return 'ไม่พบข้อมูล';;
         }
     }
 
     var piedata = {
-        labels: ['นิยายระทึกขวัญ', 'นิยายสืบสวน', 'นิยายแฟนตาซี', 'นิยายวิทยาศาสตร์', 'นิยายแอ๊คชั่น', 'นิยายรักดราม่า', 'ไม่พบข้อมูล'],
+        labels: ['ระทึกขวัญ', 'สืบสวน', 'แฟนตาซี', 'วิทยาศาสตร์', 'แอ๊คชั่น', 'รักดราม่า'],
         datasets: [
             {
                 label: '% of categoty',
@@ -87,7 +84,6 @@ function Novelcontent() {
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
-                    'rgba(255, 255, 255, 1)',
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
@@ -96,7 +92,6 @@ function Novelcontent() {
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
-                    'rgba(255, 255, 255, 1)',
                 ],
                 borderWidth: 1,
             },
@@ -135,7 +130,8 @@ function Novelcontent() {
                         </Col>
                         <Col sm={6}>
                             <div className='CourseDetails m-3'>
-                                <Form.Group className='mt-2'>
+                                <LineChart chapterList={fictionInfo?.chapterlist} />
+                                {/* <Form.Group className='mt-2'>
                                     <Form.Label>เรื่องย่อ</Form.Label>
                                     <Form.Control
                                         as="textarea"
@@ -144,7 +140,7 @@ function Novelcontent() {
                                         disabled
                                         readOnly
                                     />
-                                </Form.Group>
+                                </Form.Group> */}
                             </div>
                         </Col>
                     </Row>
@@ -173,7 +169,7 @@ function Novelcontent() {
                                         <Link to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
                                     </td>
                                     <td>{category(item.category)}</td>
-                                    <td>{category(item.sub_category)}</td>
+                                    <td>{category(item.sub_category1) + ', ' + category(item.sub_category2)}</td>
                                     <td></td>
                                 </tr>
                             ))}

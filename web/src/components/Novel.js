@@ -1,11 +1,8 @@
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { BsSearch } from "react-icons/bs";
 import Novelitem from './์NoveItem';
 import './style/Novel.css'
@@ -69,13 +66,13 @@ function Novel() {
                   placeholder="Search"
                   className="input-search me-2"
                   aria-label="Search"
-                  
+
                   onSubmit={e => setSearch(e.target.value)}
                 />
               </Form>
               <Button variant="outline-info" onClick={handleClick} >ค้นหา</Button>
             </Form.Group>
-            
+
           </Form.Group>
 
         </Form.Group>
