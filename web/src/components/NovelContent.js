@@ -19,7 +19,7 @@ function Novelcontent() {
     const { fictionid } = useParams();
     const [fictionInfo, setFictionInfo] = useState("");
     const [page, setPage] = useState(1);
-    const [sort, setSort] = useState("DESC");
+    const [sort, setSort] = useState("ASC");
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0,]);
 
 
@@ -32,7 +32,7 @@ function Novelcontent() {
                 setFictionInfo(response.data);
             })
             .catch(error => {
-                console.log(error);
+                window.location.replace('http://localhost:3000/500');
             });
     }, [sort])
 
@@ -54,6 +54,25 @@ function Novelcontent() {
         fictionInfo?.chapter_cat?.c7,
         fictionInfo?.chapter_cat?.c1,])
     }, [fictionInfo])
+
+    function category(categoryID) {
+        switch (categoryID) {
+            case 2:
+                return 'นิยายระทึกขวัญ';
+            case 3:
+                return 'นิยายสืบสวน';
+            case 4:
+                return 'นิยายแฟนตาซี';
+            case 5:
+                return 'นิยายวิทยาศาสตร์';
+            case 6:
+                return 'นิยายแอ๊คชั่น';
+            case 7:
+                return 'นิยายรักดราม่า';
+            default:
+                return 'ไม่พบข้อมูล';;
+        }
+    }
 
     var piedata = {
         labels: ['นิยายระทึกขวัญ', 'นิยายสืบสวน', 'นิยายแฟนตาซี', 'นิยายวิทยาศาสตร์', 'นิยายแอ๊คชั่น', 'นิยายรักดราม่า', 'ไม่พบข้อมูล'],
@@ -85,7 +104,7 @@ function Novelcontent() {
     };
 
     function handleClick() {
-        if (sort == "DESC") {
+        if (sort === "DESC") {
             setSort("ASC")
         }
         else {
@@ -131,7 +150,7 @@ function Novelcontent() {
                     </Row>
                     <Form.Group className='text-episode'>
                         <Form.Label className='m-text-episode'>สารบัญตอน</Form.Label>
-                        <Button onClick={handleClick} className='btnsort'> ↿⇂ตอนล่าสุด</Button>
+                        <Button onClick={handleClick} className='btnsort'> ↿⇂</Button>
 
                     </Form.Group>
 
@@ -139,9 +158,11 @@ function Novelcontent() {
                     <Table className='listname'>
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>ชื่อตอน</th>
-                                <th style={{ width: '130px' }}></th>
+                                <th style={{ width: '10%' }}>#</th>
+                                <th style={{ width: '50%' }}>ชื่อตอน</th>
+                                <th style={{ width: '10%' }}>ประเถทหลัก</th>
+                                <th style={{ width: '10%' }}>ประเถทรอง</th>
+                                <th style={{ width: '5%' }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -151,6 +172,8 @@ function Novelcontent() {
                                     <td>
                                         <Link to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
                                     </td>
+                                    <td>{category(item.category)}</td>
+                                    <td>{category(item.sub_category)}</td>
                                     <td></td>
                                 </tr>
                             ))}

@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Header from './Header';
 import './style/NovelDetail.css'
 import { AiOutlinePlusCircle } from "react-icons/ai";
@@ -55,7 +55,7 @@ function Noveldetail() {
     const [abstract, setAbstract] = useState("");
     const [newFictionName, setNewFictionName] = useState("");
     const [newAbstract, setNewAbstract] = useState("");
-    const [sort, setSort] = useState("DESC");
+    const [sort, setSort] = useState("ASC");
 
     const [images, setImages] = useState([]);
     const [imagesShow, setImagesShow] = useState("");
@@ -538,10 +538,11 @@ function Noveldetail() {
                     <Table className='listnamedetail'>
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>ชื่อตอน</th>
-                                <th>ลักษณะตอน</th>
-                                <th style={{ width: '130px' }}></th>
+                                <th style={{ width: '10%' }}>#</th>
+                                <th style={{ width: '50%' }}>ชื่อตอน</th>
+                                <th style={{ width: '10%' }}>ประเถทหลัก</th>
+                                <th style={{ width: '10%' }}>ประเถทรอง</th>
+                                <th style={{ width: '5%' }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -549,8 +550,11 @@ function Noveldetail() {
 
                                 <tr key={item.chapterID}>
                                     <td>#{item.chapter}</td>
-                                    <td>{item.title}</td>
+                                    <td>
+                                        <Link to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
+                                    </td>
                                     <td>{category(item.category)}</td>
+                                    <td>{category(item.sub_category)}</td>
                                     <td>
                                         <div className='button1'>
                                             <i variant="secondary" style={{ color: 'white', marginRight: '5px', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
@@ -619,6 +623,7 @@ function Noveldetail() {
                         <Form.Control
                             type="text"
                             defaultValue={chapterTitle}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterTitle(event.target.value)}
                             isInvalid={!!errors.EditChapterTitleErr}
                         />
@@ -630,6 +635,7 @@ function Noveldetail() {
                             as="textarea"
                             rows={20}
                             defaultValue={chapterContent}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterContent(event.target.value)}
                             isInvalid={!!errors.EditChapterContentErr}
                         />
@@ -659,6 +665,7 @@ function Noveldetail() {
                         <Form.Control
                             type="text"
                             defaultValue={chapterTitle}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterTitle(event.target.value)}
                             isInvalid={!!errors.NewChapterTitleErr}
                         />
@@ -670,6 +677,7 @@ function Noveldetail() {
                             as="textarea"
                             rows={20}
                             defaultValue={chapterContent}
+                            style={{ fontSize: 20 }}
                             onChange={event => setChapterContent(event.target.value)}
                             isInvalid={!!errors.NewChapterContentErr}
                         />
