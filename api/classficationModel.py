@@ -155,14 +155,23 @@ class Model:
             return num["prop"] 
         
         prop.sort(key=getProp)
+        
+        sum = 0
+        for i in prop:
+            sum += 1/(i["prop"]*-1)
+    
+        for i in prop:
+            i["prop"] = np.round((1/(i["prop"]*-1)/sum*100), 2)
 
-        maxCategory = prop[-1]["category"]
+        maxCategory = prop[-1]
         
-        subMaxCategory = prop[-2]["category"]
+        subMaxCategory = prop[-2]
         
-        self.updateFeature(maxCategory, pd.Series(model["word"].loc[model['amount'] >= 1]))
+        subSubMaxCategory = prop[-3]
+        
+        self.updateFeature(maxCategory["category"], pd.Series(model["word"].loc[model['amount'] >= 1]))
             
-        return [maxCategory, subMaxCategory]
+        return [maxCategory, subMaxCategory, subSubMaxCategory]
 
     def updateFeature(self, category, wordList):
         cnx = DbConnection().connection
