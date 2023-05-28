@@ -33,7 +33,7 @@ CREATE TABLE `chapter` (
   KEY `categoryID` (`categoryID`),
   CONSTRAINT `chapter_ibfk_1` FOREIGN KEY (`fictionID`) REFERENCES `fiction` (`fictionID`),
   CONSTRAINT `chapter_ibfk_2` FOREIGN KEY (`categoryID`) REFERENCES `category` (`categoryID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `feature` (
   `word` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
