@@ -435,7 +435,7 @@ def AddNewChapterAPI(fictionID):
     if err != None:
         return make_response(jsonify(str(err)), 500)
 
-    return make_response({"status": category}, 201)
+    return make_response({"status": "OK"}, 201)
 
 
 @ app.route("/writer/<fictionID>/<chapterID>", methods=['PUT'])
