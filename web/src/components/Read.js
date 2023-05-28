@@ -1,21 +1,13 @@
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Nav from 'react-bootstrap/Nav';
-import Modal from 'react-bootstrap/Modal';
-import Table from 'react-bootstrap/Table';
 import Header from './Header';
 import './style/Read.css'
 
 
 function ReadNovel() {
-  let token = sessionStorage.getItem("token");
   const { chapterid } = useParams();
   const [contentInfo, setContentInfo] = useState("");
   const textAreaRef = useRef(null);

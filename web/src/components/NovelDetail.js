@@ -14,6 +14,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import LineChart from './LineChart';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -82,12 +83,11 @@ function Noveldetail() {
         fictionInfo?.chapter_cat?.c4,
         fictionInfo?.chapter_cat?.c5,
         fictionInfo?.chapter_cat?.c6,
-        fictionInfo?.chapter_cat?.c7,
-        fictionInfo?.chapter_cat?.c1,])
+        fictionInfo?.chapter_cat?.c7,])
     }, [fictionInfo])
 
     var piedata = {
-        labels: ['นิยายระทึกขวัญ', 'นิยายสืบสวน', 'นิยายแฟนตาซี', 'นิยายวิทยาศาสตร์', 'นิยายแอ๊คชั่น', 'นิยายรักดราม่า', 'ไม่พบข้อมูล'],
+        labels: ['ระทึกขวัญ', 'สืบสวน', 'แฟนตาซี', 'วิทยาศาสตร์', 'แอ๊คชั่น', 'รักดราม่า'],
         datasets: [
             {
                 label: '% of categoty',
@@ -99,7 +99,6 @@ function Noveldetail() {
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
-                    'rgba(255, 255, 255, 1)',
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
@@ -108,7 +107,6 @@ function Noveldetail() {
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
-                    'rgba(255, 255, 255, 1)',
                 ],
                 borderWidth: 1,
             },
@@ -297,17 +295,17 @@ function Noveldetail() {
     function category(categoryID) {
         switch (categoryID) {
             case 2:
-                return 'นิยายระทึกขวัญ';
+                return 'ระทึกขวัญ';
             case 3:
-                return 'นิยายสืบสวน';
+                return 'สืบสวน';
             case 4:
-                return 'นิยายแฟนตาซี';
+                return 'แฟนตาซี';
             case 5:
-                return 'นิยายวิทยาศาสตร์';
+                return 'วิทยาศาสตร์';
             case 6:
-                return 'นิยายแอ๊คชั่น';
+                return 'แอ๊คชั่น';
             case 7:
-                return 'นิยายรักดราม่า';
+                return 'รักดราม่า';
             default:
                 return 'ไม่พบข้อมูล';;
         }
@@ -484,7 +482,8 @@ function Noveldetail() {
                             </div>
                         </Col>
                         <Col sm={6}>
-                            {editAbstract ?
+                            <LineChart chapterList={fictionInfo?.chapterlist} />
+                            {/* {editAbstract ?
                                 <>
                                     <div className='CourseDetails m-3'>
                                         <div className='CourseDetails m-3'>
@@ -524,7 +523,7 @@ function Noveldetail() {
                                         </Form.Group>
                                     </div>
                                 </>
-                            }
+                            } */}
                         </Col>
                     </Row>
                     <Form.Group className='text-episode-detail'>
@@ -554,7 +553,7 @@ function Noveldetail() {
                                         <Link to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
                                     </td>
                                     <td>{category(item.category)}</td>
-                                    <td>{category(item.sub_category)}</td>
+                                    <td>{category(item.sub_category1) + ', ' + category(item.sub_category2)}</td>
                                     <td>
                                         <div className='button1'>
                                             <i variant="secondary" style={{ color: 'white', marginRight: '5px', fontSize: '20px', cursor: 'pointer' }} onClick={() => {

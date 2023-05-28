@@ -182,20 +182,20 @@ def GetChapter(sort, fictionID):
         mycursor.execute(sql, val)
         fictionContent = mycursor.fetchone()
 
-        sql = """SELECT sum(case when categoryID = 2 then 3 else 0 end) + sum(case when sub_categoryID = 2 then 1 else 0 end) AS c2,
-    	sum(case when categoryID = 3 then 3 else 0 end) + sum(case when sub_categoryID = 3 then 1 else 0 end) AS c3,
-    	sum(case when categoryID = 4 then 3 else 0 end) + sum(case when sub_categoryID = 4 then 1 else 0 end) AS c4,
-    	sum(case when categoryID = 5 then 3 else 0 end) + sum(case when sub_categoryID = 5 then 1 else 0 end) AS c5,
-    	sum(case when categoryID = 6 then 3 else 0 end) + sum(case when sub_categoryID = 6 then 1 else 0 end) AS c6,
-    	sum(case when categoryID = 7 then 3 else 0 end) + sum(case when sub_categoryID = 7 then 1 else 0 end) AS c7,
-    	sum(case when categoryID = 1 then 3 else 0 end) + sum(case when sub_categoryID = 8 then 1 else 0 end) AS c1
+        sql = """SELECT sum(case when categoryID = 2 then probability else 0 end) + sum(case when sub_categoryID_1 = 2 then probability_sub_1 else 0 end) + sum(case when sub_categoryID_2 = 2 then probability_sub_2 else 0 end) AS c2,
+    	sum(case when categoryID = 3 then probability else 0 end) + sum(case when sub_categoryID_1 = 3 then probability_sub_1 else 0 end) + sum(case when sub_categoryID_2 = 3 then probability_sub_2 else 0 end) AS c3,
+    	sum(case when categoryID = 4 then probability else 0 end) + sum(case when sub_categoryID_1 = 4 then probability_sub_1 else 0 end) + sum(case when sub_categoryID_2 = 4 then probability_sub_2 else 0 end) AS c4,
+    	sum(case when categoryID = 5 then probability else 0 end) + sum(case when sub_categoryID_1 = 5 then probability_sub_1 else 0 end) + sum(case when sub_categoryID_2 = 5 then probability_sub_2 else 0 end) AS c5,
+    	sum(case when categoryID = 6 then probability else 0 end) + sum(case when sub_categoryID_1 = 6 then probability_sub_1 else 0 end) + sum(case when sub_categoryID_2 = 6 then probability_sub_2 else 0 end) AS c6,
+    	sum(case when categoryID = 7 then probability else 0 end) + sum(case when sub_categoryID_1 = 7 then probability_sub_1 else 0 end) + sum(case when sub_categoryID_2 = 7 then probability_sub_2 else 0 end) AS c7,
+    	sum(case when categoryID = 1 then probability else 0 end) + sum(case when sub_categoryID_1 = 1 then probability_sub_1 else 0 end) + sum(case when sub_categoryID_2 = 1 then probability_sub_2 else 0 end) AS c1
         FROM chapter
         WHERE fictionID = %s;"""
         val = (fictionID,)
         mycursor.execute(sql, val)
         fictionContent['chapter_cat'] = mycursor.fetchone()
 
-        sql = 'SELECT chapterID,chapter,title,categoryID category,sub_categoryID sub_category FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY ' + sort
+        sql = 'SELECT chapterID, chapter, title, categoryID category, probability,sub_categoryID_1 sub_category1, probability_sub_1, sub_categoryID_2 sub_category2, probability_sub_2 FROM chapter WHERE fictionID = %s AND delete_at IS NULL ORDER BY ' + sort
         val = (fictionID,)
 
         mycursor.execute(sql, val)
@@ -339,8 +339,8 @@ def NewChapter(fictionID, title, content, category):
         mycursor.execute(sql, val)
         chapter = mycursor.fetchone()
 
-        sql = "INSERT INTO chapter (fictionID,chapter, categoryID, sub_categoryID,title,content) VALUES (%s,%s,%s,%s,%s,%s)"
-        val = (fictionID, chapter['curerent'], category[0], category[1], title, content)
+        sql = "INSERT INTO chapter (fictionID, chapter, categoryID, sub_categoryID_1, sub_categoryID_2, probability, probability_sub_1, probability_sub_2, title, content) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        val = (fictionID, chapter['curerent'], category[0]['category'], category[1]['category'], category[2]['category'], category[0]['prop'], category[1]['prop'], category[2]['prop'], title, content)
         mycursor.execute(sql, val)
         mydb.commit()
 
