@@ -136,12 +136,12 @@ class Model:
         TF = model['amount'].sum()
         row = len(model.index)
 
-        propDf["hor"] = np.where(model["amount"] > 0, np.log((model["hor"]+bias)/ficNumber[0][2]) * ficNumber[0][1]/model["total"] * model["amount"]/TF, np.log((ficNumber[0][2]-model["hor"]+bias)/ficNumber[0][2]) * ficNumber[0][1]/model["total"] * model["amount"]/TF)
-        propDf["mys"] = np.where(model["amount"] > 0, np.log((model["mys"]+bias)/ficNumber[0][3]) * ficNumber[0][1]/model["total"] * model["amount"]/TF, np.log((ficNumber[0][3]-model["mys"]+bias)/ficNumber[0][3]) * ficNumber[0][1]/model["total"] * model["amount"]/TF)
-        propDf["fan"] = np.where(model["amount"] > 0, np.log((model["fan"]+bias)/ficNumber[0][4]) * ficNumber[0][1]/model["total"] * model["amount"]/TF, np.log((ficNumber[0][4]-model["fan"]+bias)/ficNumber[0][4]) * ficNumber[0][1]/model["total"] * model["amount"]/TF) 
-        propDf["sci"] = np.where(model["amount"] > 0, np.log((model["sci"]+bias)/ficNumber[0][5]) * ficNumber[0][1]/model["total"] * model["amount"]/TF, np.log((ficNumber[0][5]-model["sci"]+bias)/ficNumber[0][5]) * ficNumber[0][1]/model["total"] * model["amount"]/TF) 
-        propDf["act"] = np.where(model["amount"] > 0, np.log((model["act"]+bias)/ficNumber[0][6]) * ficNumber[0][1]/model["total"] * model["amount"]/TF, np.log((ficNumber[0][6]-model["act"]+bias)/ficNumber[0][6]) * ficNumber[0][1]/model["total"] * model["amount"]/TF) 
-        propDf["dra"] = np.where(model["amount"] > 0, np.log((model["dra"]+bias)/ficNumber[0][7]) * ficNumber[0][1]/model["total"] * model["amount"]/TF, np.log((ficNumber[0][7]-model["dra"]+bias)/ficNumber[0][7]) * ficNumber[0][1]/model["total"] * model["amount"]/TF) 
+        propDf["hor"] = np.where(model["amount"] > 0, np.log((model["hor"]+bias)/ficNumber[0][2]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF, np.log((ficNumber[0][2]-model["hor"]+bias)/ficNumber[0][2]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF)
+        propDf["mys"] = np.where(model["amount"] > 0, np.log((model["mys"]+bias)/ficNumber[0][3]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF, np.log((ficNumber[0][3]-model["mys"]+bias)/ficNumber[0][3]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF)
+        propDf["fan"] = np.where(model["amount"] > 0, np.log((model["fan"]+bias)/ficNumber[0][4]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF, np.log((ficNumber[0][4]-model["fan"]+bias)/ficNumber[0][4]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF) 
+        propDf["sci"] = np.where(model["amount"] > 0, np.log((model["sci"]+bias)/ficNumber[0][5]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF, np.log((ficNumber[0][5]-model["sci"]+bias)/ficNumber[0][5]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF) 
+        propDf["act"] = np.where(model["amount"] > 0, np.log((model["act"]+bias)/ficNumber[0][6]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF, np.log((ficNumber[0][6]-model["act"]+bias)/ficNumber[0][6]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF) 
+        propDf["dra"] = np.where(model["amount"] > 0, np.log((model["dra"]+bias)/ficNumber[0][7]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF, np.log((ficNumber[0][7]-model["dra"]+bias)/ficNumber[0][7]) * np.log(ficNumber[0][1]/model["total"]) * model["amount"]/TF) 
         
         prop = [
             {"category" : 2, "prop" : pd.Series(propDf["hor"]).sum()+np.log10(ficNumber[0][2]/ficNumber[0][1])},
