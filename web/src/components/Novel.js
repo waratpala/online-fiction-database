@@ -18,7 +18,7 @@ function Novel() {
 
   useEffect(() => {
 
-    let url = "http://127.0.0.1:5000/fiction?limit=10&sort=" + sort + "&filter=" + filter + "&search=" + search + "&page=" + String(page)
+    let url = "http://127.0.0.1:5000/fiction?&sort=" + sort + "&filter=" + filter + "&search=" + search + "&page=" + String(page)
 
     axios.get(url)
       .then(response => {

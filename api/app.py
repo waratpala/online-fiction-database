@@ -159,17 +159,9 @@ def NewUserAPI():
 @ app.route("/fiction", methods=['GET'])
 def GetFictionListAPI():
 
-    page = request.args.get('page')
-    limit = request.args.get('limit')
     sort = request.args.get('sort')
     filterDB = request.args.get('filter', default=None, type=None)
     search = request.args.get('search')
-
-    try:
-        page = int(page)
-        limit = int(limit)
-    except TypeError as err:
-        return make_response(jsonify({"status": "TypeError"}), 400)
 
     if filterDB == '':
         filterDB = None
@@ -182,7 +174,7 @@ def GetFictionListAPI():
 
     sort = "fictionID " + sort
 
-    result, err = GetFictionList(page, limit, filterDB, sort, search)
+    result, err = GetFictionList(filterDB, sort, search)
     if err != None:
         if (type(err) == 'str'):
             return make_response(jsonify({"status": err}), 400)
@@ -310,19 +302,12 @@ def GetWriterFictionListAPI():
     bearer = request.headers.get('Authorization')
     user = jwtDecode(bearer .split()[1])
 
-    page = request.args.get('page')
-    limit = request.args.get('limit')
     sort = request.args.get('sort')
     filterDB = request.args.get('filter')
     search = request.args.get('search')
 
-    try:
-        page = int(page)
-        limit = int(limit)
-        if search == None:
-            search = ""
-    except TypeError as err:
-        return make_response(jsonify({"status": "TypeError"}), 400)
+    if search == None:
+        search = ""
 
     if filterDB == '':
         filterDB = None
@@ -336,7 +321,7 @@ def GetWriterFictionListAPI():
     sort = "fictionID " + sort
 
     result, err = GetWriterFiction(
-        page, limit, filterDB, sort, search, user['sub']['user'])
+        filterDB, sort, search, user['sub']['user'])
     if err != None:
         if (type(err) == 'str'):
             return make_response(jsonify({"status": str(err)}), 400)

@@ -9,9 +9,11 @@
 
 
 .controlitem-detail {
-    background-color: #222831;
     border-radius: 2px;
-    width: 98%;
+    align-self: center;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-bottom: 25%;
     position: absolute;
     top: 100px;
     left: 15px;
@@ -25,12 +27,12 @@
     color: white;
     font-size: 25px;
     height: 50px;
-    padding: 5px; 
+    padding: 5px;
     border-radius: 3px;
 }
 
 
-.row-type{
+.row-type {
     margin-bottom: 25px;
 }
 
@@ -40,15 +42,17 @@
     position: relative;
     display: block;
     color: white;
-    height: 50px; 
+    height: 50px;
     border-radius: 3px;
 }
-.text-episode-detail h4{
+
+.text-episode-detail h4 {
     position: absolute;
     font-size: 20px;
     left: 1%;
     top: 7px;
 }
+
 .btn-add {
     color: aliceblue;
     font-size: 35px;
@@ -76,7 +80,7 @@
     background-color: #222831;
 }
 
-.input-choose-image{
+.input-choose-image {
     margin-top: 5px;
     border-radius: 3px;
     border: 20px;
@@ -84,4 +88,4 @@
     color: black;
     text-align: center;
     cursor: pointer;
- }
+}

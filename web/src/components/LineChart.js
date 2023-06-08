@@ -8,6 +8,7 @@ import {
     Title,
     Tooltip,
     Legend,
+    plugins,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -46,7 +47,55 @@ function LineChart(props) {
     });
 
     const options = {
+        color: '#FFFF',
         responsive: true,
+        scales: {
+            y: {
+                ticks: { color: '#FFFF', beginAtZero: true },
+                grid: {
+                    color: "#2E2E2E",
+                },
+                title: {
+                    color: '#FFFF',
+                    display: true,
+                    text: 'ค่าของประเภท',
+                    font: {
+                        size: 20
+                    }
+                }
+            },
+            x: {
+                ticks: { color: '#FFFF', beginAtZero: true },
+                grid: {
+                    color: "#2E2E2E",
+                },
+                title: {
+                    color: '#FFFF',
+                    display: true,
+                    text: 'ตอนที่',
+                    font: {
+                        size: 20
+                    }
+                }
+            }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'การดําเนินเรื่อง',
+                color: '#FFFF',
+                font: {
+                    size: 20
+                }
+            },
+            legend: {
+                labels: {
+                    font: {
+                        size: 20
+                    }
+                }
+            }
+        },
     };
 
     const data = {
@@ -56,42 +105,42 @@ function LineChart(props) {
                 label: 'ระทึกขวัญ',
                 data: lineData.c2,
                 borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                backgroundColor: 'rgb(255, 99, 132)',
                 tension: 0.4,
             },
             {
                 label: 'สืบสวน',
                 data: lineData.c3,
                 borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                backgroundColor: 'rgb(53, 162, 235)',
                 tension: 0.4,
             },
             {
                 label: 'แฟนตาซี',
                 data: lineData.c4,
                 borderColor: 'rgb(255, 206, 86)',
-                backgroundColor: 'rgba(255, 206, 86, 0.5)',
+                backgroundColor: 'rgba(255, 206, 86)',
                 tension: 0.4,
             },
             {
                 label: 'วิทยาศาสตร์',
                 data: lineData.c5,
                 borderColor: 'rgb(75, 192, 192)',
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                backgroundColor: 'rgb(75, 192, 192)',
                 tension: 0.4,
             },
             {
                 label: 'แอ๊คชั่น',
                 data: lineData.c6,
                 borderColor: 'rgb(153, 102, 255)',
-                backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                backgroundColor: 'rgb(153, 102, 255)',
                 tension: 0.4,
             },
             {
                 label: 'รักดราม่า',
                 data: lineData.c7,
                 borderColor: 'rgb(255, 159, 64)',
-                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                backgroundColor: 'rgb(255, 159, 64)',
                 tension: 0.4,
             },
         ],

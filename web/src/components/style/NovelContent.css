@@ -7,82 +7,85 @@
     height: auto;
 } */
 
-body{
+body {
     color: white;
 }
 
-.controlitem-content{
-    background-color: #222831;
+.controlitem-content {
     border-radius: 2px;
-    width: 98%;
+    align-self: center;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-bottom: 25%;
     position: absolute;
     top: 100px;
     left: 15px;
 }
 
 
-.text-novelname{
+.text-novelname {
     font-family: fantasy;
     background-color: #00ADB5;
     display: block;
     color: white;
     font-size: 25px;
     height: 50px;
-    padding: 5px; 
+    padding: 5px;
     border-radius: 3px;
-    
+
 }
 
 
-.row-type{
+.row-type {
     margin-bottom: 25px;
 }
 
-.text-episode{
+.text-episode {
     font-family: fantasy;
     background-color: #00ADB5;
     position: relative;
     display: block;
     color: white;
-    height: 50px; 
+    height: 50px;
     border-radius: 3px;
-    
+
 }
-.m-text-episode{
+
+.m-text-episode {
     position: absolute;
     font-size: 20px;
     left: 1%;
     top: 7px;
 }
-.btnsort{
-   
+
+.btnsort {
+
     background-color: aliceblue;
     color: black;
     text-align: center;
-    position: absolute;
     width: 100px;
     border: 0;
     left: 92%;
     top: 5px;
-    
+
 }
 
-.btnsort:hover{
+.btnsort:hover {
     background-color: #015256;
-  }
-.listname{
+}
+
+.listname {
     color: white;
 }
 
 
 @media screen and (max-width: 900px) {
 
-    .controlitem-content{
-       position: absolute;
-       left: 5px;
-   
-   }
-   /* .btnsort{
+    .controlitem-content {
+        position: absolute;
+    }
+
+    /* .btnsort{
        position: absolute;
        left: 75%;
    

@@ -31,9 +31,12 @@ function Noveldetail() {
     const [editAbstract, setEditAbstract] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
     const [errors, setErrors] = useState({});
+    const [chart, setChart] = useState(false);
+
 
     const [loading, setLoading] = useState(false);
 
+    const chartToggle = () => setChart(!chart);
     const deleteFClose = () => setDelF(false);
     const deleteFShow = () => setDelF(true);
 
@@ -72,10 +75,25 @@ function Noveldetail() {
     const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0])
 
     const options = {
+        color: '#FFFF',
+        font: 20,
         plugins: {
+            title: {
+                display: true,
+                text: 'ภาพรวมของนิยาย',
+                color: '#FFFF',
+                font: {
+                    size: 20,
+                }
+            },
             legend: {
                 position: 'right',
-            },
+                labels: {
+                    font: {
+                        size: 20
+                    }
+                }
+            }
         },
     };
 
@@ -419,118 +437,120 @@ function Noveldetail() {
             <Header />
             <Container>
                 <div className='controlitem-detail'>
-                    <Form.Label className='text-title' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>
-                        {editName ?
-                            <>
-                                <Row>
-                                    <div className="col-md-4">
-                                        <Form.Group>
-                                            <Form.Control
-                                                type="text"
-                                                defaultValue={fictionName}
-                                                onChange={event => setNewFictionName(event.target.value)}
-                                                isInvalid={!!errors.editFictionNameErr}
-                                            />
-                                            <Form.Control.Feedback type="invalid">{errors.editFictionNameErr}</Form.Control.Feedback>
-                                        </Form.Group>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Button onClick={() => {
-                                            setfictionName(newFictionName)
-                                            handleEditName()
-                                        }}>
-                                            บันทึก
-                                        </Button>
-                                        <Button variant="secondary" onClick={editNameToggle}>
-                                            ยกเลิก
-                                        </Button>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <i variant="secondary" style={{ float: 'right', color: 'red', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
-                                            deleteFShow()
-                                        }}>
-                                            <BsFillTrashFill />
-                                        </i>
-                                    </div>
-                                </Row>
-                            </>
-                            :
-                            <>
-                                {fictionName}
-                                <BsPencilSquare style={{ cursor: 'pointer' }} onClick={editNameToggle} />
-                                <i variant="secondary" style={{ float: 'right', color: 'white', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
-                                    deleteFShow()
-                                }}>
-                                    <BsFillTrashFill />
-                                </i>
-                            </>
-                        }
-                    </Form.Label>
-
-                    <Row className='row-type'>
-                        <Col sm={3}>
-                            <div style={{ textAlign: 'center' }}>
-                                <h3 style={{ color: 'black', marginLeft: '175px' }}>
-                                    <BsPencilSquare style={{ cursor: 'pointer', color: 'white' }} onClick={() => editImageShow()} />
-                                </h3>
-                                <div>
-                                    <img src={imagesShow} alt="" width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
-                                </div>
-                            </div>
-
-                        </Col>
-                        <Col sm={3}>
-                            <div className='CourseDetails'>
-                                <div style={{ width: '100%', height: '300px' }}>
-                                    <Pie options={options} data={piedata} />
-                                </div>
-                            </div>
-                        </Col>
-                        <Col sm={6}>
-                            <LineChart chapterList={fictionInfo?.chapterlist} />
-                            {/* {editAbstract ?
+                    <div style={{ backgroundColor: '#222831', paddingBottom: '5px' }}>
+                        <Form.Label className='text-title' style={{ backgroundColor: '#00ADB5', display: 'block', color: 'white' }}>
+                            {editName ?
                                 <>
-                                    <div className='CourseDetails m-3'>
+                                    <Row>
+                                        <div className="col-md-4">
+                                            <Form.Group>
+                                                <Form.Control
+                                                    type="text"
+                                                    defaultValue={fictionName}
+                                                    onChange={event => setNewFictionName(event.target.value)}
+                                                    isInvalid={!!errors.editFictionNameErr}
+                                                />
+                                                <Form.Control.Feedback type="invalid">{errors.editFictionNameErr}</Form.Control.Feedback>
+                                            </Form.Group>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <Button onClick={() => {
+                                                setfictionName(newFictionName)
+                                                handleEditName()
+                                            }}>
+                                                บันทึก
+                                            </Button>
+                                            <Button variant="secondary" onClick={editNameToggle}>
+                                                ยกเลิก
+                                            </Button>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <i variant="secondary" style={{ float: 'right', color: 'red', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                                deleteFShow()
+                                            }}>
+                                                <BsFillTrashFill />
+                                            </i>
+                                        </div>
+                                    </Row>
+                                </>
+                                :
+                                <>
+                                    {fictionName}
+                                    <BsPencilSquare style={{ cursor: 'pointer' }} onClick={editNameToggle} />
+                                    <i variant="secondary" style={{ float: 'right', color: 'white', marginRight: "0.5%", marginTop: "0.5%", fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                        deleteFShow()
+                                    }}>
+                                        <BsFillTrashFill />
+                                    </i>
+                                </>
+                            }
+                        </Form.Label>
+
+                        <Row className='row-type'>
+                            <Col sm={3}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <h3 style={{ color: 'black', marginLeft: '175px' }}>
+                                        <BsPencilSquare style={{ cursor: 'pointer', color: 'white' }} onClick={() => editImageShow()} />
+                                    </h3>
+                                    <div>
+                                        <img src={imagesShow} alt="" width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'stretch', }} />
+                                    </div>
+                                </div>
+
+                            </Col>
+                            <Col sm={9}>
+                                {editAbstract ?
+                                    <>
+                                        <div className='CourseDetails m-3'>
+                                            <div className='CourseDetails m-3'>
+                                                <Form.Group className='mt-2'>
+                                                    <Form.Label >เรื่องย่อ</Form.Label>
+                                                    <Form.Control
+                                                        as="textarea"
+                                                        rows={8}
+                                                        defaultValue={abstract}
+                                                        onChange={event => setNewAbstract(event.target.value)}
+                                                    />
+                                                </Form.Group>
+                                                <Button onClick={() => {
+                                                    setAbstract(newAbstract)
+                                                    handleEditAbstract()
+                                                }}>
+                                                    บันทึก
+                                                </Button>
+                                                <Button variant="secondary" onClick={editAbstractToggle}>
+                                                    ยกเลิก
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </> :
+                                    <>
                                         <div className='CourseDetails m-3'>
                                             <Form.Group className='mt-2'>
-                                                <Form.Label >เรื่องย่อ</Form.Label>
+                                                <Row className='mb-2 justify-content-between'>
+                                                    <Col sm={2}>
+                                                        <Form.Label>เรื่องย่อ</Form.Label>
+                                                        <BsPencilSquare style={{ cursor: 'pointer', color: 'white' }} onClick={() => editAbstractToggle()} />
+                                                    </Col>
+                                                    <Col sm={3}>
+                                                        <Button onClick={chartToggle} style={{ width: '100%', backgroundColor: '#00ADB5' }}>แสดงกราฟ</Button>
+                                                    </Col>
+                                                </Row>
                                                 <Form.Control
                                                     as="textarea"
                                                     rows={8}
                                                     defaultValue={abstract}
-                                                    onChange={event => setNewAbstract(event.target.value)}
+                                                    disabled
+                                                    readOnly
                                                 />
                                             </Form.Group>
-                                            <Button onClick={() => {
-                                                setAbstract(newAbstract)
-                                                handleEditAbstract()
-                                            }}>
-                                                บันทึก
-                                            </Button>
-                                            <Button variant="secondary" onClick={editAbstractToggle}>
-                                                ยกเลิก
-                                            </Button>
                                         </div>
-                                    </div>
-                                </> :
-                                <>
-                                    <div className='CourseDetails m-3'>
-                                        <Form.Group className='mt-2'>
-                                            <Form.Label>เรื่องย่อ</Form.Label>
-                                            <BsPencilSquare style={{ cursor: 'pointer', color: 'white' }} onClick={() => editAbstractToggle()} />
-                                            <Form.Control
-                                                as="textarea"
-                                                rows={8}
-                                                defaultValue={abstract}
-                                                disabled
-                                                readOnly
-                                            />
-                                        </Form.Group>
-                                    </div>
-                                </>
-                            } */}
-                        </Col>
-                    </Row>
+                                    </>
+                                }
+                            </Col>
+                        </Row>
+                    </div>
+
                     <Form.Group className='text-episode-detail'>
                         <h4>สารบัญตอน</h4>
                         <h3 className='btn-add' onClick={() => {
@@ -539,50 +559,53 @@ function Noveldetail() {
                             newShow()
                         }}><AiOutlinePlusCircle /></h3>
                     </Form.Group>
-                    <Table className='listnamedetail'>
-                        <thead>
-                            <tr>
-                                <th style={{ width: '10%' }}>#</th>
-                                <th style={{ width: '50%' }}>ชื่อตอน</th>
-                                <th style={{ width: '10%' }}>ประเถทหลัก</th>
-                                <th style={{ width: '10%' }}>ประเถทรอง</th>
-                                <th style={{ width: '5%' }}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {fictionInfo?.chapterlist?.map((item, index) => (
 
-                                <tr key={item.chapterID}>
-                                    <td>#{item.chapter}</td>
-                                    <td>
-                                        <Link to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
-                                    </td>
-                                    <td>{category(item.category)}</td>
-                                    <td>{category(item.sub_category1) + ', ' + category(item.sub_category2)}</td>
-                                    <td>
-                                        <div className='button1'>
-                                            <i variant="secondary" style={{ color: 'white', marginRight: '5px', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
-                                                SetModalChapterID(item.chapterID)
-                                                SetModalChapterName(item.title)
-                                                getChapterInfo(item.chapterID)
-                                            }}>
-                                                <BsPencilSquare />
-                                            </i>
-                                            <i variant="danger" style={{ color: 'white', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
-                                                SetModalChapterID(item.chapterID)
-                                                SetModalChapterName(item.title)
-                                                deleteCShow()
-                                            }}>
-                                                <BsFillTrashFill />
-                                            </i>
-
-                                        </div>
-                                    </td>
+                    <div style={{ backgroundColor: '#222831', marginBottom: '5%', paddingBottom: '5px', paddingLeft: '5px', paddingInlineStart: '5px' }}>
+                        <Table className='listnamedetail'>
+                            <thead>
+                                <tr>
+                                    <th style={{ width: '10%' }}>#</th>
+                                    <th style={{ width: '50%' }}>ชื่อตอน</th>
+                                    <th style={{ width: '15%' }}>ประเถทหลัก</th>
+                                    <th style={{ width: '15%' }}>ประเถทรอง</th>
+                                    <th style={{ width: '8%' }}></th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                {fictionInfo?.chapterlist?.map((item, index) => (
 
-                            ))}
-                        </tbody>
-                    </Table>
+                                    <tr key={item.chapterID}>
+                                        <td>#{item.chapter}</td>
+                                        <td>
+                                            <Link className='text-reset' to={"/novelread/" + fictionid + "/" + item.chapterID} >{item.title}</Link>
+                                        </td>
+                                        <td>{category(item.category)}</td>
+                                        <td>{category(item.sub_category1) + ', ' + category(item.sub_category2)}</td>
+                                        <td>
+                                            <div className='button1'>
+                                                <i variant="secondary" style={{ color: 'white', marginRight: '5px', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                                    SetModalChapterID(item.chapterID)
+                                                    SetModalChapterName(item.title)
+                                                    getChapterInfo(item.chapterID)
+                                                }}>
+                                                    <BsPencilSquare />
+                                                </i>
+                                                <i variant="danger" style={{ color: 'white', fontSize: '20px', cursor: 'pointer' }} onClick={() => {
+                                                    SetModalChapterID(item.chapterID)
+                                                    SetModalChapterName(item.title)
+                                                    deleteCShow()
+                                                }}>
+                                                    <BsFillTrashFill />
+                                                </i>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                ))}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
             </Container>
 
@@ -704,7 +727,7 @@ function Noveldetail() {
 
             <Modal show={editImage} onHide={editImageClose}>
                 <Modal.Header closeButton className='modalHeader'>
-                    <Modal.Title>Udate Image</Modal.Title>
+                    <Modal.Title>Update Image</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modalBody'>
                     <img src={imageURL} width={200} height={300} style={{ alignSelf: 'center', resizeMode: 'cover', }} />
@@ -733,6 +756,28 @@ function Noveldetail() {
             <Modal show={loading}>
                 <Modal.Body className='modalBody'>
                     <h1 style={{ textAlign: 'center' }}>Loading</h1>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={chart} size='xl' onHide={chartToggle}>
+                <Modal.Header closeButton className='modalHeader'>
+                    <Modal.Title>ประเภทนิยาย</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modalBody'>
+                    <Row>
+                        <Col sm={4}>
+                            <div className='CourseDetails m-3' >
+                                <div>
+                                    <Pie options={options} data={piedata} />
+                                </div>
+                            </div>
+                        </Col>
+                        <Col sm={8}>
+                            <div className='CourseDetails m-3'>
+                                <LineChart chapterList={fictionInfo?.chapterlist} />
+                            </div>
+                        </Col>
+                    </Row>
                 </Modal.Body>
             </Modal>
         </>

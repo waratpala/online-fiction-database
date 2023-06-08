@@ -86,7 +86,7 @@ function ManageNovel() {
 
     useEffect(() => {
 
-        let url = "http://127.0.0.1:5000/writer?limit=10&sort=" + sort + "&filter=" + filter + "&search=" + search + "&page=" + String(page)
+        let url = "http://127.0.0.1:5000/writer?&sort=" + sort + "&filter=" + filter + "&search=" + search + "&page=" + String(page)
         const AuthStr = 'Bearer ' + token;
         axios.get(url, { headers: { Authorization: AuthStr } })
             .then(response => {

@@ -7,38 +7,24 @@ from mysql.connector import errorcode
 from mysql_con import DbConnection
 
 
-def GetFictionList(page, limit, filterDB, sort, search):
+def GetFictionList(filterDB, sort, search):
     if search == None:
         search = ""
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True, buffered=True)
 
-        mycursor.execute(
-            "SELECT COUNT(fictionID) as total FROM fiction WHERE delete_at IS NULL")
-        count = mycursor.fetchone()
-
         pagination = {
-            "curent_page": page,
-            "limit": limit,
-            "offset": limit*(page-1),
-            "max_page": math.ceil(count['total']/limit),
             "sort": sort,
             "data": []
         }
 
-        if count['total'] == 0:
-            pagination['max_page'] = 1
-
-        if pagination['max_page'] < pagination['curent_page']:
-            return None, "max<curent"
-
         if (filterDB is None):
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND delete_at IS NULL ORDER BY " + sort + " LIMIT %s OFFSET %s"
-            val = ("%" + search + "%", pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND delete_at IS NULL ORDER BY " + sort
+            val = ("%" + search + "%",)
         else:
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY "  + sort + " LIMIT %s OFFSET %s"
-            val = ("%" + search + "%", filterDB, pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY "  + sort
+            val = ("%" + search + "%",)
 
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
@@ -125,41 +111,25 @@ def UpdateImagePath(fictionID, imageURL):
         return err
 
 
-def GetWriterFiction(page, limit, filterDB, sort, search, writer):
+def GetWriterFiction(filterDB, sort, search, writer):
 
     try:
         mydb = DbConnection().connection
         mycursor = mydb.cursor(dictionary=True, buffered=True)
 
-        mycursor.execute(
-            "SELECT COUNT(fictionID) as total FROM fiction WHERE writer=%s AND delete_at IS NULL", (writer,))
-        count = mycursor.fetchone()
-
         pagination = {
-            "curent_page": page,
-            "limit": limit,
-            "offset": limit*(page-1),
-            "max_page": math.ceil(count['total']/limit),
             "sort": sort,
             "writer": writer,
             "data": [],
-            "val": "",
-            "sql": ""
         }
 
-        if count['total'] == 0:
-            pagination['max_page'] = 1
-
-        if pagination['max_page'] < pagination['curent_page']:
-            return None, "max<curent"
-
         if (filterDB is None):
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND delete_at IS NULL ORDER BY " + sort + " LIMIT %s OFFSET %s"
-            val = (writer, "%" + search + "%", pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND delete_at IS NULL ORDER BY " + sort
+            val = (writer, "%" + search + "%")
 
         else:
-            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY" + sort + " LIMIT %s OFFSET %s"
-            val = (writer, "%" + search + "%", filterDB, pagination['limit'], pagination['offset'])
+            sql = "SELECT fictionID,fictionName,categoryID,picture FROM fiction WHERE writer=%s AND fictionName LIKE %s AND categoryID=%s AND delete_at IS NULL ORDER BY" + sort
+            val = (writer, "%" + search + "%", filterDB)
 
         mycursor.execute(sql, val)
         pagination["data"] = mycursor.fetchall()
